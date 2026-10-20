@@ -11,7 +11,7 @@ import net.neoforged.fml.event.config.ModConfigEvent;
 @Mod(FolkwaysVanillaMod.ID)
 public final class FolkwaysVanillaMod {
 
-    public static final String ID = "folkways_vanilla";
+    public static final String ID = "plaa_vanilla"; // PLA: ADR-023 modid
 
     public FolkwaysVanillaMod(IEventBus modBus, ModContainer container) {
         container.registerConfig(ModConfig.Type.SERVER, FolkwaysVanillaConfig.SPEC);

@@ -1,3 +1,8 @@
+<!-- PLA: ADR-023 modid -->
+> **Per Lapidem ad Astra** is a fork of [Folkways](https://github.com/IzakyL/folkways) (IzakyL, MIT).
+> Its four mods are `plaa_core`, `plaa_vanilla`, `plaa_create` and `plaa_modulargolems`, registered under the
+> same `folkways` resource namespace, and **cannot be installed next to upstream Folkways**. See [NOTICE.md](NOTICE.md).
+
 # Folkways
 
 Settlers who plan their own work. Found a colony, mark out fields, pens and fishing
@@ -106,7 +111,7 @@ Starlark interpreter inside the Folkways Vanilla jar; none needs a separate inst
 
 The colony panel's **Lessons** tab walks through everything else.
 
-Server options live in each world's `serverconfig/`: `folkways_core-server.toml` for the engine, `folkways_vanilla-server.toml` for the work among vanilla blocks, and `folkways_create-server.toml` for rail and dispatch.
+Server options live in each world's `serverconfig/`: `plaa_core-server.toml` for the engine, `plaa_vanilla-server.toml` for the work among vanilla blocks, and `plaa_create-server.toml` for rail and dispatch.
 
 ## Building from source
 

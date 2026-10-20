@@ -57,6 +57,11 @@ tasks.named("jar", Jar) {
         into "META-INF"
         rename { "LICENSE_folkways.txt" }
     }
+    // PLA: ADR-023 modid — attribution and the list of our changes ride along with every jar.
+    from(rootProject.file("NOTICE.md")) {
+        into "META-INF"
+        rename { "NOTICE_plaa.md" }
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {

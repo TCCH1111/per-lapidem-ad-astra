@@ -13,17 +13,17 @@ connect = "127.0.0.1:25565"
 options = { guiScale = "1", fullscreen = "false", overrideWidth = "1280", overrideHeight = "720" }
 
 # The four Folkways mods, as gradle build gathers them.
-[mods.folkways_core]
-path = "build/libs/folkways-core-*.jar"
+[mods.plaa_core] # PLA: ADR-023 modid
+path = "build/libs/plaa-core-*.jar"
 
-[mods.folkways_vanilla]
-path = "build/libs/folkways-vanilla-*.jar"
+[mods.plaa_vanilla] # PLA: ADR-023 modid
+path = "build/libs/plaa-vanilla-*.jar"
 
-[mods.folkways_create]
-path = "build/libs/folkways-create-*.jar"
+[mods.plaa_create] # PLA: ADR-023 modid
+path = "build/libs/plaa-create-*.jar"
 
-[mods.folkways_modulargolems]
-path = "build/libs/folkways-modulargolems-*.jar"
+[mods.plaa_modulargolems] # PLA: ADR-023 modid
+path = "build/libs/plaa-modulargolems-*.jar"
 
 [mods.ldlib2]
 path = "build/deps/ldlib2-*.jar"
@@ -150,7 +150,7 @@ target = []
 
 # Measures folkways itself, mixins included; off unless BLOCKWRIGHT_COVERAGE=1 (npm run test:coverage).
 [coverage]
-mods = ["folkways_core", "folkways_vanilla", "folkways_create", "folkways_modulargolems"]
+mods = ["plaa_core", "plaa_vanilla", "plaa_create", "plaa_modulargolems"] # PLA: ADR-023 modid
 sources = ["mods/core/src/main/java", "mods/vanilla/src/main/java", "mods/create/src/main/java", "mods/modulargolems/src/main/java"]
 
 [profile.bench.neoforge]

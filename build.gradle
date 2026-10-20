@@ -5,10 +5,10 @@ plugins {
 // The root builds no mod of its own: it runs the four under mods/ together for the game tests.
 
 def modProjects = [
-    folkways_core: ":core",
-    folkways_vanilla: ":vanilla",
-    folkways_create: ":create",
-    folkways_modulargolems: ":modulargolems",
+    plaa_core: ":core", // PLA: ADR-023 modid
+    plaa_vanilla: ":vanilla", // PLA: ADR-023 modid
+    plaa_create: ":create", // PLA: ADR-023 modid
+    plaa_modulargolems: ":modulargolems", // PLA: ADR-023 modid
 ]
 modProjects.values().each { evaluationDependsOn(it) }
 

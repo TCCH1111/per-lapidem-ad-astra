@@ -60,7 +60,7 @@ public final class FolkwaysMod {
     public static final String MOD_ID = "folkways";
 
     // The mod this class is: the engine, which the other Folkways mods install their plugins over.
-    public static final String CORE_ID = "folkways_core";
+    public static final String CORE_ID = "plaa_core"; // PLA: ADR-023 modid
 
     public static final String NETWORK_VERSION = "1";
 

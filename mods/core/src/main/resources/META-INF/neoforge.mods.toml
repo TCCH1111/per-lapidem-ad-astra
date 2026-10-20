@@ -1,15 +1,15 @@
 modLoader = "javafml"
 loaderVersion = "${loader_version_range}"
 license = "MIT"
-issueTrackerURL = "https://github.com/IzakyL/folkways/issues"
+issueTrackerURL = "https://github.com/TCCH1111/per-lapidem-ad-astra/issues" # PLA: ADR-023 modid
 
 [[mods]]
 modId = "${mod_id}"
 version = "${version}"
-displayName = "Folkways Core"
-displayURL = "https://github.com/IzakyL/folkways"
+displayName = "Per Lapidem ad Astra · Core" # PLA: ADR-023 modid
+displayURL = "https://github.com/TCCH1111/per-lapidem-ad-astra" # PLA: ADR-023 modid
 description = "The colony engine the Folkways mods stand on: residents who plan their own work, the paths they walk, and the colony book and panel. On its own it adds no work for them to do; install Folkways Vanilla for that."
-authors = "IzakyL"
+authors = "IzakyL (Folkways); TCCH1111 (Per Lapidem ad Astra)" # PLA: ADR-023 modid
 
 [[dependencies.${mod_id}]]
 modId = "minecraft"
@@ -72,6 +72,39 @@ reason = "Same as JEI, through EMI's own exclusion hook. Folkways works with eit
 versionRange = "[1.1.24,)"
 ordering = "AFTER"
 side = "CLIENT"
+
+# PLA: ADR-023 modid — d12 R-FK-3: this fork and upstream Folkways cannot be installed together
+[[dependencies.${mod_id}]]
+modId = "folkways_core"
+type = "incompatible"
+reason = "Per Lapidem ad Astra is a fork of Folkways; the two cannot share a world (one colony system). 本 mod 是 Folkways 的 fork，同一世界只能装一套殖民地系统。"
+versionRange = "[0,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "folkways_vanilla"
+type = "incompatible"
+reason = "Per Lapidem ad Astra is a fork of Folkways; the two cannot share a world (one colony system). 本 mod 是 Folkways 的 fork，同一世界只能装一套殖民地系统。"
+versionRange = "[0,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "folkways_create"
+type = "incompatible"
+reason = "Per Lapidem ad Astra is a fork of Folkways; the two cannot share a world (one colony system). 本 mod 是 Folkways 的 fork，同一世界只能装一套殖民地系统。"
+versionRange = "[0,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "folkways_modulargolems"
+type = "incompatible"
+reason = "Per Lapidem ad Astra is a fork of Folkways; the two cannot share a world (one colony system). 本 mod 是 Folkways 的 fork，同一世界只能装一套殖民地系统。"
+versionRange = "[0,)"
+ordering = "NONE"
+side = "BOTH"
 
 [[mixins]]
 config = "folkways.mixins.json"

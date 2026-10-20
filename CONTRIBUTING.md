@@ -23,15 +23,15 @@ downloads, as pinned in `blockwright.toml`.
 
 ## Layout
 
-Folkways is four mods, each a Gradle project under `mods/`, all registering under the `folkways` namespace.
+Folkways is four mods, each a Gradle project under `mods/`, all registering under the `folkways` namespace (in this fork their modids are `plaa_*`, see NOTICE.md).
 `./gradlew build` builds them and gathers their jars into `build/libs/`.
 
 | Mod | Project | What it is |
 | --- | --- | --- |
-| Folkways Core (`folkways_core`) | `mods/core` | The engine and the screens; on its own it gives residents no work |
-| Folkways Vanilla (`folkways_vanilla`) | `mods/vanilla` | The work residents do among vanilla blocks |
-| Folkways × Create (`folkways_create`) | `mods/create` | What Create adds: rail, dispatch, and Create's side of building (track joints, schematic hand-off) |
-| Folkways × Modular Golems (`folkways_modulargolems`) | `mods/modulargolems` | Modular Golems as a second sort of resident |
+| Folkways Core (`plaa_core`) | `mods/core` | The engine and the screens; on its own it gives residents no work |
+| Folkways Vanilla (`plaa_vanilla`) | `mods/vanilla` | The work residents do among vanilla blocks |
+| Folkways × Create (`plaa_create`) | `mods/create` | What Create adds: rail, dispatch, and Create's side of building (track joints, schematic hand-off) |
+| Folkways × Modular Golems (`plaa_modulargolems`) | `mods/modulargolems` | Modular Golems as a second sort of resident |
 
 An integration whose absence would leave the colony misreading a world that has that mod (Sable's sub-levels,
 Create's contraptions in the way) belongs in the core; one that only adds something when its mod is there is a mod
