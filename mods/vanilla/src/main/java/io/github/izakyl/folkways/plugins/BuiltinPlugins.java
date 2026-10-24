@@ -9,6 +9,7 @@ import io.github.izakyl.folkways.plugins.orders.OrdersPlugin;
 import io.github.izakyl.folkways.plugins.pasture.PasturePlugin;
 import io.github.izakyl.folkways.plugins.patrol.PatrolPlugin;
 import io.github.izakyl.folkways.plugins.person.PersonPlugin;
+import io.github.izakyl.folkways.plugins.steering.SteeringPlugin;
 import net.neoforged.bus.api.IEventBus;
 
 // Every built-in plugin comes in through its one install, as a plugin from another mod would.
@@ -27,5 +28,7 @@ public final class BuiltinPlugins {
         GroundworkPlugin.install(modBus);
         PatrolPlugin.install(modBus);
         OrdersPlugin.install(modBus);
+        // PLA: WP-4 T1 — steering zones (PLAN-003)
+        SteeringPlugin.install(modBus);
     }
 }
