@@ -31,6 +31,10 @@ public record Unassigned(UUID node, Reason why, UUID blockedBy) {
 
         NO_FREE_STAND,
 
+        // PLA: WP-4 T4 — a steering zone keeps this resident off the cells the work stands on. Not
+        // structural: the player can redraw or remove the zone, and the work is fine again.
+        ZONE_FORBIDDEN,
+
         // Someone could take it, but no sooner than the plan looks ahead: it waits for a later plan, not for a
         // change in the world.
         BEYOND_HORIZON;

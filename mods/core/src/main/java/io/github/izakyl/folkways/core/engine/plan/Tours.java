@@ -9,6 +9,7 @@ import io.github.izakyl.folkways.core.api.terms.WorldPos;
 import io.github.izakyl.folkways.core.api.work.Amount;
 import io.github.izakyl.folkways.core.api.work.Before;
 import io.github.izakyl.folkways.core.api.work.NodeSpec;
+import io.github.izakyl.folkways.core.api.work.Standing;
 import io.github.izakyl.folkways.core.api.work.Placement;
 import io.github.izakyl.folkways.core.api.work.Stances;
 import io.github.izakyl.folkways.core.api.work.Workload;
@@ -1430,6 +1431,13 @@ final class Tours {
 
     private static final Unassigned.Reason[] REASONS = Unassigned.Reason.values();
 
+    // PLA: WP-4 T4 — what zones the colony keeps, as the schedule reads them. ALL keeps the old behaviour.
+    private Standing standing = Standing.ALL;
+
+    void standing(Standing standing) {
+        this.standing = standing == null ? Standing.ALL : standing;
+    }
+
     // Asked of every hand for every piece of work, more than once a schedule, and the same each time within one.
     private Unassigned.Reason groupRefusal(Seat seat, UUID id) {
         byte[] known = fits.computeIfAbsent(id, key -> new byte[seats.size()]);
@@ -1452,6 +1460,13 @@ final class Tours {
                 bound.add(pinned);
             }
             steps.add(fixed(member).node().spec());
+        }
+        for (NodeSpec step : steps) {
+            for (var stance : step.stances().cells()) {
+                if (!standing.permits(seat.hand.id(), stance.cell())) {
+                    return Unassigned.Reason.ZONE_FORBIDDEN;
+                }
+            }
         }
         return Fitness.of(seat.hand, new Fitness.Work(steps, bound, 0)).map(unfit -> switch (unfit) {
             case BOUND_ELSEWHERE -> Unassigned.Reason.SAME_WORKER_SPLIT;
@@ -1566,6 +1581,8 @@ final class Tours {
             case WORKER_AWAY -> 9;
             case NO_FREE_STAND -> 10;
             case BEYOND_HORIZON -> 11;
+            // PLA: WP-4 T4 — a zone refusal is the most specific reason there is, so it is told last.
+            case ZONE_FORBIDDEN -> 12;
         };
     }
 
