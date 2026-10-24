@@ -63,6 +63,20 @@ public final class SteeringState {
         return Optional.empty();
     }
 
+    /**
+     * PLA: WP-4 T4b — whether any forbid zone covers this cell. Only FORBID with an empty subject
+     * list is consulted here: a resident's trade is not known at this point, so ALLOW_ONLY and LIMIT
+     * stay with the diagnosis layer until they can name the subject.
+     */
+    public boolean forbids(BlockPos cell) {
+        for (ZoneRule rule : zones.values()) {
+            if (rule.kind() == ZoneRule.Kind.FORBID && rule.subjects().isEmpty() && rule.covers(cell)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean dirty() {
         return dirty;
     }

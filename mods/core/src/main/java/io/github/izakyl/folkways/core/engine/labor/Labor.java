@@ -1,6 +1,7 @@
 package io.github.izakyl.folkways.core.engine.labor;
 
 import io.github.izakyl.folkways.FolkwaysConfig;
+import io.github.izakyl.folkways.core.api.work.Standings;
 import io.github.izakyl.folkways.core.engine.EngineMode;
 import io.github.izakyl.folkways.core.engine.colony.ColonyData;
 import io.github.izakyl.folkways.core.engine.colony.ColonyRegistry;
@@ -93,6 +94,8 @@ public final class Labor {
                 }
                 ColonyLabor labor = sites.compute(key, (site, previous) -> previous == null
                     ? new ColonyLabor(colony, level.dimension()) : previous.current());
+                // PLA: WP-4 T4b — the zones a plugin keeps for this colony, ALL when none does.
+                labor.standing(Standings.of(colony.colonyId()));
                 labor.run(level, planFor(colony.colonyId()));
                 if (labor.desertedLongEnough(deserted, level.getGameTime())) {
                     sites.remove(key).close();
