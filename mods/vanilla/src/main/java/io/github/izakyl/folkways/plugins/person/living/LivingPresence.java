@@ -87,6 +87,15 @@ final class LivingPresence implements Facing {
 
     private final Map<UUID, Rest> wear = new LinkedHashMap<>();
 
+
+    // PLA: WP-1 T2 — read-only handles for the diagnosis facade (PresenceViews). Never mutate through these.
+    Hunger bellyOf(UUID resident) {
+        return bellies.get(resident);
+    }
+
+    Beds bedClaims() {
+        return beds;
+    }
     private boolean unwritten;
 
     LivingPresence(Colony colony) {
