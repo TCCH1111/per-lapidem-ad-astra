@@ -930,5 +930,8 @@
   "folkways.draft.knob.bund": "田埂",
   "folkways.draft.knob.cap": "壓頂",
   "folkways.draft.knob.path": "小路",
-  "folkways.draft.knob.steps": "階梯"
+  "folkways.draft.knob.steps": "階梯",
+  "folkways.refusal.steering.forbidden": "禁限區禁止進入此處",
+  "folkways.refusal.steering.only_for_others": "此處只留給其他工作",
+  "folkways.refusal.steering.quota_full": "區內人數已達上限"
 }
