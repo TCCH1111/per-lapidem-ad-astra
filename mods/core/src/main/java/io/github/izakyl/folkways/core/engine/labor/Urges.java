@@ -53,6 +53,12 @@ final class Urges {
         cooling.put(urge, now + BACKOFF);
     }
 
+    // PLA: WP-1 T5 — read-only backoff query for the diagnosis facade (LaborViews). Reads never remove an entry.
+    long coolingLeft(ResourceLocation urge, long now) {
+        Long until = cooling.get(urge);
+        return until == null ? 0L : Math.max(0L, until - now);
+    }
+
     private boolean quiet(ResourceLocation urge, long now) {
         Long until = cooling.get(urge);
         if (until == null) {

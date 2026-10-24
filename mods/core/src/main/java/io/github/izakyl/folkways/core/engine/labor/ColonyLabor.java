@@ -79,6 +79,11 @@ public final class ColonyLabor implements ColonyWorks.Listening {
     private final Pipeline pipeline = new Pipeline(inbox, new Planner(new Claims(), new Cooldowns()), new Scheduler());
     private final Runners runners = new Runners(this::arrived);
     private final Urges urges = new Urges();
+
+    // PLA: WP-1 T5 — read-only handle for the diagnosis facade (LaborViews).
+    Urges urgeBook() {
+        return urges;
+    }
     private final Salvage salvage = new Salvage();
     private final Kits kits = new Kits();
     private final Survey survey = new Survey();
