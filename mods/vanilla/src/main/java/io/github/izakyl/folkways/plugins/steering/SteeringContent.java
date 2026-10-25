@@ -40,7 +40,9 @@ public final class SteeringContent {
 
     /** The engine's view of this state: a cell some forbid zone covers is not for standing on. */
     public static Standing standingOf(SteeringState state) {
-        return (resident, cell) -> state == null || !state.forbids(cell);
+        return (resident, cell) -> state != null && state.forbids(cell)
+            ? java.util.Optional.of(SteeringRefusal.FORBIDDEN)
+            : java.util.Optional.empty();
     }
 
     /**
@@ -70,7 +72,8 @@ public final class SteeringContent {
             scope.share(state);
             // PLA: WP-4 T4b — hand this colony's zones to the engine's schedule.
             STATES.put(colony.id(), state);
-            Standings.provide(ID, id -> standingOf(STATES.get(id)));
+            Standings.provide(ID, id -> standingOf(STATES.get(id)), SteeringRefusal.FORBIDDEN,
+                io.github.izakyl.folkways.core.engine.plan.Unassigned.Reason.ZONE_FORBIDDEN);
             scope.closed(closing -> STATES.remove(colony.id()));
             scope.tick(server -> {
                 if (state.dirty()) {

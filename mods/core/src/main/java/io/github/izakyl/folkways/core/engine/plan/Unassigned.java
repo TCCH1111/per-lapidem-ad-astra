@@ -35,6 +35,10 @@ public record Unassigned(UUID node, Reason why, UUID blockedBy) {
         // structural: the player can redraw or remove the zone, and the work is fine again.
         ZONE_FORBIDDEN,
 
+        // PLA: WP-5 D8 — the colony's timetable keeps everyone from working right now. Not structural:
+        // the clock comes round by itself.
+        HOURS_RESTING,
+
         // Someone could take it, but no sooner than the plan looks ahead: it waits for a later plan, not for a
         // change in the world.
         BEYOND_HORIZON;

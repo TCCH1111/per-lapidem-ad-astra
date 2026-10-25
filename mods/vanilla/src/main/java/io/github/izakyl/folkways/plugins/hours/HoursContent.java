@@ -27,8 +27,11 @@ public final class HoursContent {
             HoursState state = HoursState.load(Reader.of(colony.kept(ID)));
             scope.share(state);
             Standings.provide(ID, id -> id.equals(colony.id())
-                ? (resident, cell) -> state.working()
-                : Standing.ALL);
+                    ? (resident, cell) -> state.working()
+                        ? java.util.Optional.empty()
+                        : java.util.Optional.of(HoursRefusal.RESTING)
+                    : Standing.ALL,
+                HoursRefusal.RESTING, io.github.izakyl.folkways.core.engine.plan.Unassigned.Reason.HOURS_RESTING);
             scope.tick(server -> {
                 state.clock(server.overworld().getDayTime());
                 if (server.getTickCount() % 200 == 0) {

@@ -1,35 +1,43 @@
 package io.github.izakyl.folkways.core.api.work;
 
+import io.github.izakyl.folkways.core.api.terms.RefusalKind;
+import io.github.izakyl.folkways.core.engine.plan.Unassigned;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 
 /**
- * PLA: WP-4 T4b, composed for WP-5 — where plugins hand the engine the standings they keep for a
- * colony.
+ * PLA: WP-4 T4b / WP-5 D8 — where plugins hand the engine the standings they keep for a colony.
  *
- * <p>Every owner keeps one provider and the engine asks all of them, allowing a cell only when all
- * agree. Zones and hours therefore stack without either one knowing about the other: the schedule
- * has one question to ask and one answer to honour. No provider means {@link Standing#ALL}, so an
- * engine with no plugin installed behaves exactly as it did before this existed.
+ * <p>Every owner keeps one provider and names the reason its refusals are reported as. The engine
+ * asks every provider and takes the first refusal, so zones and hours stack without either knowing
+ * the other, and the schedule still records a plain {@code Unassigned.Reason} it can cache by
+ * ordinal. {@link #reasonOf} turns whatever refusal came back into that reason.
  */
 public final class Standings {
 
     private static final Map<ResourceLocation, Function<UUID, Standing>> PROVIDERS = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, Unassigned.Reason> REASONS = new ConcurrentHashMap<>();
 
     private Standings() {
     }
 
-    public static void provide(ResourceLocation owner, Function<UUID, Standing> next) {
+    public static void provide(ResourceLocation owner, Function<UUID, Standing> provider,
+                               RefusalKind refusedAs, Unassigned.Reason reason) {
         if (owner == null) {
             return;
         }
-        if (next == null) {
+        if (provider == null) {
             PROVIDERS.remove(owner);
-        } else {
-            PROVIDERS.put(owner, next);
+            return;
+        }
+        PROVIDERS.put(owner, provider);
+        if (refusedAs != null && reason != null) {
+            REASONS.put(refusedAs.getClass(), reason);
         }
     }
 
@@ -39,16 +47,22 @@ public final class Standings {
         }
         return (resident, cell) -> {
             for (Function<UUID, Standing> provider : PROVIDERS.values()) {
-                if (!provider.apply(colony).permits(resident, cell)) {
-                    return false;
+                Optional<RefusalKind> why = provider.apply(colony).check(resident, cell);
+                if (why.isPresent()) {
+                    return why;
                 }
             }
-            return true;
+            return Optional.empty();
         };
     }
 
-    /** For tests: puts the engine back to allowing every cell. */
+    /** The reason a refusal of this kind is reported as; a zone refusal stands in for the unknown. */
+    public static Unassigned.Reason reasonOf(RefusalKind why) {
+        return REASONS.getOrDefault(why.getClass(), Unassigned.Reason.ZONE_FORBIDDEN);
+    }
+
     public static void reset() {
         PROVIDERS.clear();
+        REASONS.clear();
     }
 }

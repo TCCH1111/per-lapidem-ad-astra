@@ -10,6 +10,7 @@ import io.github.izakyl.folkways.core.api.work.Amount;
 import io.github.izakyl.folkways.core.api.work.Before;
 import io.github.izakyl.folkways.core.api.work.NodeSpec;
 import io.github.izakyl.folkways.core.api.work.Standing;
+import io.github.izakyl.folkways.core.api.work.Standings;
 import io.github.izakyl.folkways.core.api.work.Placement;
 import io.github.izakyl.folkways.core.api.work.Stances;
 import io.github.izakyl.folkways.core.api.work.Workload;
@@ -1463,8 +1464,9 @@ final class Tours {
         }
         for (NodeSpec step : steps) {
             for (var stance : step.stances().cells()) {
-                if (!standing.permits(seat.hand.id(), stance.cell())) {
-                    return Unassigned.Reason.ZONE_FORBIDDEN;
+                var refused = standing.check(seat.hand.id(), stance.cell());
+                if (refused.isPresent()) {
+                    return Standings.reasonOf(refused.get());
                 }
             }
         }
@@ -1583,6 +1585,7 @@ final class Tours {
             case BEYOND_HORIZON -> 11;
             // PLA: WP-4 T4 — a zone refusal is the most specific reason there is, so it is told last.
             case ZONE_FORBIDDEN -> 12;
+            case HOURS_RESTING -> 13;
         };
     }
 
