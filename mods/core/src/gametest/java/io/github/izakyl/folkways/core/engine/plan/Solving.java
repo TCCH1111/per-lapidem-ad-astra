@@ -30,6 +30,11 @@ public final class Solving {
         return new Planned(woven, laid, Shown.of(plan, woven.delta()));
     }
 
+    /** PLA: WP-6 W5 — lets a test hand the schedule the same veto the colony would. */
+    public void standing(io.github.izakyl.folkways.core.api.work.Standing standing) {
+        scheduler.standing(standing);
+    }
+
     public WeaveView plan() {
         return plan;
     }
