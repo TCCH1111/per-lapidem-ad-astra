@@ -934,5 +934,15 @@
   "folkways.refusal.steering.forbidden": "A steering zone forbids this spot",
   "folkways.refusal.steering.only_for_others": "This spot is kept for other work",
   "folkways.refusal.steering.quota_full": "As many residents are here as the zone allows",
-  "folkways.refusal.hours.resting": "The colony is off its working hours"
+  "folkways.refusal.hours.resting": "The colony is off its working hours",
+  "folkways.page.hours": "Hours",
+  "folkways.page.hours.status": "Now: %s",
+  "folkways.page.hours.next": "changes in %s s",
+  "folkways.page.hours.off": "The colony keeps no hours",
+  "folkways.page.hours.preset.free": "free",
+  "folkways.page.hours.preset.day_shift": "day shift",
+  "folkways.page.hours.preset.night_shift": "night shift",
+  "folkways.page.hours.preset.siege": "siege",
+  "folkways.settings.hours.enabled": "Keep hours",
+  "folkways.settings.hours.preset": "Shift"
 }

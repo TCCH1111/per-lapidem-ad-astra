@@ -934,5 +934,15 @@
   "folkways.refusal.steering.forbidden": "禁限區禁止進入此處",
   "folkways.refusal.steering.only_for_others": "此處只留給其他工作",
   "folkways.refusal.steering.quota_full": "區內人數已達上限",
-  "folkways.refusal.hours.resting": "現在不在殖民地的作息工作時段內"
+  "folkways.refusal.hours.resting": "現在不在殖民地的作息工作時段內",
+  "folkways.page.hours": "作息",
+  "folkways.page.hours.status": "目前：%s",
+  "folkways.page.hours.next": "%s 秒後切換",
+  "folkways.page.hours.off": "殖民地未設作息",
+  "folkways.page.hours.preset.free": "自由",
+  "folkways.page.hours.preset.day_shift": "日班",
+  "folkways.page.hours.preset.night_shift": "夜班",
+  "folkways.page.hours.preset.siege": "戒嚴",
+  "folkways.settings.hours.enabled": "啟用作息",
+  "folkways.settings.hours.preset": "班次"
 }

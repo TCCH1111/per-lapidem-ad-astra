@@ -56,6 +56,12 @@ public enum HoursPreset {
                 return preset;
             }
         }
-        return FREE;
+        // The page stores the pick as the item that stands for it, so the path is what comes back.
+        return switch (name == null ? "" : name.toLowerCase(java.util.Locale.ROOT)) {
+            case "daylight_detector", "day_shift" -> DAY_SHIFT;
+            case "lantern", "night_shift" -> NIGHT_SHIFT;
+            case "iron_sword", "siege" -> SIEGE;
+            default -> FREE;
+        };
     }
 }
