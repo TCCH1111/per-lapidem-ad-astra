@@ -45,15 +45,36 @@ public final class Explanation {
      * PLA: WP-6 W3 — the row a page shows for work nobody took: the reason's own words, and a way to
      * the page that fixes it when there is one. At most one act, so a board row stays within budget.
      */
-    public static Board.Row row(Unassigned nobody) {
+    /**
+     * PLA: WP-6 W7 — whether this reason has earned a place in front of the player.
+     *
+     * <p>Only reasons we have evidence for are shown: either our own end-to-end proof, or an
+     * upstream test that produces them. The rest are written down but not spoken, because telling a
+     * player a story we have never seen happen is worse than telling them nothing
+     * (docs/reports/VERIFY-031, VERIFY-033).
+     */
+    public static boolean shown(Unassigned.Reason reason) {
+        if (reason == null) {
+            return false;
+        }
+        return switch (reason) {
+            case ZONE_FORBIDDEN, HOURS_RESTING, NO_WAY, WAY_PENDING, SAME_WORKER_SPLIT -> true;
+            default -> false;
+        };
+    }
+
+    public static java.util.Optional<Board.Row> row(Unassigned nobody) {
+        if (!shown(nobody.why())) {
+            return java.util.Optional.empty();
+        }
         Line line = of(nobody.why());
         List<Board.Act> acts = line.page()
             .map(page -> List.<Board.Act>of(new Board.Act.Open(page)))
             .orElse(List.of());
-        return new Board.Row(new ItemStack(Items.PAPER),
+        return java.util.Optional.of(new Board.Row(new ItemStack(Items.PAPER),
             Component.translatable(line.titleKey()),
             Component.translatable(line.adviceKey()),
-            acts);
+            acts));
     }
 
     public static Line unknown() {

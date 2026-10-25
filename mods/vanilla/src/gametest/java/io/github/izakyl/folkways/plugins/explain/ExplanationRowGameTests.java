@@ -36,21 +36,21 @@ public final class ExplanationRowGameTests {
 
     @GameTest(template = TEMPLATE, timeoutTicks = 100)
     public static void aRefusalBecomesOneRowWithItsWords(GameTestHelper helper) {
-        Explanation.Line expected = Explanation.of(Unassigned.Reason.NO_TOOL);
-        Board.Row row = Explanation.row(new Unassigned(NODE, Unassigned.Reason.NO_TOOL));
+        Explanation.Line expected = Explanation.of(Unassigned.Reason.NO_WAY);
+        Board.Row row = Explanation.row(new Unassigned(NODE, Unassigned.Reason.NO_WAY)).orElseThrow();
         helper.assertTrue(row.title().getString().equals(
             net.minecraft.network.chat.Component.translatable(expected.titleKey()).getString()),
             "the row shows the reason's title");
         helper.assertTrue(row.detail().getString().equals(
             net.minecraft.network.chat.Component.translatable(expected.adviceKey()).getString()),
             "and its advice as the detail");
-        helper.assertTrue(row.acts().isEmpty(), "a missing tool has nothing to open");
+        helper.assertTrue(row.acts().isEmpty(), "a way nobody can walk has nothing to open");
         helper.succeed();
     }
 
     @GameTest(template = TEMPLATE, timeoutTicks = 100)
     public static void theFixableRefusalCarriesOneAct(GameTestHelper helper) {
-        Board.Row row = Explanation.row(new Unassigned(NODE, Unassigned.Reason.HOURS_RESTING));
+        Board.Row row = Explanation.row(new Unassigned(NODE, Unassigned.Reason.HOURS_RESTING)).orElseThrow();
         helper.assertTrue(row.acts().size() == 1, "one act, got " + row.acts().size());
         boolean opensHours = row.acts().getFirst() instanceof Board.Act.Open open
             && open.page().equals(HoursContent.ID);
@@ -61,9 +61,9 @@ public final class ExplanationRowGameTests {
     @GameTest(template = TEMPLATE, timeoutTicks = 100)
     public static void aPageOfRefusalsStaysWithinTheActBudget(GameTestHelper helper) {
         Board.Row[] rows = new Board.Row[] {
-            Explanation.row(new Unassigned(NODE, Unassigned.Reason.ZONE_FORBIDDEN)),
-            Explanation.row(new Unassigned(NODE, Unassigned.Reason.NO_WAY)),
-            Explanation.row(new Unassigned(NODE, Unassigned.Reason.PACK_FULL))
+            Explanation.row(new Unassigned(NODE, Unassigned.Reason.ZONE_FORBIDDEN)).orElseThrow(),
+            Explanation.row(new Unassigned(NODE, Unassigned.Reason.NO_WAY)).orElseThrow(),
+            Explanation.row(new Unassigned(NODE, Unassigned.Reason.WAY_PENDING)).orElseThrow()
         };
         Board board = Board.of(java.util.List.of(rows));
         for (Board.Row row : board.rows()) {
