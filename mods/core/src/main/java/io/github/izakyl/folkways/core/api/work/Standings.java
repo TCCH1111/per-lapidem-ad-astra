@@ -1,34 +1,54 @@
 package io.github.izakyl.folkways.core.api.work;
 
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+import net.minecraft.resources.ResourceLocation;
 
 /**
- * PLA: WP-4 T4b — where a plugin hands the engine the standing it keeps for a colony.
+ * PLA: WP-4 T4b, composed for WP-5 — where plugins hand the engine the standings they keep for a
+ * colony.
  *
- * <p>The engine never learns what a zone is: it asks this registry once when it builds a colony's
- * labor and reads whatever standing comes back. With no plugin installed the provider is
- * {@link Standing#ALL}, so the engine behaves exactly as it did before this existed.
+ * <p>Every owner keeps one provider and the engine asks all of them, allowing a cell only when all
+ * agree. Zones and hours therefore stack without either one knowing about the other: the schedule
+ * has one question to ask and one answer to honour. No provider means {@link Standing#ALL}, so an
+ * engine with no plugin installed behaves exactly as it did before this existed.
  */
 public final class Standings {
 
-    private static final Function<UUID, Standing> NONE = colony -> Standing.ALL;
-
-    private static volatile Function<UUID, Standing> provider = NONE;
+    private static final Map<ResourceLocation, Function<UUID, Standing>> PROVIDERS = new ConcurrentHashMap<>();
 
     private Standings() {
     }
 
-    public static void provide(Function<UUID, Standing> next) {
-        provider = next == null ? NONE : next;
+    public static void provide(ResourceLocation owner, Function<UUID, Standing> next) {
+        if (owner == null) {
+            return;
+        }
+        if (next == null) {
+            PROVIDERS.remove(owner);
+        } else {
+            PROVIDERS.put(owner, next);
+        }
     }
 
     public static Standing of(UUID colony) {
-        return colony == null ? Standing.ALL : provider.apply(colony);
+        if (colony == null || PROVIDERS.isEmpty()) {
+            return Standing.ALL;
+        }
+        return (resident, cell) -> {
+            for (Function<UUID, Standing> provider : PROVIDERS.values()) {
+                if (!provider.apply(colony).permits(resident, cell)) {
+                    return false;
+                }
+            }
+            return true;
+        };
     }
 
     /** For tests: puts the engine back to allowing every cell. */
     public static void reset() {
-        provider = NONE;
+        PROVIDERS.clear();
     }
 }

@@ -55,7 +55,8 @@ public final class SteeringStandingGameTests {
         state.put(ZoneRule.of("no entry", ZoneRule.Kind.FORBID, List.of(), 0, Set.of(INSIDE)));
         UUID colony = UUID.randomUUID();
         try {
-            Standings.provide(id -> id.equals(colony) ? SteeringContent.standingOf(state) : Standing.ALL);
+            Standings.provide(io.github.izakyl.folkways.plugins.steering.SteeringContent.ID,
+                id -> id.equals(colony) ? SteeringContent.standingOf(state) : Standing.ALL);
             helper.assertTrue(!Standings.of(colony).permits(RESIDENT, INSIDE),
                 "the registry returns this colony's zone standing");
             helper.assertTrue(Standings.of(UUID.randomUUID()).permits(RESIDENT, INSIDE),

@@ -70,7 +70,7 @@ public final class SteeringContent {
             scope.share(state);
             // PLA: WP-4 T4b — hand this colony's zones to the engine's schedule.
             STATES.put(colony.id(), state);
-            Standings.provide(id -> standingOf(STATES.get(id)));
+            Standings.provide(ID, id -> standingOf(STATES.get(id)));
             scope.closed(closing -> STATES.remove(colony.id()));
             scope.tick(server -> {
                 if (state.dirty()) {

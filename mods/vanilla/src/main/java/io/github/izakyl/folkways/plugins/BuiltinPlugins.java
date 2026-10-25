@@ -5,6 +5,7 @@ import io.github.izakyl.folkways.plugins.wares.WaresPlugin;
 import io.github.izakyl.folkways.plugins.farming.FarmingPlugin;
 import io.github.izakyl.folkways.plugins.fishing.FishingPlugin;
 import io.github.izakyl.folkways.plugins.groundwork.GroundworkPlugin;
+import io.github.izakyl.folkways.plugins.hours.HoursPlugin;
 import io.github.izakyl.folkways.plugins.orders.OrdersPlugin;
 import io.github.izakyl.folkways.plugins.pasture.PasturePlugin;
 import io.github.izakyl.folkways.plugins.patrol.PatrolPlugin;
@@ -30,5 +31,7 @@ public final class BuiltinPlugins {
         OrdersPlugin.install(modBus);
         // PLA: WP-4 T1 — steering zones (PLAN-003)
         SteeringPlugin.install(modBus);
+        // PLA: WP-5 T1 — the colony's timetable (PLAN-004)
+        HoursPlugin.install(modBus);
     }
 }
