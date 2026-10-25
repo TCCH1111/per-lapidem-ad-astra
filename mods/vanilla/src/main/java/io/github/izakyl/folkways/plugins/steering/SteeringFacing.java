@@ -34,6 +34,8 @@ final class SteeringFacing implements Facing {
         if (!SteeringContent.PAGE.id().equals(page)) {
             return Optional.empty();
         }
+        // PLA: WP-4 T6b — bring the painted volume in before drawing, so what the player drew shows.
+        state.adoptPainted(colony.blocks(SteeringContent.ZONE));
         List<Board.Row> rows = new ArrayList<>();
         rows.add(Board.Row.heading(Component.translatable("folkways.page.steering.zones")));
         for (ZoneRule zone : state.zones()) {
@@ -60,7 +62,12 @@ final class SteeringFacing implements Facing {
         }
         String raw = actionKey.substring(SteeringContent.REMOVE.length());
         try {
-            state.remove(UUID.fromString(raw));
+            UUID id = UUID.fromString(raw);
+            if (SteeringState.PAINTED.equals(id)) {
+                state.dismissPainted(colony.blocks(SteeringContent.ZONE));
+            } else {
+                state.remove(id);
+            }
         } catch (IllegalArgumentException malformed) {
             return Attempt.refused(SteeringRefusal.FORBIDDEN);
         }

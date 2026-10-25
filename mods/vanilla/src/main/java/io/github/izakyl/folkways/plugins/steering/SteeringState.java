@@ -30,7 +30,11 @@ public final class SteeringState {
     private static final String TAG_CELLS = "cells";
     private static final String TAG_AT = "at";
 
+    /** PLA: WP-4 T6b — the one zone the painted delegation turns into. */
+    public static final UUID PAINTED = UUID.fromString("00000000-0000-0000-0000-0000000005ee");
+
     private final Map<UUID, ZoneRule> zones = new LinkedHashMap<>();
+    private int dismissedSignature = Integer.MIN_VALUE;
     private boolean dirty;
 
     public List<ZoneRule> zones() {
@@ -75,6 +79,33 @@ public final class SteeringState {
             }
         }
         return false;
+    }
+
+    /**
+     * PLA: WP-4 T6b — adopts the cells the player painted for {@link SteeringContent#ZONE} as one
+     * forbid zone, unless that very painting was dismissed. A changed painting is adopted again.
+     */
+    public void adoptPainted(java.util.Set<BlockPos> painted) {
+        if (painted.isEmpty()) {
+            return;
+        }
+        int signature = painted.hashCode();
+        if (signature == dismissedSignature) {
+            return;
+        }
+        dismissedSignature = Integer.MIN_VALUE;
+        ZoneRule current = zones.get(PAINTED);
+        String name = current == null ? "steering zone" : current.name();
+        zones.put(PAINTED, new ZoneRule(PAINTED, name, ZoneRule.Kind.FORBID, List.of(), 0, painted));
+        dirty = true;
+    }
+
+    /** Drops the painted zone and ignores this exact painting until the player draws a different one. */
+    public boolean dismissPainted(java.util.Set<BlockPos> painted) {
+        boolean removed = zones.remove(PAINTED) != null;
+        dismissedSignature = painted.isEmpty() ? Integer.MIN_VALUE : painted.hashCode();
+        dirty |= removed;
+        return removed;
     }
 
     public boolean dirty() {
