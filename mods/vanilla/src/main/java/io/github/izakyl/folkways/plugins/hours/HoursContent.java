@@ -46,7 +46,17 @@ public final class HoursContent {
                 ResourceLocation.withDefaultNamespace("iron_sword")),
             ResourceLocation.withDefaultNamespace("clock"))));
 
+    /** One timetable per colony, so a second colony cannot borrow the first one's clock. */
+    private static final java.util.Map<java.util.UUID, HoursState> STATES = new java.util.concurrent.ConcurrentHashMap<>();
+
     private HoursContent() {
+    }
+
+    /** The engine's view of one timetable: a colony off its hours refuses every cell. */
+    public static Standing standingOf(HoursState state) {
+        return (resident, cell) -> state == null || state.working()
+            ? java.util.Optional.empty()
+            : java.util.Optional.of(HoursRefusal.RESTING);
     }
 
     public static void enroll(Registering registering) {
@@ -60,12 +70,16 @@ public final class HoursContent {
             Colony colony = scope.colony();
             HoursState state = HoursState.load(Reader.of(colony.kept(ID)));
             scope.share(state);
-            Standings.provide(ID, id -> id.equals(colony.id())
-                    ? (resident, cell) -> state.working()
-                        ? java.util.Optional.empty()
-                        : java.util.Optional.of(HoursRefusal.RESTING)
-                    : Standing.ALL,
-                HoursRefusal.RESTING, io.github.izakyl.folkways.core.engine.plan.Unassigned.Reason.HOURS_RESTING);
+            STATES.put(colony.id(), state);
+            Standings.provide(ID, id -> standingOf(STATES.get(id)), HoursRefusal.RESTING,
+                io.github.izakyl.folkways.core.engine.plan.Unassigned.Reason.HOURS_RESTING);
+            // PLA: WP-8 — a colony that closes takes its timetable, and its veto, with it.
+            scope.closed(closing -> {
+                STATES.remove(colony.id());
+                if (STATES.isEmpty()) {
+                    Standings.remove(ID);
+                }
+            });
             scope.tick(server -> {
                 state.clock(server.overworld().getDayTime());
                 // PLA: WP-5 T4 — the page owns the switch and the pick; the tick copies them in.

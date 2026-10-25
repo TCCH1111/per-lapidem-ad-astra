@@ -61,6 +61,13 @@ public final class Standings {
         return REASONS.getOrDefault(why.getClass(), Unassigned.Reason.ZONE_FORBIDDEN);
     }
 
+    /** PLA: WP-8 — lets go of one owner's provider, so a plugin can unload without leaving a hand behind. */
+    public static void remove(ResourceLocation owner) {
+        if (owner != null) {
+            PROVIDERS.remove(owner);
+        }
+    }
+
     public static void reset() {
         PROVIDERS.clear();
         REASONS.clear();
