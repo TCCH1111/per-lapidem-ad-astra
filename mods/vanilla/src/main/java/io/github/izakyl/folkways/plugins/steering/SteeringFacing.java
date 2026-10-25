@@ -42,9 +42,9 @@ final class SteeringFacing implements Facing {
             rows.add(new Board.Row(
                 ZONE_ICON,
                 Component.literal(zone.name()),
-                Component.translatable("folkways.page.steering.zone",
+                whyLine().copy().append(" ").append(Component.translatable("folkways.page.steering.zone",
                     Component.translatable("folkways.zone.kind." + zone.kind().name().toLowerCase(Locale.ROOT)),
-                    zone.cells().size()),
+                    zone.cells().size())),
                 List.of(new Board.Act.Do(SteeringContent.REMOVE + zone.id(),
                     "folkways.page.steering.remove"))));
         }
@@ -53,6 +53,11 @@ final class SteeringFacing implements Facing {
                 Component.translatable("folkways.page.steering.empty"), Component.empty()));
         }
         return Optional.of(Board.of(rows));
+    }
+
+    // PLA: WP-4 T7 — the row's reason comes from the refusal enum, never from a second copy of the words.
+    private static Component whyLine() {
+        return Component.translatable(SteeringRefusal.FORBIDDEN.translationKey());
     }
 
     @Override

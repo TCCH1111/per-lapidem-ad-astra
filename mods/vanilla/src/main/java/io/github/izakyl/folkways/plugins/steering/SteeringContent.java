@@ -15,6 +15,7 @@ import io.github.izakyl.folkways.front.api.panel.PageKind;
 import io.github.izakyl.folkways.plugins.FolkwaysVanillaConfig;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.resources.ResourceLocation;
@@ -40,6 +41,17 @@ public final class SteeringContent {
     /** The engine's view of this state: a cell some forbid zone covers is not for standing on. */
     public static Standing standingOf(SteeringState state) {
         return (resident, cell) -> state == null || !state.forbids(cell);
+    }
+
+    /**
+     * PLA: WP-4 T7 — the one place the engine's reason becomes words. A board row and any future
+     * diagnosis page read the same refusal, so they cannot drift apart.
+     */
+    public static Optional<io.github.izakyl.folkways.core.api.terms.RefusalKind> why(
+            io.github.izakyl.folkways.core.engine.plan.Unassigned.Reason reason) {
+        return reason == io.github.izakyl.folkways.core.engine.plan.Unassigned.Reason.ZONE_FORBIDDEN
+            ? Optional.of(SteeringRefusal.FORBIDDEN)
+            : Optional.empty();
     }
 
     public static void enroll(Registering registering) {
