@@ -933,5 +933,6 @@
   "folkways.draft.knob.steps": "Steps",
   "folkways.refusal.steering.forbidden": "A steering zone forbids this spot",
   "folkways.refusal.steering.only_for_others": "This spot is kept for other work",
-  "folkways.refusal.steering.quota_full": "As many residents are here as the zone allows"
+  "folkways.refusal.steering.quota_full": "As many residents are here as the zone allows",
+  "folkways.refusal.hours.resting": "The colony is off its working hours"
 }

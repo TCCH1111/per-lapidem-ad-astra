@@ -933,5 +933,6 @@
   "folkways.draft.knob.steps": "台阶",
   "folkways.refusal.steering.forbidden": "禁限区禁止进入此处",
   "folkways.refusal.steering.only_for_others": "此处只留给其他工作",
-  "folkways.refusal.steering.quota_full": "区内人数已达上限"
+  "folkways.refusal.steering.quota_full": "区内人数已达上限",
+  "folkways.refusal.hours.resting": "现在不在殖民地的作息工作时段内"
 }
