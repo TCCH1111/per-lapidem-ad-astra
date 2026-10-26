@@ -248,11 +248,15 @@ export const PASSING = new Set([
   "GOODS_GONE", "NOWHERE_TO_PUT_IT",
   "WAITS_ON_ITSELF", "NO_ONE_FIT", "BEFORE_NOT_DONE", "OCCUPIED", "RUN_MISSED", "LINE_WITHDRAWN",
   "NO_SOURCE", "NO_ROOM_FOR", "NO_WAY_FOR", "NO_ONE_MAKES",
+  // PLA: WP-4/WP-5 - steering-zone and hours refusals are player-made constraints, not bench faults.
+  "FORBIDDEN", "ONLY_FOR_OTHERS", "QUOTA_FULL", "RESTING",
 ]);
 
 
 export const UNASSIGNED_PASSING = new Set([
   "CLAIM_TAKEN", "PACK_FULL", "NO_LICENCE", "NO_TOOL",
+  // PLA: WP-4/WP-5 - a zone or the hours can leave work unassigned, on purpose, until the player changes them.
+  "ZONE_FORBIDDEN", "HOURS_RESTING",
 ]);
 
 export const UNASSIGNED_TRANSIENT = new Set([
