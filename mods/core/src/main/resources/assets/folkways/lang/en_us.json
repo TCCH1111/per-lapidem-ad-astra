@@ -982,5 +982,7 @@
   "folkways.mood.stressed.title": "Under strain",
   "folkways.mood.stressed.advice": "Feed them, let them rest, or clear what refused them",
   "folkways.mood.desperate.title": "Cannot carry on",
-  "folkways.mood.desperate.advice": "Feed them or let them sleep now"
+  "folkways.mood.desperate.advice": "Feed them or let them sleep now",
+  "folkways.explain.needs_first.title": "Seeing to a need, not ignoring the hours",
+  "folkways.explain.needs_first.advice": "Needs come before the timetable; feed them or let them sleep and it stops"
 }

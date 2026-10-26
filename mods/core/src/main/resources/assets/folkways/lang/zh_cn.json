@@ -982,5 +982,7 @@
   "folkways.mood.content.title": "一切正常",
   "folkways.mood.content.advice": "无需处理",
   "folkways.mood.worried.title": "隐隐不安",
-  "folkways.mood.worried.advice": "给他找点活，或让他早点吃饭"
+  "folkways.mood.worried.advice": "给他找点活，或让他早点吃饭",
+  "folkways.explain.needs_first.title": "他在处理需要，不是无视作息",
+  "folkways.explain.needs_first.advice": "需要优先于作息；喂饱或让他睡下，他就安静了"
 }

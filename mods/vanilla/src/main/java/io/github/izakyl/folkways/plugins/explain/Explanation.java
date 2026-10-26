@@ -77,6 +77,23 @@ public final class Explanation {
             acts));
     }
 
+    /**
+     * PLA: M2 N5 — why a resident is up and about while the colony is off its hours.
+     *
+     * <p>Two things look identical from outside: a resident seeing to a need, and a timetable that
+     * stopped working. Needs win over the hours by design (VERIFY-043), so this says which one the
+     * player is looking at, and only when there is something to say: a content resident who keeps
+     * working needs no excuse.
+     */
+    public static java.util.Optional<Line> upDuringRest(io.github.izakyl.folkways.plugins.mood.Mood mood) {
+        if (mood != io.github.izakyl.folkways.plugins.mood.Mood.STRESSED
+                && mood != io.github.izakyl.folkways.plugins.mood.Mood.DESPERATE) {
+            return java.util.Optional.empty();
+        }
+        return java.util.Optional.of(new Line("folkways.explain.needs_first.title",
+            "folkways.explain.needs_first.advice", java.util.Optional.empty()));
+    }
+
     public static Line unknown() {
         return new Line("folkways.explain.unknown.title", "folkways.explain.unknown.advice",
             Optional.empty());
