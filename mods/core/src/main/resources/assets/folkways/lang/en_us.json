@@ -974,5 +974,13 @@
   "folkways.explain.same_worker_split.title": "One resident cannot do both halves",
   "folkways.explain.same_worker_split.advice": "Split the work between two residents",
   "folkways.explain.worker_away.title": "The resident is away",
-  "folkways.explain.worker_away.advice": "Wait for them to come back"
+  "folkways.explain.worker_away.advice": "Wait for them to come back",
+  "folkways.mood.content.title": "Getting on with it",
+  "folkways.mood.content.advice": "Nothing to do",
+  "folkways.mood.worried.title": "Quietly uneasy",
+  "folkways.mood.worried.advice": "Give them work, or let them eat soon",
+  "folkways.mood.stressed.title": "Under strain",
+  "folkways.mood.stressed.advice": "Feed them, let them rest, or clear what refused them",
+  "folkways.mood.desperate.title": "Cannot carry on",
+  "folkways.mood.desperate.advice": "Feed them or let them sleep now"
 }

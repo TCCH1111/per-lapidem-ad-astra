@@ -974,5 +974,13 @@
   "folkways.explain.worker_away.title": "那个居民不在",
   "folkways.explain.worker_away.advice": "等他回来",
   "folkways.explain.claim_taken.title": "已被别人认领",
-  "folkways.explain.claim_taken.advice": "等一等，或让认领放开"
+  "folkways.explain.claim_taken.advice": "等一等，或让认领放开",
+  "folkways.mood.desperate.title": "撑不住了",
+  "folkways.mood.desperate.advice": "现在就得让他吃饭或睡觉",
+  "folkways.mood.stressed.title": "撑得吃力",
+  "folkways.mood.stressed.advice": "喂饱、让他休息，或排查是谁在挡他",
+  "folkways.mood.content.title": "一切正常",
+  "folkways.mood.content.advice": "无需处理",
+  "folkways.mood.worried.title": "隐隐不安",
+  "folkways.mood.worried.advice": "给他找点活，或让他早点吃饭"
 }
