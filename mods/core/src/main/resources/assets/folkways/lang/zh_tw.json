@@ -984,5 +984,12 @@
   "folkways.mood.worried.title": "隐隐不安",
   "folkways.mood.worried.advice": "给他找点活，或让他早点吃饭",
   "folkways.explain.needs_first.title": "他在处理需要，不是无视作息",
-  "folkways.explain.needs_first.advice": "需要优先于作息；喂饱或让他睡下，他就安静了"
+  "folkways.explain.needs_first.advice": "需要优先于作息；喂饱或让他睡下，他就安静了",
+  "folkways.page.steering": "禁限區",
+  "folkways.page.steering.zones": "區域",
+  "folkways.page.steering.zone": "%s · %s 格",
+  "folkways.page.steering.empty": "尚未畫區",
+  "folkways.zone.kind.forbid": "禁止進入",
+  "folkways.zone.kind.allow_only": "僅限指定",
+  "folkways.zone.kind.limit": "限人數"
 }
