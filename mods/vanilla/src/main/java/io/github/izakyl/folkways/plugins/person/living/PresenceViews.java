@@ -39,6 +39,23 @@ public final class PresenceViews {
             .orElseGet(BedView::none);
     }
 
+    /** PLA: M2 N3 — the resident's mood, read off the needs the colony already keeps for it. */
+    public static java.util.Optional<io.github.izakyl.folkways.plugins.mood.Mood> mood(
+            io.github.izakyl.folkways.core.api.colony.Colony colony, java.util.UUID resident) {
+        if (colony == null || resident == null) {
+            return java.util.Optional.empty();
+        }
+        return colony.service(LivingContent.ID, LivingPresence.class)
+            .map(presence -> presence.needsOf(resident))
+            .map(PresenceViews::moodOf);
+    }
+
+    /** Package-private so the gametest can prove the mapping without building a whole colony. */
+    static io.github.izakyl.folkways.plugins.mood.Mood moodOf(
+            io.github.izakyl.folkways.plugins.mood.Mood.Needs needs) {
+        return io.github.izakyl.folkways.plugins.mood.Mood.of(needs);
+    }
+
     // Package-private so the gametest can prove the mapping without building a whole colony.
     static HungerView viewOf(Hunger hunger) {
         return new HungerView(hunger.foodLevel(), Hunger.MAX_FOOD_LEVEL);
