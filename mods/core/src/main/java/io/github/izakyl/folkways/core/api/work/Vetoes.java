@@ -18,15 +18,15 @@ import net.minecraft.resources.ResourceLocation;
  * the other, and the schedule still records a plain {@code Unassigned.Reason} it can cache by
  * ordinal. {@link #reasonOf} turns whatever refusal came back into that reason.
  */
-public final class Standings {
+public final class Vetoes {
 
-    private static final Map<ResourceLocation, Function<UUID, Standing>> PROVIDERS = new ConcurrentHashMap<>();
+    private static final Map<ResourceLocation, Function<UUID, Veto>> PROVIDERS = new ConcurrentHashMap<>();
     private static final Map<Class<?>, Unassigned.Reason> REASONS = new ConcurrentHashMap<>();
 
-    private Standings() {
+    private Vetoes() {
     }
 
-    public static void provide(ResourceLocation owner, Function<UUID, Standing> provider,
+    public static void provide(ResourceLocation owner, Function<UUID, Veto> provider,
                                RefusalKind refusedAs, Unassigned.Reason reason) {
         if (owner == null) {
             return;
@@ -41,12 +41,12 @@ public final class Standings {
         }
     }
 
-    public static Standing of(UUID colony) {
+    public static Veto of(UUID colony) {
         if (colony == null || PROVIDERS.isEmpty()) {
-            return Standing.ALL;
+            return Veto.ALL;
         }
         return (resident, cell) -> {
-            for (Function<UUID, Standing> provider : PROVIDERS.values()) {
+            for (Function<UUID, Veto> provider : PROVIDERS.values()) {
                 Optional<RefusalKind> why = provider.apply(colony).check(resident, cell);
                 if (why.isPresent()) {
                     return why;

@@ -3,8 +3,8 @@ package io.github.izakyl.folkways.plugins.hours;
 import io.github.izakyl.folkways.base.persist.Reader;
 import io.github.izakyl.folkways.core.api.Declaring;
 import io.github.izakyl.folkways.core.api.colony.Colony;
-import io.github.izakyl.folkways.core.api.work.Standing;
-import io.github.izakyl.folkways.core.api.work.Standings;
+import io.github.izakyl.folkways.core.api.work.Veto;
+import io.github.izakyl.folkways.core.api.work.Vetoes;
 import io.github.izakyl.folkways.front.api.Delegation;
 import io.github.izakyl.folkways.front.api.Enrollment;
 import io.github.izakyl.folkways.front.api.Facing;
@@ -53,7 +53,7 @@ public final class HoursContent {
     }
 
     /** The engine's view of one timetable: a colony off its hours refuses every cell. */
-    public static Standing standingOf(HoursState state) {
+    public static Veto standingOf(HoursState state) {
         return (resident, cell) -> state == null || state.working()
             ? java.util.Optional.empty()
             : java.util.Optional.of(HoursRefusal.RESTING);
@@ -71,13 +71,13 @@ public final class HoursContent {
             HoursState state = HoursState.load(Reader.of(colony.kept(ID)));
             scope.share(state);
             STATES.put(colony.id(), state);
-            Standings.provide(ID, id -> standingOf(STATES.get(id)), HoursRefusal.RESTING,
+            Vetoes.provide(ID, id -> standingOf(STATES.get(id)), HoursRefusal.RESTING,
                 io.github.izakyl.folkways.core.engine.plan.Unassigned.Reason.HOURS_RESTING);
             // PLA: WP-8 — a colony that closes takes its timetable, and its veto, with it.
             scope.closed(closing -> {
                 STATES.remove(colony.id());
                 if (STATES.isEmpty()) {
-                    Standings.remove(ID);
+                    Vetoes.remove(ID);
                 }
             });
             scope.tick(server -> {

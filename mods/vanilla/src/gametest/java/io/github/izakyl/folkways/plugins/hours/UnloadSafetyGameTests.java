@@ -1,8 +1,8 @@
 package io.github.izakyl.folkways.plugins.hours;
 
 import io.github.izakyl.folkways.FolkwaysMod;
-import io.github.izakyl.folkways.core.api.work.Standing;
-import io.github.izakyl.folkways.core.api.work.Standings;
+import io.github.izakyl.folkways.core.api.work.Veto;
+import io.github.izakyl.folkways.core.api.work.Vetoes;
 import io.github.izakyl.folkways.core.engine.plan.Unassigned;
 import io.github.izakyl.folkways.plugins.FolkwaysVanillaMod;
 import java.util.UUID;
@@ -57,20 +57,20 @@ public final class UnloadSafetyGameTests {
     @GameTest(template = TEMPLATE, timeoutTicks = 100)
     public static void aProviderCanBeLetGo(GameTestHelper helper) {
         try {
-            Standings.reset();
+            Vetoes.reset();
             UUID colony = UUID.randomUUID();
-            Standings.provide(HoursContent.ID, id -> HoursContent.standingOf(null),
+            Vetoes.provide(HoursContent.ID, id -> HoursContent.standingOf(null),
                 HoursRefusal.RESTING, Unassigned.Reason.HOURS_RESTING);
-            helper.assertTrue(Standings.of(colony).check(RESIDENT, CELL).isEmpty(),
+            helper.assertTrue(Vetoes.of(colony).check(RESIDENT, CELL).isEmpty(),
                 "with a provider that allows everything, every cell is allowed");
-            Standings.remove(HoursContent.ID);
-            helper.assertTrue(Standings.of(colony).permits(RESIDENT, CELL),
+            Vetoes.remove(HoursContent.ID);
+            helper.assertTrue(Vetoes.of(colony).permits(RESIDENT, CELL),
                 "after the plugin lets go, the engine allows every cell again");
-            Standings.remove(HoursContent.ID);
-            helper.assertTrue(Standings.of(colony).permits(RESIDENT, CELL),
+            Vetoes.remove(HoursContent.ID);
+            helper.assertTrue(Vetoes.of(colony).permits(RESIDENT, CELL),
                 "letting go twice is harmless");
         } finally {
-            Standings.reset();
+            Vetoes.reset();
         }
         helper.succeed();
     }
@@ -78,16 +78,16 @@ public final class UnloadSafetyGameTests {
     @GameTest(template = TEMPLATE, timeoutTicks = 100)
     public static void aRefusingProviderStopsRefusingWhenItIsLetGo(GameTestHelper helper) {
         try {
-            Standings.reset();
+            Vetoes.reset();
             UUID colony = UUID.randomUUID();
-            Standings.provide(HoursContent.ID, id -> (resident, cell) -> java.util.Optional.of(HoursRefusal.RESTING),
+            Vetoes.provide(HoursContent.ID, id -> (resident, cell) -> java.util.Optional.of(HoursRefusal.RESTING),
                 HoursRefusal.RESTING, Unassigned.Reason.HOURS_RESTING);
-            helper.assertTrue(!Standings.of(colony).permits(RESIDENT, CELL), "the provider refuses first");
-            Standings.remove(HoursContent.ID);
-            helper.assertTrue(Standings.of(colony).permits(RESIDENT, CELL),
+            helper.assertTrue(!Vetoes.of(colony).permits(RESIDENT, CELL), "the provider refuses first");
+            Vetoes.remove(HoursContent.ID);
+            helper.assertTrue(Vetoes.of(colony).permits(RESIDENT, CELL),
                 "and stops refusing once it is gone");
         } finally {
-            Standings.reset();
+            Vetoes.reset();
         }
         helper.succeed();
     }

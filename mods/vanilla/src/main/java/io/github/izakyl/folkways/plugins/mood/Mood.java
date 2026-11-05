@@ -46,11 +46,12 @@ public enum Mood implements NoticeKind {
     /** How the mood reads to a player: one line, and what to do about it. */
     @Override
     public String translationKey() {
-        return titleKey();
+        return "folkways.mood." + name().toLowerCase(Locale.ROOT);
     }
 
+    /** The card line and the page heading say the same thing, so they share one key. */
     public String titleKey() {
-        return "folkways.mood." + name().toLowerCase(Locale.ROOT) + ".title";
+        return translationKey();
     }
 
     public String adviceKey() {

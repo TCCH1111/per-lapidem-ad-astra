@@ -1,7 +1,7 @@
 package io.github.izakyl.folkways.plugins.hours;
 
 import io.github.izakyl.folkways.FolkwaysMod;
-import io.github.izakyl.folkways.core.api.work.Standings;
+import io.github.izakyl.folkways.core.api.work.Vetoes;
 import io.github.izakyl.folkways.plugins.FolkwaysVanillaMod;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
@@ -92,13 +92,13 @@ public final class HoursGameTests {
     @GameTest(template = TEMPLATE, timeoutTicks = 100)
     public static void anEmptyRegistryRefusesNothing(GameTestHelper helper) {
         try {
-            Standings.reset();
+            Vetoes.reset();
             UUID colony = UUID.randomUUID();
             UUID resident = UUID.randomUUID();
-            helper.assertTrue(Standings.of(colony).permits(resident, BlockPos.ZERO),
+            helper.assertTrue(Vetoes.of(colony).permits(resident, BlockPos.ZERO),
                 "no provider means every cell may be stood on");
         } finally {
-            Standings.reset();
+            Vetoes.reset();
         }
         helper.succeed();
     }

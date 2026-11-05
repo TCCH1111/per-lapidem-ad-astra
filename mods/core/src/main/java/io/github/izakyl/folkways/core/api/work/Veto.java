@@ -13,7 +13,7 @@ import net.minecraft.core.BlockPos;
  * {@code Unassigned.Reason} through the registry that installed the provider, which keeps the
  * schedule's cached reasons as plain enum values.
  */
-public interface Standing {
+public interface Veto {
 
     /** Empty when the resident may stand there, otherwise the words that explain why not. */
     Optional<RefusalKind> check(UUID resident, BlockPos cell);
@@ -22,5 +22,5 @@ public interface Standing {
         return check(resident, cell).isEmpty();
     }
 
-    Standing ALL = (resident, cell) -> Optional.empty();
+    Veto ALL = (resident, cell) -> Optional.empty();
 }

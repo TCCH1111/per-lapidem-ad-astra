@@ -30,7 +30,7 @@ import io.github.izakyl.folkways.core.engine.plan.Planner;
 import io.github.izakyl.folkways.core.engine.plan.Schedule;
 import io.github.izakyl.folkways.core.engine.plan.Asks;
 import io.github.izakyl.folkways.core.engine.plan.Refused;
-import io.github.izakyl.folkways.core.api.work.Standing;
+import io.github.izakyl.folkways.core.api.work.Veto;
 import io.github.izakyl.folkways.core.engine.plan.Scheduler;
 import io.github.izakyl.folkways.core.engine.plan.Shortfall;
 import io.github.izakyl.folkways.core.engine.plan.Tour;
@@ -114,7 +114,7 @@ public final class ColonyLabor implements ColonyWorks.Listening {
     private long submittedNodes;
 
     // PLA: WP-4 T4 — the colony's zones, as the schedule reads them; ALL when no plugin offers any.
-    public void standing(Standing standing) {
+    public void standing(Veto standing) {
         pipeline.standing(standing);
     }
 

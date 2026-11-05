@@ -10,7 +10,7 @@ import io.github.izakyl.folkways.core.api.work.Delivery;
 import io.github.izakyl.folkways.core.api.work.Grown;
 import io.github.izakyl.folkways.core.api.work.Node;
 import io.github.izakyl.folkways.core.api.work.Stances;
-import io.github.izakyl.folkways.core.api.work.Standings;
+import io.github.izakyl.folkways.core.api.work.Vetoes;
 import io.github.izakyl.folkways.core.api.work.WorkSite;
 import io.github.izakyl.folkways.core.engine.plan.haul.Haul;
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 @EventBusSubscriber(modid = FolkwaysMod.CORE_ID, bus = EventBusSubscriber.Bus.MOD)
 @GameTestHolder(FolkwaysMod.MOD_ID)
 @PrefixGameTestTemplate(false)
-public final class StandingVetoGameTests {
+public final class VetoGameTests {
 
     private static final String TEMPLATE = "empty";
     private static final ResourceLocation OWNER = ResourceLocation.fromNamespaceAndPath("folkways_test", "veto");
@@ -51,12 +51,12 @@ public final class StandingVetoGameTests {
         KEPT_OUT
     }
 
-    private StandingVetoGameTests() {
+    private VetoGameTests() {
     }
 
     @SubscribeEvent
     public static void register(RegisterGameTestsEvent event) {
-        event.register(StandingVetoGameTests.class);
+        event.register(VetoGameTests.class);
     }
 
     @GameTest(template = TEMPLATE, timeoutTicks = 100)
@@ -82,12 +82,12 @@ public final class StandingVetoGameTests {
             fixture.crew.hands());
 
         try {
-            Standings.reset();
-            Standings.provide(OWNER, colony -> (resident, cell) -> Optional.of(TestRefusal.KEPT_OUT),
+            Vetoes.reset();
+            Vetoes.provide(OWNER, colony -> (resident, cell) -> Optional.of(TestRefusal.KEPT_OUT),
                 TestRefusal.KEPT_OUT, Unassigned.Reason.ZONE_FORBIDDEN);
 
             Solving planner = new Solving(new Claims(), new Cooldowns());
-            planner.standing(Standings.of(UUID.randomUUID()));
+            planner.standing(Vetoes.of(UUID.randomUUID()));
             Planned grown = planner.handle(known, List.of(new Message.Submitted(OWNER, Grown.of(delivery))), 0);
 
             boolean refused = grown.laid().unassigned().stream()
@@ -99,7 +99,7 @@ public final class StandingVetoGameTests {
                 "and it is not blamed on the way");
             planner.closed();
         } finally {
-            Standings.reset();
+            Vetoes.reset();
         }
         helper.succeed();
     }

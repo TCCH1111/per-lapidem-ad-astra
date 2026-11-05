@@ -1,6 +1,6 @@
 package io.github.izakyl.folkways.core.engine.plan;
 
-import io.github.izakyl.folkways.core.api.work.Standing;
+import io.github.izakyl.folkways.core.api.work.Veto;
 import io.github.izakyl.folkways.core.engine.travel.Ways;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -28,10 +28,10 @@ public final class Scheduler {
     private final WeaveView weave = new WeaveView();
     private Tours tours = new Tours();
     // PLA: WP-4 T4 — handed on to every Tours this scheduler makes, ALL until a plugin offers one.
-    private Standing standing = Standing.ALL;
+    private Veto standing = Veto.ALL;
 
-    public void standing(Standing standing) {
-        this.standing = standing == null ? Standing.ALL : standing;
+    public void standing(Veto standing) {
+        this.standing = standing == null ? Veto.ALL : standing;
         tours.standing(this.standing);
     }
     private final Set<Unassigned> told = new HashSet<>();

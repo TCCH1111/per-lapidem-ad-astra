@@ -4,7 +4,7 @@ import io.github.izakyl.folkways.FolkwaysConfig;
 import io.github.izakyl.folkways.core.engine.plan.Known;
 import io.github.izakyl.folkways.core.engine.plan.Message;
 import io.github.izakyl.folkways.core.engine.plan.Planner;
-import io.github.izakyl.folkways.core.api.work.Standing;
+import io.github.izakyl.folkways.core.api.work.Veto;
 import io.github.izakyl.folkways.core.engine.plan.Scheduler;
 import io.github.izakyl.folkways.core.engine.plan.Tour;
 import java.util.ArrayList;
@@ -48,7 +48,7 @@ final class Pipeline {
     private volatile boolean closed;
 
     // PLA: WP-4 T4 — a plug-in's zones reach the schedule without the pipeline knowing what a zone is.
-    void standing(Standing standing) {
+    void standing(Veto standing) {
         scheduler.standing(standing);
     }
 

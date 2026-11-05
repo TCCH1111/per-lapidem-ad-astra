@@ -31,7 +31,7 @@ public final class Solving {
     }
 
     /** PLA: WP-6 W5 — lets a test hand the schedule the same veto the colony would. */
-    public void standing(io.github.izakyl.folkways.core.api.work.Standing standing) {
+    public void standing(io.github.izakyl.folkways.core.api.work.Veto standing) {
         scheduler.standing(standing);
     }
 

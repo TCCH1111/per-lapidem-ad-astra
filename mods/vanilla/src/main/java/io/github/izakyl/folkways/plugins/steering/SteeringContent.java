@@ -3,8 +3,8 @@ package io.github.izakyl.folkways.plugins.steering;
 import io.github.izakyl.folkways.base.persist.Reader;
 import io.github.izakyl.folkways.core.api.Declaring;
 import io.github.izakyl.folkways.core.api.colony.Colony;
-import io.github.izakyl.folkways.core.api.work.Standing;
-import io.github.izakyl.folkways.core.api.work.Standings;
+import io.github.izakyl.folkways.core.api.work.Veto;
+import io.github.izakyl.folkways.core.api.work.Vetoes;
 import io.github.izakyl.folkways.front.api.Delegation;
 import io.github.izakyl.folkways.front.api.Enrollment;
 import io.github.izakyl.folkways.front.api.Facing;
@@ -39,7 +39,7 @@ public final class SteeringContent {
     }
 
     /** The engine's view of this state: a cell some forbid zone covers is not for standing on. */
-    public static Standing standingOf(SteeringState state) {
+    public static Veto standingOf(SteeringState state) {
         return (resident, cell) -> state != null && state.forbids(cell)
             ? java.util.Optional.of(SteeringRefusal.FORBIDDEN)
             : java.util.Optional.empty();
@@ -72,7 +72,7 @@ public final class SteeringContent {
             scope.share(state);
             // PLA: WP-4 T4b — hand this colony's zones to the engine's schedule.
             STATES.put(colony.id(), state);
-            Standings.provide(ID, id -> standingOf(STATES.get(id)), SteeringRefusal.FORBIDDEN,
+            Vetoes.provide(ID, id -> standingOf(STATES.get(id)), SteeringRefusal.FORBIDDEN,
                 io.github.izakyl.folkways.core.engine.plan.Unassigned.Reason.ZONE_FORBIDDEN);
             scope.closed(closing -> STATES.remove(colony.id()));
             scope.tick(server -> {

@@ -9,8 +9,8 @@ import io.github.izakyl.folkways.core.api.terms.WorldPos;
 import io.github.izakyl.folkways.core.api.work.Amount;
 import io.github.izakyl.folkways.core.api.work.Before;
 import io.github.izakyl.folkways.core.api.work.NodeSpec;
-import io.github.izakyl.folkways.core.api.work.Standing;
-import io.github.izakyl.folkways.core.api.work.Standings;
+import io.github.izakyl.folkways.core.api.work.Veto;
+import io.github.izakyl.folkways.core.api.work.Vetoes;
 import io.github.izakyl.folkways.core.api.work.Placement;
 import io.github.izakyl.folkways.core.api.work.Stances;
 import io.github.izakyl.folkways.core.api.work.Workload;
@@ -1433,10 +1433,10 @@ final class Tours {
     private static final Unassigned.Reason[] REASONS = Unassigned.Reason.values();
 
     // PLA: WP-4 T4 — what zones the colony keeps, as the schedule reads them. ALL keeps the old behaviour.
-    private Standing standing = Standing.ALL;
+    private Veto standing = Veto.ALL;
 
-    void standing(Standing standing) {
-        this.standing = standing == null ? Standing.ALL : standing;
+    void standing(Veto standing) {
+        this.standing = standing == null ? Veto.ALL : standing;
     }
 
     // Asked of every hand for every piece of work, more than once a schedule, and the same each time within one.
@@ -1466,7 +1466,7 @@ final class Tours {
             for (var stance : step.stances().cells()) {
                 var refused = standing.check(seat.hand.id(), stance.cell());
                 if (refused.isPresent()) {
-                    return Standings.reasonOf(refused.get());
+                    return Vetoes.reasonOf(refused.get());
                 }
             }
         }
