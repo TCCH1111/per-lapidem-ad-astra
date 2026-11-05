@@ -12,7 +12,7 @@ properties = { "online-mode" = "false", "level-seed" = "folkways-e2e", "allow-fl
 connect = "127.0.0.1:25565"
 options = { guiScale = "1", fullscreen = "false", overrideWidth = "1280", overrideHeight = "720" }
 
-# The four Folkways mods, as gradle build gathers them.
+# Folkways jars gathered by Gradle; integration extensions are enabled by their profiles.
 [mods.plaa_core] # PLA: ADR-023 modid
 path = "build/libs/plaa-core-*.jar"
 
@@ -24,6 +24,60 @@ path = "build/libs/plaa-create-*.jar"
 
 [mods.plaa_modulargolems] # PLA: ADR-023 modid
 path = "build/libs/plaa-modulargolems-*.jar"
+
+# The optional Folkways extension is installed beside its native mod only by Cookery profiles.
+[mods.kaleidoscope_cookery]
+url = "https://cdn.modrinth.com/data/v17FatAc/versions/g8w0b2ly/kaleidoscopecookery-1.6.0-neoforge%2Bmc1.21.1.jar"
+sha512 = "b562f73395f70d39fb26d89ca62a5b5cebe7d66b11e8930217f0daf03fdcea617629728f55e4c8ced690406204c44462a8a568e5c15f05f5940274904ce0b77f"
+target = []
+
+# Optional wine production and dining drinks, installed by the tavern promo profile.
+[mods.kaleidoscope_tavern]
+url = "https://cdn.modrinth.com/data/r9RZvhiJ/versions/W9ILsQt7/kaleidoscopetavern-1.2.0-neoforge%2Bmc1.21.1.jar"
+sha512 = "2481f11727ee303004d2e849739651f63bc28493a79d2e6a784f45632fc92e27ce4a43cc3b08b71740aa1f2a1879c15cc097c65d7a95d9d642c4a9958df6c473"
+target = []
+
+# Chisels & Bits bundles Scena and its API/core; the extracted jars are compile-only fixtures.
+[mods.chiselsandbits]
+url = "https://mediafilez.forgecdn.net/files/7441/123/chisels-and-bits-neoforge-21.1.33.jar"
+sha512 = "ee16a40ad028668ce85418b4351a3d05a976fd1e109b104be2b7c2aac0b03e6042c5fe3545f5b62b2d53f19e83d18a74ecc27ec317865d049e2dff3529a4c4f5"
+target = []
+
+[mods.chiselsandbits-api]
+from = "chiselsandbits"
+entry = "META-INF/jarjar/chisels-and-bits-api-21.1.33.jar"
+# Bundled SHA-512: fc06643ee98ae9ce1227708c5e79108293e907a37e45fbe638b93b872589ec90b5a0ed1995cbee4bb62935e89663b3662068e3f4806ee3728c2887c7bb0856a9
+target = []
+
+[mods.chiselsandbits-core]
+from = "chiselsandbits"
+entry = "META-INF/jarjar/chisels-and-bits-core-21.1.33.jar"
+# Bundled SHA-512: d198a1970ad1c04c58d582ae5da07b7e1d01c9e93d16a7995183d421b4b1673bffea175d4ee721db62633bbd890a6b88cfef7240f890cdb49bff698b812de6f1
+target = []
+
+[mods.scena]
+from = "chiselsandbits"
+entry = "META-INF/jarjar/neoforge-21.1.22.jar"
+# Bundled SHA-512: 9d70facf740bf253542138470ee22d8ebda32751004c67172fd69de9171fba9d7b2ededd5a99f418e245a446217c1155c8142a61b8277ecb2bea996b9a20a74c
+target = []
+
+[mods.scena-core]
+from = "scena"
+entry = "META-INF/jarjar/scena-core-21.1.22.jar"
+# Bundled SHA-512: 3737d4980006f2f5cca9afa8900114a8b0cd6279fe84027477a0ac0d314c39edbee815b6dac46d3d6d35f77c65f62a3b33d92bbe1e09cee5dcd66d6379656798
+target = []
+
+[mods.saecularia]
+from = "scena"
+entry = "META-INF/jarjar/neoforge-21.1.11.jar"
+# Bundled SHA-512: 70c6b154b9c0ea84c5ff696722af5d065a896e9878d595908433dbb48d4d16d191d7d5cd086781be1cb13fb46284bb1e0f27b2bf5b68304b5ea0c57c428f6a59
+target = []
+
+[mods.saecularia-core]
+from = "saecularia"
+entry = "META-INF/jarjar/saecularia-caudices-core-21.1.11.jar"
+# Bundled SHA-512: 48eba9054e27ddee1823ceca2d340072c91bff62ca5f2c03861b280540bd3ee96f87c31e3f6509bf7d55bd0ab0906460e8511dd04cf1ba113d07b22fc3194fdc
+target = []
 
 [mods.ldlib2]
 path = "build/deps/ldlib2-*.jar"
@@ -42,15 +96,21 @@ url = "https://cdn.modrinth.com/data/8BmcQJ2H/versions/tPkJmim6/geckolib-neoforg
 sha512 = "c91012b16cc40c8f48f69b78cb8e2e5c006486ae2431fbd289dfc01be7a4217294becea22d83a155d6b32b3969450df871352a3695e1452168b84f41355f7b9e"
 target = ["client"]
 
+[mods.jei]
+url = "https://cdn.modrinth.com/data/u6dRKJwZ/versions/zHNxmOqp/jei-1.21.1-neoforge-19.39.0.372.jar"
+sha512 = "27ce1556b304ecfa828f1440b6142d0672f285c860436182328e9dd3e7f8011d0f962109553a59b1944494af70f784b9b16ce626fd011cc9ee54cda39650a0f5"
+target = ["client"]
+
+# Optional display-text matching; compiled against, and installed only by the jech profile.
 [mods.jecharacters]
 url = "https://mediafilez.forgecdn.net/files/9163/765/jecharacters-1.21.1-neoforge-4.5.30.jar"
 sha512 = "e30efe9687d36db5815d5aed7bbe8a143f15e8113310668985d0f26f279096606555e2c58765be56d8af2daa5a324c6db38696ea5933c78f6e29280aab6db3cc"
 target = []
 
-[mods.jei]
-url = "https://cdn.modrinth.com/data/u6dRKJwZ/versions/zHNxmOqp/jei-1.21.1-neoforge-19.39.0.372.jar"
-sha512 = "27ce1556b304ecfa828f1440b6142d0672f285c860436182328e9dd3e7f8011d0f962109553a59b1944494af70f784b9b16ce626fd011cc9ee54cda39650a0f5"
-target = ["client"]
+[mods.pinin]
+from = "jecharacters"
+entry = "META-INF/jarjar/PinIn-*.jar"
+target = []
 
 [mods.modulargolems]
 url = "https://cdn.modrinth.com/data/gtGDlsAD/versions/zNXsPDeF/modulargolems-3.1.43.jar"
@@ -155,8 +215,8 @@ target = []
 
 # Measures folkways itself, mixins included; off unless BLOCKWRIGHT_COVERAGE=1 (npm run test:coverage).
 [coverage]
-mods = ["plaa_core", "plaa_vanilla", "plaa_create", "plaa_modulargolems"] # PLA: ADR-023 modid
-sources = ["mods/core/src/main/java", "mods/vanilla/src/main/java", "mods/create/src/main/java", "mods/modulargolems/src/main/java"]
+mods = ["folkways_core", "folkways_vanilla", "folkways_create", "folkways_modulargolems", "folkways_cookery"]
+sources = ["mods/core/src/main/java", "mods/vanilla/src/main/java", "mods/create/src/main/java", "mods/modulargolems/src/main/java", "mods/cookery/src/main/java"]
 
 [profile.bench.neoforge]
 jvm_args = ["-Xmx3G"]
@@ -248,6 +308,32 @@ iris = { target = ["client"] }
 sable = { target = ["server", "client"] }
 create-aeronautics = { target = ["server", "client"] }
 
+# The same light, camera and sound as the other promos, with the native kitchen installed.
+[profile.promo-cookery.neoforge]
+jvm_args = ["-Xmx3G"]
+
+[profile.promo-cookery.neoforge.server]
+world = "vanilla"
+properties = { "level-seed" = "folkways-promo", "view-distance" = "12", "spawn-monsters" = "false", "level-type" = "minecraft:flat", "generator-settings" = '{"biome":"minecraft:plains","features":false,"lakes":false,"layers":[{"block":"minecraft:bedrock","height":1},{"block":"minecraft:dirt","height":3},{"block":"minecraft:grass_block","height":1}],"structure_overrides":[]}' }
+
+[profile.promo-cookery.neoforge.client]
+game_args = ["--width", "1920", "--height", "1080"]
+options = { lang = "zh_cn", guiScale = "2", overrideWidth = "1920", overrideHeight = "1080", maxFps = "260", renderDistance = "12", graphicsMode = "1", entityShadows = "true", entityDistanceScaling = "4.0", biomeBlendRadius = "3", ao = "true", tutorialStep = "none", pauseOnLostFocus = "false", bobView = "false", fovEffectScale = "0.0", soundCategory_music = "0.0", soundCategory_record = "0.0", soundCategory_ambient = "0.0" }
+
+[profile.promo-cookery.neoforge.client.display]
+device = "gpu"
+width = 1920
+height = 1080
+
+[profile.promo-cookery.mods]
+sodium = { target = ["client"] }
+iris = { target = ["client"] }
+sable = { target = ["server", "client"] }
+create-aeronautics = { target = ["server", "client"] }
+folkways_cookery = { target = ["server", "client"] }
+kaleidoscope_cookery = { target = ["server", "client"] }
+kaleidoscope_tavern = { target = ["server", "client"] }
+
 # The promo profile with Touhou Little Maid installed on both sides, for the shot that shows its models lent to
 # residents as looks. Nothing else of it is used, and every other promo take stays without it. The game is in
 # Chinese, as the film's viewers read it.
@@ -326,29 +412,274 @@ iris = { target = ["client"] }
 [profile.maids.mods]
 touhou_little_maid = { target = ["server", "client"] }
 
+# The optional RTS selection and command handler must be present for battle input tests.
+[profile.rts.mods]
+folkways_rts = { target = ["server", "client"] }
+
 # The e2e pair with Shoulder Surfing Reloaded on the client, for the book's aim under its camera.
 [profile.shoulder.mods]
 shouldersurfing = { target = ["client"] }
+
+[profile.jech.mods]
+jecharacters = { target = ["client"] }
 
 # The e2e pair with Sable on both sides, for the aboard twin of each spec and the Sable-only specs.
 [profile.sable.mods]
 sable = { target = ["server", "client"] }
 
+# The cookery integration runs against the real kitchen mod, on the ground and aboard a ship.
+[profile.cookery.mods]
+folkways_cookery = { target = ["server", "client"] }
+kaleidoscope_cookery = { target = ["server", "client"] }
+
+[profile.cookery-sable.mods]
+folkways_cookery = { target = ["server", "client"] }
+kaleidoscope_cookery = { target = ["server", "client"] }
+sable = { target = ["server", "client"] }
 # The e2e pair with FTB Teams on both sides, for a colony handed to a party.
 [profile.ftbteams.mods]
 ftbteams = { target = ["server", "client"] }
 ftblibrary = { target = ["server", "client"] }
 architectury = { target = ["server", "client"] }
 
-[mods.kaleidoscope_cookery]
-url = "https://cdn.modrinth.com/data/v17FatAc/versions/g8w0b2ly/kaleidoscopecookery-1.6.0-neoforge%2Bmc1.21.1.jar"
-sha512 = "b562f73395f70d39fb26d89ca62a5b5cebe7d66b11e8930217f0daf03fdcea617629728f55e4c8ced690406204c44462a8a568e5c15f05f5940274904ce0b77f"
+# Native Cookery alone must not activate the separately installed Folkways extension.
+[profile.cookery-native.mods]
+kaleidoscope_cookery = { target = ["server", "client"] }
+
+# Visual coverage includes every Cookery lesson, including the optional Tavern.
+[profile.cookery-tavern.mods]
+folkways_cookery = { target = ["server", "client"] }
+kaleidoscope_cookery = { target = ["server", "client"] }
+kaleidoscope_tavern = { target = ["server", "client"] }
+
+[mods.superbwarfare]
+url = "https://cdn.modrinth.com/data/Cd3DYqzn/versions/bl7W8fjU/superbwarfare-0.8.9.2-mc1.21.1-c22d98c2.jar"
+sha512 = "fb035d68d6ee30c17e8eade8de6e2019ccf9f3e517fa467be59441a397553c81bd29778f92fa0406f1ac3aa73f68ad522aed5d65825336c36686714c900877a5"
 target = []
 
-# Optional wine production and dining drinks, installed by the tavern promo profile.
+[mods.kotlinforforge]
+url = "https://cdn.modrinth.com/data/ordsPcFz/versions/uhJhCT7X/kotlinforforge-5.12.0-all.jar"
+sha512 = "b8c3942f4d33179edf3f102f3d870b99dd436f8b8236dbbd31aa51b888162c692cfd88927295f24dc8b4375232f4c6c17360c5d6c4823f93cbcd7cf4bdc8bd14"
+target = []
 
-[mods.pinin]
-from = "jecharacters"
-entry = "META-INF/jarjar/PinIn-*.jar"
+[profile.warfare.mods]
+folkways_warfare = { target = ["client", "server"] }
+superbwarfare = { target = ["client", "server"] }
+kotlinforforge = { target = ["client", "server"] }
+
+[mods.tacz]
+url = "https://cdn.modrinth.com/data/OypNE65K/versions/62q6mB5Q/tacz-neoforge-1.21.1-1.1.8-hotfix-r7.jar"
+sha512 = "7700ed99a080729c3aa21f9619e018fbe9e2303cfbcaa463175ee5170553a000b692bc4cfa2e8ce0778747eed34dcc0197fb5e4344bb258cff1ba90adc842642"
+target = []
+
+[profile.tacz.mods]
+tacz = { target = ["server", "client"] }
+folkways_tacz = { target = ["server", "client"] }
+
+[profile.tacz_models.mods]
+tacz = { target = ["server", "client"] }
+folkways_tacz = { target = ["server", "client"] }
+touhou_little_maid = { target = ["server", "client"] }
+
+[profile.weapon_poses.neoforge.client.display]
+device = "gpu"
+width = 1280
+height = 720
+
+[profile.weapon_poses.mods]
+folkways_capture = { target = ["client"] }
+folkways_warfare = { target = ["server", "client"] }
+superbwarfare = { target = ["server", "client"] }
+kotlinforforge = { target = ["server", "client"] }
+folkways_tacz = { target = ["server", "client"] }
+tacz = { target = ["server", "client"] }
+
+# The firefighting extension is opt-in, beside the pinned addon and Create.
+[mods.createfirefightingadd]
+url = "https://cdn.modrinth.com/data/tlmPPRct/versions/nRSRtbX2/createfirefightingadd-0.2.5-beta-fix2.jar"
+sha512 = "f0d4cb80163efd03f17c2791c235600cbadfca294f7d33d2b05256044239a449a3342e9dc0c6d9daa93a0a8a5dfeba8db86a091d5b08ad2bfb09106ee6692dcc"
+target = []
+
+[profile.firefighting.mods]
+folkways_firefighting = { target = ["server", "client"] }
+createfirefightingadd = { target = ["server", "client"] }
+
+[profile.firefighting_visuals.mods]
+folkways_firefighting = { target = ["server", "client"] }
+createfirefightingadd = { target = ["server", "client"] }
+sodium = { target = ["client"] }
+iris = { target = ["client"] }
+
+[profile.firefighting_visuals.neoforge.client.display]
+device = "gpu"
+width = 1280
+height = 720
+
+[profile.promo-combat.neoforge]
+jvm_args = ["-Xmx3G"]
+
+[profile.promo-combat.neoforge.server]
+world = "vanilla"
+properties = { "level-seed" = "folkways-combat-river-1", "level-type" = "minecraft:normal", "generate-structures" = "false", "view-distance" = "20", "max-tick-time" = "-1", "spawn-monsters" = "false" }
+
+[profile.promo-combat.neoforge.client]
+game_args = ["--width", "1920", "--height", "1080"]
+options = { lang = "zh_cn", guiScale = "2", overrideWidth = "1920", overrideHeight = "1080", maxFps = "260", renderDistance = "20", graphicsMode = "1", entityShadows = "true", entityDistanceScaling = "4.0", biomeBlendRadius = "3", ao = "true", tutorialStep = "none", pauseOnLostFocus = "false", bobView = "false", fovEffectScale = "0.0", soundCategory_music = "0.0", soundCategory_record = "0.0", soundCategory_ambient = "0.0" }
+
+[profile.promo-combat.neoforge.client.display]
+device = "gpu"
+width = 1920
+height = 1080
+
+[profile.promo-combat.mods]
+lithostitched = { target = ["server", "client"] }
+terralith = { target = ["server", "client"] }
+tectonic = { target = ["server", "client"] }
+sodium = { target = ["client"] }
+iris = { target = ["client"] }
+sable = { target = ["server", "client"] }
+create-aeronautics = { target = ["server", "client"] }
+folkways_rts = { target = ["server", "client"] }
+folkways_warfare = { target = ["server", "client"] }
+superbwarfare = { target = ["server", "client"] }
+kotlinforforge = { target = ["server", "client"] }
+folkways_tacz = { target = ["server", "client"] }
+tacz = { target = ["server", "client"] }
+folkways_firefighting = { target = ["server", "client"] }
+createfirefightingadd = { target = ["server", "client"] }
+folkways_capture = { target = ["client"] }
+
+# Review the RTS cards at both physical sizes on a GPU display large enough for the full-size shot.
+[profile.visual-rts.mods]
+folkways_rts = { target = ["server", "client"] }
+
+[profile.visual-rts.neoforge.client]
+game_args = ["--width", "1920", "--height", "1080"]
+options = { guiScale = "2", overrideWidth = "1920", overrideHeight = "1080", tutorialStep = "none", pauseOnLostFocus = "false" }
+
+[profile.visual-rts.neoforge.client.display]
+device = "gpu"
+width = 1920
+height = 1080
+
+[profile.chiselsandbits.mods]
+folkways_chiselsandbits = { target = ["server", "client"] }
+chiselsandbits = { target = ["server", "client"] }
+
+[profile.chiselsandbits.neoforge.client.display]
+device = "gpu"
+width = 1280
+height = 720
+
+# The promo camera with the native C&B integration; production build and voxel limits stay unchanged.
+[profile.promo-candb.neoforge]
+jvm_args = ["-Xmx3G"]
+
+[profile.promo-candb.neoforge.server]
+properties = { "max-tick-time" = "-1", "view-distance" = "10" }
+
+[profile.promo-candb.neoforge.client]
+game_args = ["--width", "1920", "--height", "1080"]
+options = { guiScale = "2", overrideWidth = "1920", overrideHeight = "1080", maxFps = "60", renderDistance = "12", graphicsMode = "1", entityShadows = "true", entityDistanceScaling = "4.0", ao = "true", tutorialStep = "none", pauseOnLostFocus = "false", bobView = "false", soundCategory_music = "0.0", soundCategory_record = "0.0", soundCategory_ambient = "0.0" }
+
+[profile.promo-candb.neoforge.client.display]
+device = "gpu"
+width = 1920
+height = 1080
+
+[profile.promo-candb.mods]
+folkways_chiselsandbits = { target = ["server", "client"] }
+chiselsandbits = { target = ["server", "client"] }
+
+[profile.promo-candb-land.neoforge]
+jvm_args = ["-Xmx3G"]
+
+[profile.promo-candb-land.neoforge.server]
+world = "vanilla"
+properties = { "level-seed" = "folkways-promo-land", "generate-structures" = "false", "max-tick-time" = "-1", "view-distance" = "16", "entity-broadcast-range-percentage" = "300" }
+
+[profile.promo-candb-land.neoforge.client]
+game_args = ["--width", "1920", "--height", "1080"]
+options = { gamma = "1.0", lang = "zh_cn", guiScale = "2", overrideWidth = "1920", overrideHeight = "1080", maxFps = "260", renderDistance = "16", graphicsMode = "1", entityShadows = "true", entityDistanceScaling = "4.0", biomeBlendRadius = "3", ao = "true", tutorialStep = "none", pauseOnLostFocus = "false", bobView = "false", fovEffectScale = "0.0", soundCategory_music = "0.0", soundCategory_record = "0.0", soundCategory_ambient = "0.0" }
+
+[profile.promo-candb-land.neoforge.client.display]
+device = "gpu"
+width = 1920
+height = 1080
+
+[profile.promo-candb-land.mods]
+lithostitched = { target = ["server", "client"] }
+terralith = { target = ["server", "client"] }
+tectonic = { target = ["server", "client"] }
+
+folkways_chiselsandbits = { target = ["server", "client"] }
+chiselsandbits = { target = ["server", "client"] }
+
+[mods.chiselsandbits]
+url = "https://mediafilez.forgecdn.net/files/7441/123/chisels-and-bits-neoforge-21.1.33.jar"
+sha512 = "ee16a40ad028668ce85418b4351a3d05a976fd1e109b104be2b7c2aac0b03e6042c5fe3545f5b62b2d53f19e83d18a74ecc27ec317865d049e2dff3529a4c4f5"
+target = []
+
+[mods.chiselsandbits-api]
+from = "chiselsandbits"
+entry = "META-INF/jarjar/chisels-and-bits-api-21.1.33.jar"
+# Bundled SHA-512: fc06643ee98ae9ce1227708c5e79108293e907a37e45fbe638b93b872589ec90b5a0ed1995cbee4bb62935e89663b3662068e3f4806ee3728c2887c7bb0856a9
+target = []
+
+[mods.chiselsandbits-core]
+from = "chiselsandbits"
+entry = "META-INF/jarjar/chisels-and-bits-core-21.1.33.jar"
+# Bundled SHA-512: d198a1970ad1c04c58d582ae5da07b7e1d01c9e93d16a7995183d421b4b1673bffea175d4ee721db62633bbd890a6b88cfef7240f890cdb49bff698b812de6f1
+target = []
+
+[mods.createfirefightingadd]
+url = "https://cdn.modrinth.com/data/tlmPPRct/versions/nRSRtbX2/createfirefightingadd-0.2.5-beta-fix2.jar"
+sha512 = "f0d4cb80163efd03f17c2791c235600cbadfca294f7d33d2b05256044239a449a3342e9dc0c6d9daa93a0a8a5dfeba8db86a091d5b08ad2bfb09106ee6692dcc"
+target = []
+
+[mods.kaleidoscope_tavern]
+url = "https://cdn.modrinth.com/data/r9RZvhiJ/versions/W9ILsQt7/kaleidoscopetavern-1.2.0-neoforge%2Bmc1.21.1.jar"
+sha512 = "2481f11727ee303004d2e849739651f63bc28493a79d2e6a784f45632fc92e27ce4a43cc3b08b71740aa1f2a1879c15cc097c65d7a95d9d642c4a9958df6c473"
+target = []
+
+# Chisels & Bits bundles Scena and its API/core; the extracted jars are compile-only fixtures.
+
+[mods.kotlinforforge]
+url = "https://cdn.modrinth.com/data/ordsPcFz/versions/uhJhCT7X/kotlinforforge-5.12.0-all.jar"
+sha512 = "b8c3942f4d33179edf3f102f3d870b99dd436f8b8236dbbd31aa51b888162c692cfd88927295f24dc8b4375232f4c6c17360c5d6c4823f93cbcd7cf4bdc8bd14"
+target = []
+
+[mods.saecularia]
+from = "scena"
+entry = "META-INF/jarjar/neoforge-21.1.11.jar"
+# Bundled SHA-512: 70c6b154b9c0ea84c5ff696722af5d065a896e9878d595908433dbb48d4d16d191d7d5cd086781be1cb13fb46284bb1e0f27b2bf5b68304b5ea0c57c428f6a59
+target = []
+
+[mods.saecularia-core]
+from = "saecularia"
+entry = "META-INF/jarjar/saecularia-caudices-core-21.1.11.jar"
+# Bundled SHA-512: 48eba9054e27ddee1823ceca2d340072c91bff62ca5f2c03861b280540bd3ee96f87c31e3f6509bf7d55bd0ab0906460e8511dd04cf1ba113d07b22fc3194fdc
+target = []
+
+[mods.scena]
+from = "chiselsandbits"
+entry = "META-INF/jarjar/neoforge-21.1.22.jar"
+# Bundled SHA-512: 9d70facf740bf253542138470ee22d8ebda32751004c67172fd69de9171fba9d7b2ededd5a99f418e245a446217c1155c8142a61b8277ecb2bea996b9a20a74c
+target = []
+
+[mods.scena-core]
+from = "scena"
+entry = "META-INF/jarjar/scena-core-21.1.22.jar"
+# Bundled SHA-512: 3737d4980006f2f5cca9afa8900114a8b0cd6279fe84027477a0ac0d314c39edbee815b6dac46d3d6d35f77c65f62a3b33d92bbe1e09cee5dcd66d6379656798
+target = []
+
+[mods.superbwarfare]
+url = "https://cdn.modrinth.com/data/Cd3DYqzn/versions/bl7W8fjU/superbwarfare-0.8.9.2-mc1.21.1-c22d98c2.jar"
+sha512 = "fb035d68d6ee30c17e8eade8de6e2019ccf9f3e517fa467be59441a397553c81bd29778f92fa0406f1ac3aa73f68ad522aed5d65825336c36686714c900877a5"
+target = []
+
+[mods.tacz]
+url = "https://cdn.modrinth.com/data/OypNE65K/versions/62q6mB5Q/tacz-neoforge-1.21.1-1.1.8-hotfix-r7.jar"
+sha512 = "7700ed99a080729c3aa21f9619e018fbe9e2303cfbcaa463175ee5170553a000b692bc4cfa2e8ce0778747eed34dcc0197fb5e4344bb258cff1ba90adc842642"
 target = []
 
