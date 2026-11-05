@@ -34,6 +34,15 @@ dependencies {
     gametestCompileOnly lib("create")
 }
 
+// Native optional-integration tests share this mod's package and module, without linking its main source to Cookery.
+dependencies {
+    cookeryTestImplementation project(":cookery")
+    cookeryTestCompileOnly lib("kaleidoscope_cookery")
+}
+
+// The recipe audit is one fixture shared by native kitchen and vanilla crafting tests in their own modules.
+sourceSets.cookeryTest.resources.srcDir(rootProject.file("mods/cookery/src/gametest/resources"))
+
 // Main and test resources share one mod pack; an overlapping test tag must retain the shipped entries.
 tasks.named("processGametestResources") {
     def forage = file("src/main/resources/data/folkways/tags/block/forage.json")
@@ -47,4 +56,27 @@ tasks.named("processGametestResources") {
     }
 }
 
+// These tests exercise RTS orders through Vanilla's package-private defence and living services.
+sourceSets { rtsTest }
+neoForge { addModdingDependenciesTo sourceSets.rtsTest }
+configurations {
+    rtsTestCompileOnly.extendsFrom gametestCompileOnly
+    rtsTestImplementation.extendsFrom gametestImplementation
+    rtsTestRuntimeOnly.extendsFrom gametestRuntimeOnly
+}
+dependencies {
+    rtsTestImplementation sourceSets.main.output
+    rtsTestImplementation project(":rts")
+}
 
+// Warfare's scout acceptance fixture exercises the package-private patrol service in Vanilla's module.
+sourceSets { warfareTest }
+neoForge { addModdingDependenciesTo sourceSets.warfareTest }
+configurations {
+    warfareTestCompileOnly.extendsFrom gametestCompileOnly
+    warfareTestImplementation.extendsFrom gametestImplementation
+    warfareTestRuntimeOnly.extendsFrom gametestRuntimeOnly
+}
+dependencies {
+    warfareTestImplementation sourceSets.main.output
+}

@@ -6,7 +6,7 @@ issueTrackerURL = "https://github.com/IzakyL/folkways/issues"
 [[mods]]
 modId = "${mod_id}"
 version = "${version}"
-displayName = "Folkways × Create: FireFighting Additions"
+displayName = "Per Lapidem ad Astra · × Create: FireFighting Additions"
 displayURL = "https://github.com/IzakyL/folkways"
 description = "Residents fight fires with hydrant hoses and refill portable extinguishers."
 authors = "IzakyL"
@@ -26,7 +26,7 @@ ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.${mod_id}]]
-modId = "folkways_core"
+modId = "plaa_core"
 type = "required"
 reason = "The colony engine and screens used by this extension are provided by Folkways Core."
 versionRange = "[${version}]"
@@ -34,7 +34,7 @@ ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.${mod_id}]]
-modId = "folkways_vanilla"
+modId = "plaa_vanilla"
 type = "required"
 reason = "Firefighting extends damage control from Folkways Vanilla."
 versionRange = "[${version}]"
@@ -42,7 +42,7 @@ ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.${mod_id}]]
-modId = "folkways_create"
+modId = "plaa_create"
 type = "required"
 versionRange = "[${version}]"
 ordering = "AFTER"

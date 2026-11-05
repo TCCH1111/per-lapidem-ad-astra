@@ -6,7 +6,7 @@ issueTrackerURL = "https://github.com/IzakyL/folkways/issues"
 [[mods]]
 modId = "${mod_id}"
 version = "${version}"
-displayName = "Folkways RTS"
+displayName = "Per Lapidem ad Astra · RTS"
 displayURL = "https://github.com/IzakyL/folkways"
 description = "Optional resident commands, squads and real-time controls for Folkways."
 authors = "IzakyL"
@@ -26,7 +26,7 @@ ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.${mod_id}]]
-modId = "folkways_core"
+modId = "plaa_core"
 type = "required"
 reason = "Folkways RTS uses the colony engine and resident access supplied by Folkways Core."
 versionRange = "[${version}]"
@@ -34,7 +34,7 @@ ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.${mod_id}]]
-modId = "folkways_vanilla"
+modId = "plaa_vanilla"
 type = "required"
 reason = "Folkways RTS uses Vanilla's resident, defense and weapon APIs."
 versionRange = "[${version}]"

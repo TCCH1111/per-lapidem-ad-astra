@@ -9,6 +9,12 @@ def modProjects = [
     plaa_vanilla: ":vanilla", // PLA: ADR-023 modid
     plaa_create: ":create", // PLA: ADR-023 modid
     plaa_modulargolems: ":modulargolems", // PLA: ADR-023 modid
+    plaa_cookery: ":cookery", // PLA: ADR-023 modid
+    plaa_chiselsandbits: ":chiselsandbits", // PLA: ADR-023 modid
+    plaa_rts: ":rts", // PLA: ADR-023 modid
+    plaa_warfare: ":warfare", // PLA: ADR-023 modid
+    plaa_tacz: ":tacz", // PLA: ADR-023 modid
+    plaa_firefighting: ":firefighting", // PLA: ADR-023 modid
 ]
 modProjects.values().each { evaluationDependsOn(it) }
 
@@ -100,7 +106,10 @@ neoForge {
                     sourceSet mod.sourceSets.gameTestFixtures
                 }
                 if (warfareTests && path == ":vanilla") { sourceSet mod.sourceSets.warfareTest }
-                // PLA: this fork does not build the chiselsandbits module.
+                // Same-package construction tests belong to Vanilla's Java module.
+                if (path == ":vanilla" && chiselsTests && (!gameTestMod || gameTestMod == "chiselsandbits")) {
+                    sourceSet project(":chiselsandbits").sourceSets.gametest
+                }
                 if (suiteMods.containsKey(id) && path != ":chiselsandbits") {
                     sourceSet mod.sourceSets.gametest
                     if (rtsTests && path == ":vanilla") { sourceSet mod.sourceSets.rtsTest }

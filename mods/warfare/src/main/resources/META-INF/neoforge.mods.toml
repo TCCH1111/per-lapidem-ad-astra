@@ -6,7 +6,7 @@ issueTrackerURL = "https://github.com/IzakyL/folkways/issues"
 [[mods]]
 modId = "${mod_id}"
 version = "${version}"
-displayName = "Folkways × Superb Warfare"
+displayName = "Per Lapidem ad Astra · × Superb Warfare"
 displayURL = "https://github.com/IzakyL/folkways"
 description = "Residents use Superb Warfare firearms and emplacements with physical ammunition from colony stores."
 authors = "IzakyL"
@@ -26,7 +26,7 @@ ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.${mod_id}]]
-modId = "folkways_core"
+modId = "plaa_core"
 type = "required"
 reason = "Folkways Core runs the colony."
 versionRange = "[${version}]"
@@ -34,7 +34,7 @@ ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.${mod_id}]]
-modId = "folkways_vanilla"
+modId = "plaa_vanilla"
 type = "required"
 reason = "Folkways Vanilla supplies profiles, sentry posts, observations and station leases."
 versionRange = "[${version}]"

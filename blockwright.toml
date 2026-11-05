@@ -26,13 +26,13 @@ path = "build/libs/plaa-create-*.jar"
 path = "build/libs/plaa-modulargolems-*.jar"
 
 # The optional Folkways extension is installed beside its native mod only by Cookery profiles.
-[mods.folkways_cookery]
-path = "build/libs/folkways-cookery-*.jar"
+[mods.plaa_cookery] # PLA: ADR-023 modid
+path = "build/libs/plaa-cookery-*.jar"
 target = []
 
 # Optional RTS input layer; installed explicitly by profiles that exercise it.
-[mods.folkways_rts]
-path = "build/libs/folkways-rts-neoforge-*.jar"
+[mods.plaa_rts] # PLA: ADR-023 modid
+path = "build/libs/plaa-rts-neoforge-*.jar"
 target = []
 
 # Compiled against, and installed only by the cookery test and promo profiles.
@@ -48,8 +48,8 @@ sha512 = "2481f11727ee303004d2e849739651f63bc28493a79d2e6a784f45632fc92e27ce4a43
 target = []
 
 # Chisels & Bits bundles Scena and its API/core; the extracted jars are compile-only fixtures.
-[mods.folkways_chiselsandbits]
-path = "build/libs/folkways-chiselsandbits-*.jar"
+[mods.plaa_chiselsandbits] # PLA: ADR-023 modid
+path = "build/libs/plaa-chiselsandbits-*.jar"
 target = []
 
 [mods.chiselsandbits]
@@ -229,7 +229,7 @@ target = []
 
 # Measures folkways itself, mixins included; off unless BLOCKWRIGHT_COVERAGE=1 (npm run test:coverage).
 [coverage]
-mods = ["folkways_core", "folkways_vanilla", "folkways_create", "folkways_modulargolems", "folkways_cookery"]
+mods = ["plaa_core", "plaa_vanilla", "plaa_create", "plaa_modulargolems", "plaa_cookery"]
 sources = ["mods/core/src/main/java", "mods/vanilla/src/main/java", "mods/create/src/main/java", "mods/modulargolems/src/main/java", "mods/cookery/src/main/java"]
 
 [profile.bench.neoforge]
@@ -344,7 +344,7 @@ sodium = { target = ["client"] }
 iris = { target = ["client"] }
 sable = { target = ["server", "client"] }
 create-aeronautics = { target = ["server", "client"] }
-folkways_cookery = { target = ["server", "client"] }
+plaa_cookery = { target = ["server", "client"] }
 kaleidoscope_cookery = { target = ["server", "client"] }
 kaleidoscope_tavern = { target = ["server", "client"] }
 
@@ -428,7 +428,7 @@ touhou_little_maid = { target = ["server", "client"] }
 
 # The optional RTS selection and command handler must be present for battle input tests.
 [profile.rts.mods]
-folkways_rts = { target = ["server", "client"] }
+plaa_rts = { target = ["server", "client"] }
 
 # The e2e pair with Shoulder Surfing Reloaded on the client, for the book's aim under its camera.
 [profile.shoulder.mods]
@@ -443,11 +443,11 @@ sable = { target = ["server", "client"] }
 
 # The cookery integration runs against the real kitchen mod, on the ground and aboard a ship.
 [profile.cookery.mods]
-folkways_cookery = { target = ["server", "client"] }
+plaa_cookery = { target = ["server", "client"] }
 kaleidoscope_cookery = { target = ["server", "client"] }
 
 [profile.cookery-sable.mods]
-folkways_cookery = { target = ["server", "client"] }
+plaa_cookery = { target = ["server", "client"] }
 kaleidoscope_cookery = { target = ["server", "client"] }
 sable = { target = ["server", "client"] }
 # The e2e pair with FTB Teams on both sides, for a colony handed to a party.
@@ -462,12 +462,12 @@ kaleidoscope_cookery = { target = ["server", "client"] }
 
 # Visual coverage includes every Cookery lesson, including the optional Tavern.
 [profile.cookery-tavern.mods]
-folkways_cookery = { target = ["server", "client"] }
+plaa_cookery = { target = ["server", "client"] }
 kaleidoscope_cookery = { target = ["server", "client"] }
 kaleidoscope_tavern = { target = ["server", "client"] }
 
-[mods.folkways_warfare]
-path = "build/libs/folkways-warfare-*.jar"
+[mods.plaa_warfare] # PLA: ADR-023 modid
+path = "build/libs/plaa-warfare-*.jar"
 target = []
 
 [mods.superbwarfare]
@@ -481,7 +481,7 @@ sha512 = "b8c3942f4d33179edf3f102f3d870b99dd436f8b8236dbbd31aa51b888162c692cfd88
 target = []
 
 [profile.warfare.mods]
-folkways_warfare = { target = ["client", "server"] }
+plaa_warfare = { target = ["client", "server"] }
 superbwarfare = { target = ["client", "server"] }
 kotlinforforge = { target = ["client", "server"] }
 
@@ -490,17 +490,17 @@ url = "https://cdn.modrinth.com/data/OypNE65K/versions/62q6mB5Q/tacz-neoforge-1.
 sha512 = "7700ed99a080729c3aa21f9619e018fbe9e2303cfbcaa463175ee5170553a000b692bc4cfa2e8ce0778747eed34dcc0197fb5e4344bb258cff1ba90adc842642"
 target = []
 
-[mods.folkways_tacz]
-path = "build/libs/folkways-tacz-*.jar"
+[mods.plaa_tacz] # PLA: ADR-023 modid
+path = "build/libs/plaa-tacz-*.jar"
 target = []
 
 [profile.tacz.mods]
 tacz = { target = ["server", "client"] }
-folkways_tacz = { target = ["server", "client"] }
+plaa_tacz = { target = ["server", "client"] }
 
 [profile.tacz_models.mods]
 tacz = { target = ["server", "client"] }
-folkways_tacz = { target = ["server", "client"] }
+plaa_tacz = { target = ["server", "client"] }
 touhou_little_maid = { target = ["server", "client"] }
 
 [profile.weapon_poses.neoforge.client.display]
@@ -510,15 +510,15 @@ height = 720
 
 [profile.weapon_poses.mods]
 folkways_capture = { target = ["client"] }
-folkways_warfare = { target = ["server", "client"] }
+plaa_warfare = { target = ["server", "client"] }
 superbwarfare = { target = ["server", "client"] }
 kotlinforforge = { target = ["server", "client"] }
-folkways_tacz = { target = ["server", "client"] }
+plaa_tacz = { target = ["server", "client"] }
 tacz = { target = ["server", "client"] }
 
 # The firefighting extension is opt-in, beside the pinned addon and Create.
-[mods.folkways_firefighting]
-path = "build/libs/folkways-firefighting-*.jar"
+[mods.plaa_firefighting] # PLA: ADR-023 modid
+path = "build/libs/plaa-firefighting-*.jar"
 target = []
 
 [mods.createfirefightingadd]
@@ -527,11 +527,11 @@ sha512 = "f0d4cb80163efd03f17c2791c235600cbadfca294f7d33d2b05256044239a449a3342e
 target = []
 
 [profile.firefighting.mods]
-folkways_firefighting = { target = ["server", "client"] }
+plaa_firefighting = { target = ["server", "client"] }
 createfirefightingadd = { target = ["server", "client"] }
 
 [profile.firefighting_visuals.mods]
-folkways_firefighting = { target = ["server", "client"] }
+plaa_firefighting = { target = ["server", "client"] }
 createfirefightingadd = { target = ["server", "client"] }
 sodium = { target = ["client"] }
 iris = { target = ["client"] }
@@ -570,19 +570,19 @@ sodium = { target = ["client"] }
 iris = { target = ["client"] }
 sable = { target = ["server", "client"] }
 create-aeronautics = { target = ["server", "client"] }
-folkways_rts = { target = ["server", "client"] }
-folkways_warfare = { target = ["server", "client"] }
+plaa_rts = { target = ["server", "client"] }
+plaa_warfare = { target = ["server", "client"] }
 superbwarfare = { target = ["server", "client"] }
 kotlinforforge = { target = ["server", "client"] }
-folkways_tacz = { target = ["server", "client"] }
+plaa_tacz = { target = ["server", "client"] }
 tacz = { target = ["server", "client"] }
-folkways_firefighting = { target = ["server", "client"] }
+plaa_firefighting = { target = ["server", "client"] }
 createfirefightingadd = { target = ["server", "client"] }
 folkways_capture = { target = ["client"] }
 
 # Review the RTS cards at both physical sizes on a GPU display large enough for the full-size shot.
 [profile.visual-rts.mods]
-folkways_rts = { target = ["server", "client"] }
+plaa_rts = { target = ["server", "client"] }
 
 [profile.visual-rts.neoforge.client]
 game_args = ["--width", "1920", "--height", "1080"]
@@ -594,7 +594,7 @@ width = 1920
 height = 1080
 
 [profile.chiselsandbits.mods]
-folkways_chiselsandbits = { target = ["server", "client"] }
+plaa_chiselsandbits = { target = ["server", "client"] }
 chiselsandbits = { target = ["server", "client"] }
 
 [profile.chiselsandbits.neoforge.client.display]
@@ -619,7 +619,7 @@ width = 1920
 height = 1080
 
 [profile.promo-candb.mods]
-folkways_chiselsandbits = { target = ["server", "client"] }
+plaa_chiselsandbits = { target = ["server", "client"] }
 chiselsandbits = { target = ["server", "client"] }
 
 [profile.promo-candb-land.neoforge]
@@ -643,5 +643,5 @@ lithostitched = { target = ["server", "client"] }
 terralith = { target = ["server", "client"] }
 tectonic = { target = ["server", "client"] }
 
-folkways_chiselsandbits = { target = ["server", "client"] }
+plaa_chiselsandbits = { target = ["server", "client"] }
 chiselsandbits = { target = ["server", "client"] }

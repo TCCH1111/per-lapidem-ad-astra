@@ -6,7 +6,7 @@ issueTrackerURL = "https://github.com/IzakyL/folkways/issues"
 [[mods]]
 modId = "${mod_id}"
 version = "${version}"
-displayName = "Folkways × Kaleidoscope Cookery"
+displayName = "Per Lapidem ad Astra · × Kaleidoscope Cookery"
 displayURL = "https://github.com/IzakyL/folkways"
 description = "Residents prepare, grow, cook and store Kaleidoscope Cookery food with its native appliances."
 authors = "IzakyL"
@@ -26,7 +26,7 @@ ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.${mod_id}]]
-modId = "folkways_core"
+modId = "plaa_core"
 type = "required"
 reason = "The colony engine and screens used by this extension are provided by Folkways Core."
 versionRange = "[${version}]"
@@ -34,7 +34,7 @@ ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.${mod_id}]]
-modId = "folkways_vanilla"
+modId = "plaa_vanilla"
 type = "required"
 reason = "Cookery extends the farming, residents and production work provided by Folkways Vanilla."
 versionRange = "[${version}]"

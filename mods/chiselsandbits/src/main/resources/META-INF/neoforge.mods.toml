@@ -6,7 +6,7 @@ issueTrackerURL = "https://github.com/IzakyL/folkways/issues"
 [[mods]]
 modId = "${mod_id}"
 version = "${version}"
-displayName = "Folkways × Chisels & Bits"
+displayName = "Per Lapidem ad Astra · × Chisels & Bits"
 displayURL = "https://github.com/IzakyL/folkways"
 description = "Residents build chiseled blueprints with whole blocks and a small rounding loss."
 authors = "IzakyL"
@@ -26,7 +26,7 @@ ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.${mod_id}]]
-modId = "folkways_core"
+modId = "plaa_core"
 type = "required"
 reason = "The colony engine and screens used by this extension are provided by Folkways Core."
 versionRange = "[${version}]"
@@ -34,7 +34,7 @@ ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.${mod_id}]]
-modId = "folkways_vanilla"
+modId = "plaa_vanilla"
 type = "required"
 reason = "This extension uses the blueprints and construction work provided by Folkways Vanilla."
 versionRange = "[${version}]"
