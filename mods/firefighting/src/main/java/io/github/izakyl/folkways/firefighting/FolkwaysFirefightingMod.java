@@ -14,7 +14,7 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 @Mod(FolkwaysFirefightingMod.ID)
 public final class FolkwaysFirefightingMod {
-    public static final String ID = "folkways_firefighting";
+    public static final String ID = "plaa_firefighting";
     public static final ResourceLocation OWNER = ResourceLocation.fromNamespaceAndPath("folkways", "firefighting");
 
     public FolkwaysFirefightingMod(IEventBus bus) {

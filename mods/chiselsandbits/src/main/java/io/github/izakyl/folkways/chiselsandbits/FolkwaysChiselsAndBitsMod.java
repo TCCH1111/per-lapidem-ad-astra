@@ -12,7 +12,7 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 
 @Mod(FolkwaysChiselsAndBitsMod.ID)
 public final class FolkwaysChiselsAndBitsMod {
-    public static final String ID = "folkways_chiselsandbits";
+    public static final String ID = "plaa_chiselsandbits";
 
     public FolkwaysChiselsAndBitsMod(IEventBus bus, ModContainer container) {
         container.registerConfig(ModConfig.Type.SERVER, CandBConfig.SPEC);

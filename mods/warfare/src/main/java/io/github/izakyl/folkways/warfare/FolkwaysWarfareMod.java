@@ -10,7 +10,7 @@ import net.neoforged.neoforge.common.NeoForge;
 @Mod(FolkwaysWarfareMod.ID)
 public final class FolkwaysWarfareMod {
 
-    public static final String ID = "folkways_warfare";
+    public static final String ID = "plaa_warfare";
 
     public FolkwaysWarfareMod(IEventBus bus) {
         if (FMLEnvironment.dist.isClient()) {

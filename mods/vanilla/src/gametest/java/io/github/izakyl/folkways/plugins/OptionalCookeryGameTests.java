@@ -14,7 +14,7 @@ import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
-@EventBusSubscriber(modid = "folkways_vanilla", bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = "plaa_vanilla", bus = EventBusSubscriber.Bus.MOD)
 @GameTestHolder(FolkwaysMod.MOD_ID)
 @PrefixGameTestTemplate(false)
 public final class OptionalCookeryGameTests {
@@ -27,7 +27,7 @@ public final class OptionalCookeryGameTests {
     public static void kitchenServicesAndPagesFollowTheOptionalModWithoutLoadingItsClasses(GameTestHelper helper) {
         var colony = Colonies.mint(helper.getLevel().getServer());
         var owner = ResourceLocation.fromNamespaceAndPath("folkways", "cookery");
-        boolean installed = ModList.get().isLoaded("folkways_cookery");
+        boolean installed = ModList.get().isLoaded("plaa_cookery");
         var knifeTag = ResourceLocation.fromNamespaceAndPath("kaleidoscope_cookery", "kitchen_knife");
         var crafting = io.github.izakyl.folkways.core.api.vocation.Vocations.required(
             ResourceLocation.fromNamespaceAndPath("folkways", "crafting"));

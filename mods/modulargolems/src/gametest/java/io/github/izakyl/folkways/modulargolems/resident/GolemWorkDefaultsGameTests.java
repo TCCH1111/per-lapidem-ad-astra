@@ -19,7 +19,7 @@ import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
-@EventBusSubscriber(modid = "folkways_modulargolems", bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = "plaa_modulargolems", bus = EventBusSubscriber.Bus.MOD)
 @GameTestHolder(FolkwaysMod.MOD_ID)
 @PrefixGameTestTemplate(false)
 public final class GolemWorkDefaultsGameTests {

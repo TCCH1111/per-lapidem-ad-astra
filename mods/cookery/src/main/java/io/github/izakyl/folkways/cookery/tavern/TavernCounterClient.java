@@ -12,7 +12,7 @@ import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 
-@EventBusSubscriber(modid = "folkways_cookery", bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@EventBusSubscriber(modid = "plaa_cookery", bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public final class TavernCounterClient {
     @SubscribeEvent public static void renderers(EntityRenderersEvent.RegisterRenderers event) {
         if (ModList.get().isLoaded("kaleidoscope_tavern")) event.registerBlockEntityRenderer(TavernCounters.COUNTER.get(), Renderer::new);

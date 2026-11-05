@@ -13,7 +13,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public final class TavernCounters {
-    private static final DeferredRegister<BlockEntityType<?>> TYPES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, "folkways_cookery");
+    private static final DeferredRegister<BlockEntityType<?>> TYPES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, "plaa_cookery");
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TavernCounterBlockEntity>> COUNTER = TYPES.register("tavern_counter",
         () -> BlockEntityType.Builder.of(TavernCounterBlockEntity::new, ModBlocks.BAR_COUNTER.get()).build(null));
     private TavernCounters() { }

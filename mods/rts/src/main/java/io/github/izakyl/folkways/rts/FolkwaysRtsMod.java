@@ -12,7 +12,7 @@ import net.neoforged.fml.common.Mod;
 /** Optional resident commands, squads and RTS interaction. */
 @Mod(FolkwaysRtsMod.MOD_ID)
 public final class FolkwaysRtsMod {
-    public static final String MOD_ID = "folkways_rts";
+    public static final String MOD_ID = "plaa_rts";
 
     public FolkwaysRtsMod(IEventBus modBus) {
         modBus.addListener(Declaring.class, CommandContent::declare);

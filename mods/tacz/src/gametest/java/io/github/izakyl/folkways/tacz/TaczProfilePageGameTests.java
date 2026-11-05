@@ -25,7 +25,7 @@ import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
-@EventBusSubscriber(modid = "folkways_tacz", bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = "plaa_tacz", bus = EventBusSubscriber.Bus.MOD)
 @GameTestHolder("folkways")
 @PrefixGameTestTemplate(false)
 public final class TaczProfilePageGameTests {

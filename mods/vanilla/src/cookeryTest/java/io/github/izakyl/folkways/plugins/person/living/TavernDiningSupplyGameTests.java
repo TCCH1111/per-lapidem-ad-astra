@@ -21,7 +21,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
-@EventBusSubscriber(modid = "folkways_vanilla", bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = "plaa_vanilla", bus = EventBusSubscriber.Bus.MOD)
 public final class TavernDiningSupplyGameTests {
     @SubscribeEvent public static void register(RegisterGameTestsEvent event) {
         if (ModList.get().isLoaded("kaleidoscope_tavern")) { event.register(Native.class); }

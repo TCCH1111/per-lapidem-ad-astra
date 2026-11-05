@@ -69,7 +69,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 
-@EventBusSubscriber(modid = "folkways_cookery", bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = "plaa_cookery", bus = EventBusSubscriber.Bus.MOD)
 @GameTestHolder(FolkwaysMod.MOD_ID)
 @PrefixGameTestTemplate(false)
 public final class ChoppingBoardGameTests {

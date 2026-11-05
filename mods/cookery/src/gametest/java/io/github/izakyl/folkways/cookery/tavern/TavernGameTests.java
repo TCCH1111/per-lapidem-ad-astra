@@ -6,7 +6,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 
 /** The subscriber itself has no Tavern API references and remains safe without the optional jar. */
-@EventBusSubscriber(modid = "folkways_cookery", bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = "plaa_cookery", bus = EventBusSubscriber.Bus.MOD)
 public final class TavernGameTests {
     @SubscribeEvent
     public static void register(RegisterGameTestsEvent event) {

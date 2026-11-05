@@ -475,7 +475,7 @@ public final class CandBTemplateGameTests {
     }
 
     private static void architecturalBits(GameTestHelper helper, String name) throws Exception {
-        var id = ResourceLocation.fromNamespaceAndPath("folkways_chiselsandbits", name);
+        var id = ResourceLocation.fromNamespaceAndPath("plaa_chiselsandbits", name);
         Pattern pattern = Patterns.find(id).orElseThrow();
         helper.assertTrue(pattern.detail().equals("bits"), "integration resource loaded with bit detail");
         for (String language : List.of("en_us", "zh_cn", "zh_hk", "zh_tw")) {
