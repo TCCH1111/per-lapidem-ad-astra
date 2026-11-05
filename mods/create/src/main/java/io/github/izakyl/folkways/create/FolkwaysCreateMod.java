@@ -10,7 +10,7 @@ import net.neoforged.fml.event.config.ModConfigEvent;
 @Mod(FolkwaysCreateMod.ID)
 public final class FolkwaysCreateMod {
 
-    public static final String ID = "folkways_create";
+    public static final String ID = "plaa_create"; // PLA: ADR-023 modid
 
     public FolkwaysCreateMod(IEventBus modBus, ModContainer container) {
         container.registerConfig(ModConfig.Type.SERVER, FolkwaysCreateConfig.SPEC);

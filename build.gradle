@@ -5,6 +5,7 @@ plugins {
 // The root builds no mod of its own: it hosts the modules needed by each GameTest suite.
 
 def modProjects = [
+<<<<<<< ours
     folkways_core: ":core",
     folkways_vanilla: ":vanilla",
     folkways_create: ":create",
@@ -15,6 +16,12 @@ def modProjects = [
     folkways_warfare: ":warfare",
     folkways_tacz: ":tacz",
     folkways_firefighting: ":firefighting",
+=======
+    plaa_core: ":core", // PLA: ADR-023 modid
+    plaa_vanilla: ":vanilla", // PLA: ADR-023 modid
+    plaa_create: ":create", // PLA: ADR-023 modid
+    plaa_modulargolems: ":modulargolems", // PLA: ADR-023 modid
+>>>>>>> theirs
 ]
 modProjects.values().each { evaluationDependsOn(it) }
 

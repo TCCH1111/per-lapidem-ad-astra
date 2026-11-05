@@ -1,3 +1,8 @@
+<!-- PLA: ADR-023 modid -->
+> **Per Lapidem ad Astra** is a fork of [Folkways](https://github.com/IzakyL/folkways) (IzakyL, MIT).
+> Its four mods are `plaa_core`, `plaa_vanilla`, `plaa_create` and `plaa_modulargolems`, registered under the
+> same `folkways` resource namespace, and **cannot be installed next to upstream Folkways**. See [NOTICE.md](NOTICE.md).
+
 # Folkways
 
 [![License][badge-license]](LICENSE)
@@ -94,6 +99,7 @@ Vanilla. They do not need separate installation.
 
 ## Getting started
 
+<<<<<<< ours
 1. Craft a **Colony Book** from one book.
 2. Right-click to open the colony panel and select **New Colony**.
 3. Left-click chests, beds and work stations with the book to register them.
@@ -142,6 +148,21 @@ With Folkways × Chisels & Bits and Chisels & Bits 21.1.33, select an area and s
 as a blueprint or template. Residents use whole blocks of each material to build and reshape
 carvings, with a small rounding loss. Bundled voxel patterns include a torii, rotunda, Gothic cloister,
 flying-eave pavilion, stone arch bridge, rampart, and curved gallery.
+=======
+1. Craft a **Colony Book** from a book.
+2. Right-click to open the colony panel and press **New Colony**. You are the new
+   colony's founder; click the panel's title to switch colonies or found another.
+3. Left-click chests, beds and work stations (crafting table, furnace, …) to add them to
+   the colony.
+4. Stock some food and leave a free bed. Newcomers arrive over time; let them in from the
+   Human residents page.
+5. Sneak and scroll to turn the book to **marking out**, left-click two opposite corners
+   to frame a plot, then right-click and choose **Farm**.
+
+The colony panel's **Lessons** tab walks through everything else.
+
+Server options live in each world's `serverconfig/`: `plaa_core-server.toml` for the engine, `plaa_vanilla-server.toml` for the work among vanilla blocks, and `plaa_create-server.toml` for rail and dispatch.
+>>>>>>> theirs
 
 ## Building from source
 

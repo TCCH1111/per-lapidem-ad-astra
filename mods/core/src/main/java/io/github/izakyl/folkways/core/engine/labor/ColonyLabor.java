@@ -31,6 +31,7 @@ import io.github.izakyl.folkways.core.engine.plan.Planner;
 import io.github.izakyl.folkways.core.engine.plan.Schedule;
 import io.github.izakyl.folkways.core.engine.plan.Asks;
 import io.github.izakyl.folkways.core.engine.plan.Refused;
+import io.github.izakyl.folkways.core.api.work.Veto;
 import io.github.izakyl.folkways.core.engine.plan.Scheduler;
 import io.github.izakyl.folkways.core.engine.plan.Shortfall;
 import io.github.izakyl.folkways.core.engine.plan.Tour;
@@ -81,6 +82,11 @@ public final class ColonyLabor implements ColonyWorks.Listening {
         this::planningProblem);
     private final Runners runners = new Runners(this::arrived);
     private final Urges urges = new Urges();
+
+    // PLA: WP-1 T5 — read-only handle for the diagnosis facade (LaborViews).
+    Urges urgeBook() {
+        return urges;
+    }
     private final Salvage salvage = new Salvage();
     private final Kits kits = new Kits();
     private final Survey survey = new Survey();
@@ -112,6 +118,11 @@ public final class ColonyLabor implements ColonyWorks.Listening {
     private long submittedNodes;
     private long lastScheduleNanos;
     private long limitedSchedules;
+
+    // PLA: WP-4 T4 — the colony's zones, as the schedule reads them; ALL when no plugin offers any.
+    public void standing(Veto standing) {
+        pipeline.standing(standing);
+    }
 
     public ColonyLabor(ColonyData colony, ResourceKey<Level> dimension) {
         this.colony = colony;

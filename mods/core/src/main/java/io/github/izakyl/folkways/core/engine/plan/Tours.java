@@ -9,6 +9,8 @@ import io.github.izakyl.folkways.core.api.terms.WorldPos;
 import io.github.izakyl.folkways.core.api.work.Amount;
 import io.github.izakyl.folkways.core.api.work.Before;
 import io.github.izakyl.folkways.core.api.work.NodeSpec;
+import io.github.izakyl.folkways.core.api.work.Veto;
+import io.github.izakyl.folkways.core.api.work.Vetoes;
 import io.github.izakyl.folkways.core.api.work.Placement;
 import io.github.izakyl.folkways.core.api.work.Workload;
 import io.github.izakyl.folkways.core.engine.travel.Faring;
@@ -1553,6 +1555,13 @@ final class Tours {
 
     private static final Unassigned.Reason[] REASONS = Unassigned.Reason.values();
 
+    // PLA: WP-4 T4 — what zones the colony keeps, as the schedule reads them. ALL keeps the old behaviour.
+    private Veto standing = Veto.ALL;
+
+    void standing(Veto standing) {
+        this.standing = standing == null ? Veto.ALL : standing;
+    }
+
     // Asked of every hand for every piece of work, more than once a schedule, and the same each time within one.
     private Unassigned.Reason groupRefusal(Seat seat, UUID id) {
         byte[] known = fits.computeIfAbsent(id, key -> new byte[seats.size()]);
@@ -1575,6 +1584,14 @@ final class Tours {
                 bound.add(pinned);
             }
             steps.add(fixed(member).node().spec());
+        }
+        for (NodeSpec step : steps) {
+            for (var stance : step.stances().cells()) {
+                var refused = standing.check(seat.hand.id(), stance.cell());
+                if (refused.isPresent()) {
+                    return Vetoes.reasonOf(refused.get());
+                }
+            }
         }
         return Fitness.of(seat.hand, new Fitness.Work(steps, bound, 0)).map(unfit -> switch (unfit) {
             case BOUND_ELSEWHERE -> Unassigned.Reason.SAME_WORKER_SPLIT;
@@ -1675,6 +1692,9 @@ final class Tours {
             case WORKER_AWAY -> 9;
             case NO_FREE_STAND -> 10;
             case BEYOND_HORIZON -> 11;
+            // PLA: WP-4 T4 — a zone refusal is the most specific reason there is, so it is told last.
+            case ZONE_FORBIDDEN -> 12;
+            case HOURS_RESTING -> 13;
         };
     }
 

@@ -12,18 +12,24 @@ properties = { "online-mode" = "false", "level-seed" = "folkways-e2e", "allow-fl
 connect = "127.0.0.1:25565"
 options = { guiScale = "1", fullscreen = "false", overrideWidth = "1280", overrideHeight = "720" }
 
+<<<<<<< ours
 # Folkways jars gathered by Gradle; integration extensions are enabled by their profiles.
 [mods.folkways_core]
 path = "build/libs/folkways-core-*.jar"
+=======
+# The four Folkways mods, as gradle build gathers them.
+[mods.plaa_core] # PLA: ADR-023 modid
+path = "build/libs/plaa-core-*.jar"
+>>>>>>> theirs
 
-[mods.folkways_vanilla]
-path = "build/libs/folkways-vanilla-*.jar"
+[mods.plaa_vanilla] # PLA: ADR-023 modid
+path = "build/libs/plaa-vanilla-*.jar"
 
-[mods.folkways_create]
-path = "build/libs/folkways-create-*.jar"
+[mods.plaa_create] # PLA: ADR-023 modid
+path = "build/libs/plaa-create-*.jar"
 
-[mods.folkways_modulargolems]
-path = "build/libs/folkways-modulargolems-*.jar"
+[mods.plaa_modulargolems] # PLA: ADR-023 modid
+path = "build/libs/plaa-modulargolems-*.jar"
 
 # The optional Folkways extension is installed beside its native mod only by Cookery profiles.
 [mods.folkways_cookery]
@@ -229,8 +235,13 @@ target = []
 
 # Measures folkways itself, mixins included; off unless BLOCKWRIGHT_COVERAGE=1 (npm run test:coverage).
 [coverage]
+<<<<<<< ours
 mods = ["folkways_core", "folkways_vanilla", "folkways_create", "folkways_modulargolems", "folkways_cookery"]
 sources = ["mods/core/src/main/java", "mods/vanilla/src/main/java", "mods/create/src/main/java", "mods/modulargolems/src/main/java", "mods/cookery/src/main/java"]
+=======
+mods = ["plaa_core", "plaa_vanilla", "plaa_create", "plaa_modulargolems"] # PLA: ADR-023 modid
+sources = ["mods/core/src/main/java", "mods/vanilla/src/main/java", "mods/create/src/main/java", "mods/modulargolems/src/main/java"]
+>>>>>>> theirs
 
 [profile.bench.neoforge]
 jvm_args = ["-Xmx3G"]

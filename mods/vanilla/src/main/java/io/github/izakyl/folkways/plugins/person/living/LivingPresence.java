@@ -129,6 +129,32 @@ final class LivingPresence implements Facing {
                     Modifier.multiply(Stats.WORK_SPEED, Mood.speed(mood.value)))));
     }
 
+
+    // PLA: WP-1 T2 — read-only handles for the diagnosis facade (PresenceViews). Never mutate through these.
+    Hunger bellyOf(UUID resident) {
+        return bellies.get(resident);
+    }
+
+    /**
+     * PLA: M2 N3 — the snapshot a resident's mood is read from, in the base's own numbers. Whether
+     * work was refused or is waiting is not known here yet, so those stay false and true; that keeps
+     * the mood from being inflated by information this layer does not have.
+     */
+    io.github.izakyl.folkways.plugins.mood.Mood.Needs needsOf(UUID resident) {
+        Hunger belly = bellies.get(resident);
+        if (belly == null) {
+            return null;
+        }
+        Rest tired = wear.get(resident);
+        int alertness = tired == null ? Rest.SPENT : tired.alertness();
+        return new io.github.izakyl.folkways.plugins.mood.Mood.Needs(
+            belly.foodLevel(), Hunger.MAX_FOOD_LEVEL, hunger.urgent(belly.foodLevel()),
+            alertness, Rest.SPENT, tiredness.urgent(alertness), false, true);
+    }
+
+    Beds bedClaims() {
+        return beds;
+    }
     private boolean unwritten;
 
     LivingPresence(Colony colony) {

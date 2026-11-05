@@ -4,8 +4,8 @@ plugins {
     id "maven-publish"
 }
 
-ext.modId = "folkways_modulargolems"
-ext.modName = "folkways-modulargolems"
+ext.modId = "plaa_modulargolems" // PLA: ADR-023 modid
+ext.modName = "plaa-modulargolems" // PLA: ADR-023 modid
 apply from: rootProject.file("gradle/mod.gradle")
 
 dependencies {

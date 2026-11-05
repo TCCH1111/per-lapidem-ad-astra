@@ -50,6 +50,9 @@ public final class PersonPlugin {
         modBus.addListener(Registering.class, event -> {
             PersonContent.enroll(event);
             LivingContent.enroll(event);
+            // PLA: M2 N6 鈥?the resident card carries the mood.
+            event.facing(io.github.izakyl.folkways.plugins.mood.MoodContent.ID,
+                colony -> java.util.Optional.of(new io.github.izakyl.folkways.plugins.mood.MoodFacing(colony)));
         });
         modBus.addListener(RegisteringUi.class, event -> {
             event.page(PersonContent.LOOKS.id(), LooksPage::new);

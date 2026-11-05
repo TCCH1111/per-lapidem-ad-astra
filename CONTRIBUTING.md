@@ -43,6 +43,7 @@ npm run setup
 ./gradlew build
 ```
 
+<<<<<<< ours
 `npm ci` installs the locked test dependencies. `npm run setup` downloads fixtures
 pinned in [`blockwright.toml`](blockwright.toml) and writes `.blockwright/mods.json`.
 **Run setup before the first Gradle invocation**; rerun it after changing pinned
@@ -63,6 +64,63 @@ reporting results; local Windows tests and Linux CI are separate validation runs
 ## Validation
 
 Start with checks that do not launch Minecraft:
+=======
+`npm run setup` must run before the first Gradle build. The build compiles against the
+optional integrations (Create, JEI, EMI, GeckoLib, Modular Golems, Sable, FTB Teams) from the jars it
+downloads, as pinned in `blockwright.toml`.
+
+## Layout
+
+Folkways is four mods, each a Gradle project under `mods/`, all registering under the `folkways` namespace (in this fork their modids are `plaa_*`, see NOTICE.md).
+`./gradlew build` builds them and gathers their jars into `build/libs/`.
+
+| Mod | Project | What it is |
+| --- | --- | --- |
+| Folkways Core (`plaa_core`) | `mods/core` | The engine and the screens; on its own it gives residents no work |
+| Folkways Vanilla (`plaa_vanilla`) | `mods/vanilla` | The work residents do among vanilla blocks |
+| Folkways × Create (`plaa_create`) | `mods/create` | What Create adds: rail, dispatch, and Create's side of building (track joints, schematic hand-off) |
+| Folkways × Modular Golems (`plaa_modulargolems`) | `mods/modulargolems` | Modular Golems as a second sort of resident |
+
+An integration whose absence would leave the colony misreading a world that has that mod (Sable's sub-levels,
+Create's contraptions in the way) belongs in the core; one that only adds something when its mod is there is a mod
+of its own.
+
+| Path | What lives there |
+| --- | --- |
+| `mods/core/.../base` | What every layer stands on: the declaration ledger, NBT persistence and the mixin plugin base |
+| `mods/core/.../effect` | Effects on residents (stats, flags, modifiers), with perks as one source of them under `effect/perk` |
+| `mods/core/.../library` | The resource library: data packs and loose files under `<gamedir>/folkways/` |
+| `mods/core/.../core` | The colony engine: residents, planning, labour and travel. `core/api` is the public API; `core/shell` fits the engine to the world, including other mods' structures (Sable, Create) |
+| `mods/core/.../front` | Screens, the colony book, networking and lessons. `front/api` is the public API |
+| `mods/vanilla/.../plugins` | Each feature (farming, pasture, build, …) as a plugin over the two APIs |
+| `mods/create/.../create` | Rail, dispatch and `create/build` |
+| `mods/modulargolems/.../modulargolems` | Golems as residents |
+| `mods/vanilla/src/main/resources/data/folkways/folkways/pattern` | Built-in building patterns (Starlark) |
+| `mods/*/src/gametest` | NeoForge game tests, run together by the root's `runGameTestServer` |
+| `tests/` | Blockwright and Playwright suites, listed below |
+
+## Tests
+
+| Command | What it runs |
+| --- | --- |
+| `npm run test:unit` | Fast Node tests for the TypeScript helpers; no game |
+| `npm run test:i18n` | Language keys, placeholders and notice/refusal coverage; no game or dependencies |
+| `npm run typecheck` | Type checks every TypeScript suite |
+| `./gradlew check` | Compiles everything and lints for tabs and trailing whitespace |
+| `./gradlew runGameTestServer` | NeoForge game tests in every `mods/*/src/gametest`, with all mods but Modular Golems loaded |
+| `npm run test:e2e` | End-to-end tests against a real client and server, on the ground |
+| `npm run test:sable` | The same against a [Sable](https://modrinth.com/mod/sable) ship: each twin spec's aboard test, and the ship-only specs |
+| `npm run visual:take` | Screenshots of screens, panels, looks and in-world visuals |
+| `npm run ponder:take` | Films every ponder scene in the colony book |
+| `npm run pattern:take` | Lays out each work pattern's gallery and shoots it |
+| `npm run bench:take` | Performance benchmarks on a large colony |
+| `npm run promo:take` | Films the promotional takes |
+
+The game suites download Minecraft, NeoForge and the fixture mods on first run, and their
+test servers accept the [Minecraft EULA](https://www.minecraft.net/eula) through
+`blockwright.toml`. Run them only if you accept it. Use `--workers=1` to limit resource
+use, for example:
+>>>>>>> theirs
 
 ```sh
 npm run test:unit
