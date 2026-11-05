@@ -1,5 +1,6 @@
 package io.github.izakyl.folkways.plugins.mood;
 
+import io.github.izakyl.folkways.front.api.notice.NoticeKind;
 import java.util.Locale;
 
 /**
@@ -11,7 +12,7 @@ import java.util.Locale;
  * belong here — a mood the player cannot act on is another number, and this project has already
  * paid for numbers nobody can act on (VERIFY-031, VERIFY-033).
  */
-public enum Mood {
+public enum Mood implements NoticeKind {
 
     /** Fed, rested, working: nothing to do. */
     CONTENT,
@@ -43,6 +44,11 @@ public enum Mood {
     }
 
     /** How the mood reads to a player: one line, and what to do about it. */
+    @Override
+    public String translationKey() {
+        return titleKey();
+    }
+
     public String titleKey() {
         return "folkways.mood." + name().toLowerCase(Locale.ROOT) + ".title";
     }
