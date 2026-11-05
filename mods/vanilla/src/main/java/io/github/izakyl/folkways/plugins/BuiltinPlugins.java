@@ -32,13 +32,11 @@ public final class BuiltinPlugins {
         PatrolPlugin.install(modBus);
         DamageControlPlugin.install(modBus);
         OrdersPlugin.install(modBus);
-<<<<<<< ours
         io.github.izakyl.folkways.plugins.supply.SupplyContent.install(modBus);
-=======
         // PLA: WP-4 T1 — steering zones (PLAN-003)
         SteeringPlugin.install(modBus);
         // PLA: WP-5 T1 — the colony's timetable (PLAN-004)
         HoursPlugin.install(modBus);
->>>>>>> theirs
+
     }
 }

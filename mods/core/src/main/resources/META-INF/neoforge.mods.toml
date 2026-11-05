@@ -73,7 +73,6 @@ versionRange = "[1.1.24,)"
 ordering = "AFTER"
 side = "CLIENT"
 
-<<<<<<< ours
 [[dependencies.${mod_id}]]
 modId = "jecharacters"
 type = "optional"
@@ -81,7 +80,7 @@ reason = "Display-name searches follow Just Enough Characters' spelling settings
 versionRange = "[4.5,)"
 ordering = "AFTER"
 side = "CLIENT"
-=======
+
 # PLA: ADR-023 modid — d12 R-FK-3: this fork and upstream Folkways cannot be installed together
 [[dependencies.${mod_id}]]
 modId = "folkways_core"
@@ -114,7 +113,7 @@ reason = "Per Lapidem ad Astra is a fork of Folkways; the two cannot share a wor
 versionRange = "[0,)"
 ordering = "NONE"
 side = "BOTH"
->>>>>>> theirs
+
 
 [[mixins]]
 config = "folkways.mixins.json"

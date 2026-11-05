@@ -43,28 +43,6 @@ npm run setup
 ./gradlew build
 ```
 
-<<<<<<< ours
-`npm ci` installs the locked test dependencies. `npm run setup` downloads fixtures
-pinned in [`blockwright.toml`](blockwright.toml) and writes `.blockwright/mods.json`.
-**Run setup before the first Gradle invocation**; rerun it after changing pinned
-fixtures. Gradle compiles against optional integration jars even when a particular
-test profile does not load them.
-
-The build gathers the nine mod jars in `build/libs/` and runtime LDLib2 in `build/deps/`.
-Each mod is a Gradle project under `mods/`; see [Mods](README.md#mods) for what each one does.
-
-For Windows, prepare a compatible source-built SDK using Blockwright's
-[local build instructions](https://github.com/IzakyL/blockwright/blob/master/CONTRIBUTING.md)
-and [Windows requirements](https://github.com/IzakyL/blockwright/blob/master/docs/environment.md#windows-development-candidate).
-Client tests require a logged-in Windows 11 x64 desktop with an OpenGL-capable GPU;
-use display device `auto` or `gpu`. After preparing `.blockwright/mods.json` with
-that SDK, build with `gradlew.bat`. Record the SDK revision and platform when
-reporting results; local Windows tests and Linux CI are separate validation runs.
-
-## Validation
-
-Start with checks that do not launch Minecraft:
-=======
 `npm run setup` must run before the first Gradle build. The build compiles against the
 optional integrations (Create, JEI, EMI, GeckoLib, Modular Golems, Sable, FTB Teams) from the jars it
 downloads, as pinned in `blockwright.toml`.
@@ -120,7 +98,6 @@ The game suites download Minecraft, NeoForge and the fixture mods on first run, 
 test servers accept the [Minecraft EULA](https://www.minecraft.net/eula) through
 `blockwright.toml`. Run them only if you accept it. Use `--workers=1` to limit resource
 use, for example:
->>>>>>> theirs
 
 ```sh
 npm run test:unit

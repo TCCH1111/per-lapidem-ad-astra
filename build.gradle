@@ -5,23 +5,10 @@ plugins {
 // The root builds no mod of its own: it hosts the modules needed by each GameTest suite.
 
 def modProjects = [
-<<<<<<< ours
-    folkways_core: ":core",
-    folkways_vanilla: ":vanilla",
-    folkways_create: ":create",
-    folkways_modulargolems: ":modulargolems",
-    folkways_cookery: ":cookery",
-    folkways_chiselsandbits: ":chiselsandbits",
-    folkways_rts: ":rts",
-    folkways_warfare: ":warfare",
-    folkways_tacz: ":tacz",
-    folkways_firefighting: ":firefighting",
-=======
     plaa_core: ":core", // PLA: ADR-023 modid
     plaa_vanilla: ":vanilla", // PLA: ADR-023 modid
     plaa_create: ":create", // PLA: ADR-023 modid
     plaa_modulargolems: ":modulargolems", // PLA: ADR-023 modid
->>>>>>> theirs
 ]
 modProjects.values().each { evaluationDependsOn(it) }
 
@@ -113,10 +100,7 @@ neoForge {
                     sourceSet mod.sourceSets.gameTestFixtures
                 }
                 if (warfareTests && path == ":vanilla") { sourceSet mod.sourceSets.warfareTest }
-                // Same-package construction tests belong to Vanilla's Java module.
-                if (path == ":vanilla" && chiselsTests && (!gameTestMod || gameTestMod == "chiselsandbits")) {
-                    sourceSet project(":chiselsandbits").sourceSets.gametest
-                }
+                // PLA: this fork does not build the chiselsandbits module.
                 if (suiteMods.containsKey(id) && path != ":chiselsandbits") {
                     sourceSet mod.sourceSets.gametest
                     if (rtsTests && path == ":vanilla") { sourceSet mod.sourceSets.rtsTest }

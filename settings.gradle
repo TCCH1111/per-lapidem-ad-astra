@@ -18,12 +18,9 @@ dependencyResolutionManagement {
 rootProject.name = "plaa" // PLA: ADR-023 modid
 
 // Each Folkways mod is a project of its own under mods/; the root runs them together for the game tests.
-["core", "vanilla", "create", "modulargolems", "cookery", "rts", "warfare", "tacz",
-    "firefighting", "chiselsandbits"].each { name ->
+// PLA: this fork ships four mods; upstream's other modules stay out of the build.
+["core", "vanilla", "create", "modulargolems"].each { name ->
     include ":${name}"
     project(":${name}").projectDir = file("mods/${name}")
 }
 
-// Client fixture used only by the offscreen combat promo profile.
-include ":capture"
-project(":capture").projectDir = file("tests/promo/capture")

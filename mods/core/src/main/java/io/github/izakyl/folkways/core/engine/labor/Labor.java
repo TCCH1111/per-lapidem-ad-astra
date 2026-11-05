@@ -102,7 +102,6 @@ public final class Labor {
                 if (!deserted || sites.containsKey(key)) {
                     visits.add(new Visit(colony, level, key, deserted));
                 }
-<<<<<<< ours
             }
         }
         int count = visits.size();
@@ -114,28 +113,18 @@ public final class Labor {
                 ColonyWays.advance(visit.colony(), visit.level());
                 ColonyLabor labor = sites.compute(visit.key(), (site, previous) -> previous == null
                     ? new ColonyLabor(visit.colony(), visit.level().dimension()) : previous.current());
+                // PLA: WP-4 T4b — the vetoes a plugin keeps for this colony, ALL when none does.
+                labor.standing(Vetoes.of(visit.colony().colonyId()));
                 labor.run(visit.level(), planFor(visit.colony().colonyId()));
                 if (labor.desertedLongEnough(visit.deserted(), visit.level().getGameTime())) {
                     sites.remove(visit.key()).close();
                     ColonyWays.forget(visit.colony().colonyId(), visit.level().dimension());
-=======
-                if (ColonyWays.advance(colony, level)) {
-                    asking++;
-                }
-                ColonyLabor labor = sites.compute(key, (site, previous) -> previous == null
-                    ? new ColonyLabor(colony, level.dimension()) : previous.current());
-                // PLA: WP-4 T4b — the zones a plugin keeps for this colony, ALL when none does.
-                labor.standing(Vetoes.of(colony.colonyId()));
-                labor.run(level, planFor(colony.colonyId()));
-                if (labor.desertedLongEnough(deserted, level.getGameTime())) {
-                    sites.remove(key).close();
-                    ColonyWays.forget(colony.colonyId(), level.dimension());
->>>>>>> theirs
                 }
             } finally {
                 TickBudget.closeSite();
             }
         }
+        siteCursor = count == 0 ? 0 : (start + 1) % count;
         siteCursor = count == 0 ? 0 : (start + 1) % count;
         sites.keySet().removeIf(site -> {
             if (registry.find(site.colony()).isPresent()) {
