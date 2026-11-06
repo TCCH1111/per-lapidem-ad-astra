@@ -13,8 +13,7 @@ import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 /**
- * PLA: M2 R1-2 — the sampling rule: two people working near each other warm to each other, and nobody
- * else does.
+ * PLA: M2 R1/R2 — who warms to whom, and who rubs whom the wrong way, in one sampling pass.
  */
 @EventBusSubscriber(modid = FolkwaysVanillaMod.ID, bus = EventBusSubscriber.Bus.MOD)
 @GameTestHolder(FolkwaysMod.MOD_ID)
@@ -35,16 +34,20 @@ public final class RelationContentGameTests {
         return new RelationContent.Spot(who, x, 64.0, 0.0, working);
     }
 
+    private static java.util.function.Predicate<UUID> never() {
+        return who -> false;
+    }
+
     @GameTest(template = TEMPLATE, timeoutTicks = 100)
     public static void workingSideBySideMakesFriends(GameTestHelper helper) {
         RelationState book = new RelationState();
         UUID one = UUID.randomUUID();
         UUID other = UUID.randomUUID();
 
-        int counted = RelationContent.sample(
-            List.of(spot(one, 0.0, true), spot(other, 3.0, true)), book, 0L);
+        RelationContent.Sample result = RelationContent.sample(
+            List.of(spot(one, 0.0, true), spot(other, 3.0, true)), book, 0L, never());
 
-        helper.assertTrue(counted == 1, "one pair was counted, got " + counted);
+        helper.assertTrue(result.companions() == 1, "one pair warmed, got " + result.companions());
         helper.assertTrue(book.bond(one, other) == 1 && book.bond(other, one) == 1,
             "and both sides remember it");
         helper.succeed();
@@ -58,10 +61,10 @@ public final class RelationContentGameTests {
         UUID third = UUID.randomUUID();
 
         helper.assertTrue(RelationContent.sample(
-            List.of(spot(one, 0.0, true), spot(other, 10.0, true)), book, 0L) == 0,
+            List.of(spot(one, 0.0, true), spot(other, 10.0, true)), book, 0L, never()).companions() == 0,
             "ten blocks apart is not working together");
         helper.assertTrue(RelationContent.sample(
-            List.of(spot(one, 0.0, true), spot(third, 1.0, false)), book, 0L) == 0,
+            List.of(spot(one, 0.0, true), spot(third, 1.0, false)), book, 0L, never()).companions() == 0,
             "and standing next to someone idle counts for nothing");
         helper.assertTrue(book.bond(one, other) == 0 && book.bond(one, third) == 0,
             "so no bonds were made");
@@ -75,8 +78,10 @@ public final class RelationContentGameTests {
         UUID other = UUID.randomUUID();
         List<RelationContent.Spot> near = List.of(spot(one, 0.0, true), spot(other, 2.0, true));
 
-        helper.assertTrue(RelationContent.sample(near, book, 0L) == 1, "the first sample counts");
-        helper.assertTrue(RelationContent.sample(near, book, 100L) == 0, "the next sample does not");
+        helper.assertTrue(RelationContent.sample(near, book, 0L, never()).companions() == 1,
+            "the first sample counts");
+        helper.assertTrue(RelationContent.sample(near, book, 100L, never()).companions() == 0,
+            "the next sample does not");
         helper.assertTrue(book.bond(one, other) == 1, "so the bond stays at one");
         helper.succeed();
     }
@@ -86,9 +91,55 @@ public final class RelationContentGameTests {
         RelationState book = new RelationState();
         UUID one = UUID.randomUUID();
         helper.assertTrue(RelationContent.sample(
-            List.of(spot(one, 0.0, true), spot(one, 1.0, true)), book, 0L) == 0,
+            List.of(spot(one, 0.0, true), spot(one, 1.0, true)), book, 0L, never()).companions() == 0,
             "the same resident twice is not a pair");
         helper.assertTrue(book.size(one) == 0, "and nothing was recorded");
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void aHardDayRubsOffOnWhoeverIsBesideIt(GameTestHelper helper) {
+        RelationState book = new RelationState();
+        UUID tried = UUID.randomUUID();
+        UUID other = UUID.randomUUID();
+
+        // The PRD's rule: being in a bad way makes people short with those beside them (R2-A).
+        RelationContent.Sample result = RelationContent.sample(
+            List.of(spot(tried, 0.0, true), spot(other, 3.0, true)), book, 0L,
+            who -> who.equals(tried));
+
+        helper.assertTrue(result.frictions() == 1, "the pair rubbed, got " + result.frictions());
+        helper.assertTrue(book.grudge(tried, other) == 1 && book.grudge(other, tried) == 1,
+            "and both remember the friction");
+        helper.assertTrue(book.bond(tried, other) == 1, "while the friendship still counted");
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void aGoodDayMakesNoFriction(GameTestHelper helper) {
+        RelationState book = new RelationState();
+        UUID one = UUID.randomUUID();
+        UUID other = UUID.randomUUID();
+
+        RelationContent.Sample result = RelationContent.sample(
+            List.of(spot(one, 0.0, true), spot(other, 3.0, true)), book, 0L, never());
+
+        helper.assertTrue(result.frictions() == 0, "nobody rubbed anybody, got " + result.frictions());
+        helper.assertTrue(book.grudge(one, other) == 0, "so no grudge was written");
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void frictionNeedsProximityToo(GameTestHelper helper) {
+        RelationState book = new RelationState();
+        UUID tried = UUID.randomUUID();
+        UUID other = UUID.randomUUID();
+
+        RelationContent.Sample result = RelationContent.sample(
+            List.of(spot(tried, 0.0, true), spot(other, 10.0, true)), book, 0L, who -> true);
+
+        helper.assertTrue(result.frictions() == 0, "ten blocks apart is not rubbing anybody");
+        helper.assertTrue(book.grudge(tried, other) == 0, "so no grudge was written");
         helper.succeed();
     }
 }

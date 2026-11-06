@@ -58,8 +58,10 @@ public final class RelationContent {
      *
      * @return how many pairs the book accepted this sample, which the tests and the diagnostics read
      */
-    public static int sample(List<Spot> spots, RelationState book, long now) {
-        int counted = 0;
+    public static Sample sample(List<Spot> spots, RelationState book, long now,
+            java.util.function.Predicate<UUID> strained) {
+        int companions = 0;
+        int frictions = 0;
         double reach = NEARBY * NEARBY;
         for (int i = 0; i < spots.size(); i++) {
             Spot one = spots.get(i);
@@ -80,11 +82,31 @@ public final class RelationContent {
                 boolean forwards = book.touch(one.who(), other.who(), now);
                 boolean backwards = book.touch(other.who(), one.who(), now);
                 if (forwards || backwards) {
-                    counted++;
+                    companions++;
+                }
+                // PLA: M2 R2-2 — a hard day rubs off on whoever is standing next to it.
+                if (strained.test(one.who()) || strained.test(other.who())) {
+                    boolean badForwards = book.friction(one.who(), other.who(), now);
+                    boolean badBackwards = book.friction(other.who(), one.who(), now);
+                    if (badForwards || badBackwards) {
+                        frictions++;
+                    }
                 }
             }
         }
-        return counted;
+        return new Sample(companions, frictions);
+    }
+
+    /** What one sampling pass saw: pairs that warmed to each other, and pairs that rubbed. */
+    public record Sample(int companions, int frictions) {
+    }
+
+    /** Whether somebody is having a hard enough day to be short with the people beside them. */
+    static boolean strained(Colony colony, UUID who) {
+        return io.github.izakyl.folkways.plugins.person.living.PresenceViews.mood(colony, who)
+            .map(mood -> mood == io.github.izakyl.folkways.plugins.mood.Mood.STRESSED
+                || mood == io.github.izakyl.folkways.plugins.mood.Mood.DESPERATE)
+            .orElse(false);
     }
 
     /** Reads the colony's residents out of every level they may stand in. */
@@ -174,7 +196,7 @@ public final class RelationContent {
                 long now = server.getTickCount();
                 if (now % SAMPLE_TICKS == 0) {
                     List<Spot> spots = spotsOf(colony, server);
-                    sample(spots, book, now);
+                    sample(spots, book, now, who -> strained(colony, who));
                     BESIDE.put(colony.id(), beside(spots));
                 }
                 if (now % PRUNE_TICKS == 0) {

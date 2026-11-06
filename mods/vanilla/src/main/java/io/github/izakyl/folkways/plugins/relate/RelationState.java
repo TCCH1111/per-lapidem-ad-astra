@@ -31,6 +31,9 @@ public final class RelationState {
     /** Half a game hour, so two residents who pass each other once do not become friends. */
     public static final long TOUCH_TICKS = 500L;
 
+    /** Marks a moment that never happened, so the first bond or grudge is not blocked by a cooldown. */
+    private static final long NEVER = -1L;
+
     /** From the PRD's bands: acquainted at ten, friend at forty. */
     public static final int ACQUAINTED = 10;
     public static final int FRIEND = 40;
@@ -43,6 +46,7 @@ public final class RelationState {
     private static final String TAG_TARGET = "t";
     private static final String TAG_BOND = "b";
     private static final String TAG_GRUDGE = "g";
+    private static final String TAG_GRUDGE_LAST = "gl";
     private static final String TAG_LAST = "l";
     private static final String TAG_SHARED = "sh";
 
@@ -50,7 +54,7 @@ public final class RelationState {
     private final Map<UUID, Map<UUID, Bond>> book = new HashMap<>();
 
     /** One side of one relationship. */
-    public record Bond(UUID target, int bond, int grudge, long lastTouch, int shared) {
+    public record Bond(UUID target, int bond, int grudge, long lastTouch, long lastGrudge, int shared) {
     }
 
     /** A row of the book, flattened for saving. */
@@ -68,16 +72,17 @@ public final class RelationState {
         }
         Map<UUID, Bond> known = book.computeIfAbsent(subject, id -> new HashMap<>());
         Bond before = known.get(target);
-        if (before != null && now - before.lastTouch() < TOUCH_TICKS) {
+        if (before != null && before.lastTouch() != NEVER && now - before.lastTouch() < TOUCH_TICKS) {
             return false;
         }
         int next = before == null ? 1 : Math.min(100, before.bond() + 1);
         int grudge = before == null ? 0 : before.grudge();
+        long lastGrudge = before == null ? NEVER : before.lastGrudge();
         int shared = before == null ? 0 : before.shared();
         if (before == null) {
             makeRoomFor(known);
         }
-        known.put(target, new Bond(target, next, grudge, now, shared));
+        known.put(target, new Bond(target, next, grudge, now, lastGrudge, shared));
         return true;
     }
 
@@ -89,7 +94,8 @@ public final class RelationState {
         }
         Bond before = known.get(target);
         if (before != null) {
-            known.put(target, new Bond(target, before.bond(), before.grudge(), now, Math.min(255, before.shared() + 1)));
+            known.put(target, new Bond(target, before.bond(), before.grudge(), now, before.lastGrudge(),
+                Math.min(255, before.shared() + 1)));
         }
     }
 
@@ -99,7 +105,7 @@ public final class RelationState {
         }
         Map<UUID, Bond> known = book.computeIfAbsent(subject, id -> new HashMap<>());
         Bond before = known.get(target);
-        if (before != null && now - before.lastTouch() < TOUCH_TICKS) {
+        if (before != null && before.lastGrudge() != NEVER && now - before.lastGrudge() < TOUCH_TICKS) {
             return false;
         }
         int bond = before == null ? 0 : before.bond();
@@ -108,7 +114,7 @@ public final class RelationState {
         if (before == null) {
             makeRoomFor(known);
         }
-        known.put(target, new Bond(target, bond, grudge, now, shared));
+        known.put(target, new Bond(target, bond, grudge, before == null ? NEVER : before.lastTouch(), now, shared));
         return true;
     }
 
@@ -207,6 +213,7 @@ public final class RelationState {
                 .integer(TAG_BOND, row.bond().bond())
                 .integer(TAG_GRUDGE, row.bond().grudge())
                 .longValue(TAG_LAST, row.bond().lastTouch())
+                .longValue(TAG_GRUDGE_LAST, row.bond().lastGrudge())
                 .integer(TAG_SHARED, row.bond().shared())
                 .tag())
             .tag();
@@ -222,10 +229,11 @@ public final class RelationState {
             }
             int bond = one.integer(TAG_BOND).orElse(0);
             int grudge = one.integer(TAG_GRUDGE).orElse(0);
+            long lastGrudge = one.longValue(TAG_GRUDGE_LAST).orElse(0L);
             long last = one.longValue(TAG_LAST).orElse(0L);
             int shared = one.integer(TAG_SHARED).orElse(0);
             state.book.computeIfAbsent(subject.get(), id -> new HashMap<>())
-                .put(target.get(), new Bond(target.get(), bond, grudge, last, shared));
+                .put(target.get(), new Bond(target.get(), bond, grudge, last, lastGrudge, shared));
         }
         return state;
     }
