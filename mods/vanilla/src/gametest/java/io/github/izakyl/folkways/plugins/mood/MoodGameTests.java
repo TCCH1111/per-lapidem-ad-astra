@@ -33,7 +33,7 @@ public final class MoodGameTests {
     }
 
     private static Mood.Needs needs(int food, int alertness, boolean refused, boolean waiting) {
-        return new Mood.Needs(food, FULL, false, alertness, RESTED, false, refused, waiting);
+        return new Mood.Needs(food, FULL, false, alertness, RESTED, false, refused, waiting, false);
     }
 
     @GameTest(template = TEMPLATE, timeoutTicks = 100)
@@ -45,8 +45,8 @@ public final class MoodGameTests {
 
     @GameTest(template = TEMPLATE, timeoutTicks = 100)
     public static void aNeedTheBaseCallsUrgentIsDesperate(GameTestHelper helper) {
-        Mood.Needs starving = new Mood.Needs(2, FULL, true, RESTED, RESTED, false, false, true);
-        Mood.Needs awake = new Mood.Needs(FULL, FULL, false, 1, RESTED, true, false, true);
+        Mood.Needs starving = new Mood.Needs(2, FULL, true, RESTED, RESTED, false, false, true, false);
+        Mood.Needs awake = new Mood.Needs(FULL, FULL, false, 1, RESTED, true, false, true, false);
         helper.assertTrue(Mood.of(starving) == Mood.DESPERATE, "urgent hunger outranks everything");
         helper.assertTrue(Mood.of(awake) == Mood.DESPERATE, "as does urgent weariness");
         helper.succeed();
@@ -84,6 +84,20 @@ public final class MoodGameTests {
             }
         }
         helper.assertTrue(Mood.of(null) == Mood.CONTENT, "no snapshot reads as content");
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void companyIsWorthSomething(GameTestHelper helper) {
+        // PLA: M2 R1-3 — no work queued is uneasy, unless a friend is working beside them.
+        Mood.Needs alone = new Mood.Needs(FULL, FULL, false, RESTED, RESTED, false, false, false, false);
+        Mood.Needs together = new Mood.Needs(FULL, FULL, false, RESTED, RESTED, false, false, false, true);
+        helper.assertTrue(Mood.of(alone) == Mood.WORRIED, "no work and nobody about is unease");
+        helper.assertTrue(Mood.of(together) == Mood.CONTENT, "but a friend beside them is enough");
+
+        // It must not paper over a real need.
+        Mood.Needs starving = new Mood.Needs(2, FULL, true, RESTED, RESTED, false, false, true, true);
+        helper.assertTrue(Mood.of(starving) == Mood.DESPERATE, "urgent hunger outranks company");
         helper.succeed();
     }
 }

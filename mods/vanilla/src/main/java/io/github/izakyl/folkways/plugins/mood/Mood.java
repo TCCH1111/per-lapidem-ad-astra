@@ -37,10 +37,11 @@ public enum Mood implements NoticeKind {
      * @param restUrgent   the level the base treats as needing sleep now
      * @param workRefused  work was refused for this resident since the last look
      * @param workWaiting  there is work on the colony's plan waiting to be taken
+     * @param amongFriends a mutual friend is working beside them right now
      */
     public record Needs(int foodLevel, int foodFull, boolean foodUrgent,
                         int alertness, int restSpent, boolean restUrgent,
-                        boolean workRefused, boolean workWaiting) {
+                        boolean workRefused, boolean workWaiting, boolean amongFriends) {
     }
 
     /** How the mood reads to a player: one line, and what to do about it. */
@@ -76,7 +77,12 @@ public enum Mood implements NoticeKind {
         }
         boolean gettingLow = needs.foodFull() > 0 && needs.foodLevel() * 2 <= needs.foodFull();
         boolean wearing = needs.restSpent() > 0 && needs.alertness() * 2 <= needs.restSpent();
-        if (gettingLow || wearing || !needs.workWaiting()) {
+        if (gettingLow || wearing) {
+            return WORRIED;
+        }
+        // PLA: M2 R1-3 — company is worth something: a resident with a friend at their side does not
+        // grow uneasy merely because no work is queued.
+        if (!needs.workWaiting() && !needs.amongFriends()) {
             return WORRIED;
         }
         return CONTENT;

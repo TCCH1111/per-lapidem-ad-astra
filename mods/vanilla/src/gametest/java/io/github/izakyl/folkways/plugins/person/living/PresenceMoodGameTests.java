@@ -33,8 +33,8 @@ public final class PresenceMoodGameTests {
 
     @GameTest(template = TEMPLATE, timeoutTicks = 100)
     public static void theReadOutFollowsTheNeeds(GameTestHelper helper) {
-        Mood.Needs full = new Mood.Needs(20, 20, false, 1200, 1200, false, false, true);
-        Mood.Needs hungry = new Mood.Needs(4, 20, true, 1200, 1200, false, false, true);
+        Mood.Needs full = new Mood.Needs(20, 20, false, 1200, 1200, false, false, true, false);
+        Mood.Needs hungry = new Mood.Needs(4, 20, true, 1200, 1200, false, false, true, false);
         helper.assertTrue(PresenceViews.moodOf(full) == Mood.CONTENT, "fed and rested reads content");
         helper.assertTrue(PresenceViews.moodOf(hungry) == Mood.DESPERATE, "urgent hunger reads desperate");
         helper.assertTrue(PresenceViews.moodOf(null) == Mood.CONTENT, "no snapshot at all reads content");

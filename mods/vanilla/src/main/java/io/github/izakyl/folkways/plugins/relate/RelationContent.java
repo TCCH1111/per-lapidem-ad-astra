@@ -9,10 +9,13 @@ import io.github.izakyl.folkways.front.api.Enrollment;
 import io.github.izakyl.folkways.front.api.Registering;
 import io.github.izakyl.folkways.core.api.Declaring;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.server.level.ServerLevel;
@@ -39,6 +42,9 @@ public final class RelationContent {
 
     /** Once a game day: forget anyone who is no longer here. */
     public static final int PRUNE_TICKS = 24_000;
+
+    /** colony → who → who they were working beside at the last sample. */
+    private static final Map<UUID, Map<UUID, Set<UUID>>> BESIDE = new ConcurrentHashMap<>();
 
     private RelationContent() {
     }
@@ -103,6 +109,55 @@ public final class RelationContent {
         return List.copyOf(spots);
     }
 
+    /**
+     * True when a mutual friend was working beside this resident at the last sample.
+     *
+     * <p>Read from the snapshot rather than the world: a resident card can be opened at any moment and
+     * must not walk every level to answer one question.
+     */
+    public static boolean amongFriends(Colony colony, UUID who) {
+        if (colony == null || who == null) {
+            return false;
+        }
+        Map<UUID, Set<UUID>> near = BESIDE.get(colony.id());
+        if (near == null) {
+            return false;
+        }
+        Set<UUID> around = near.get(who);
+        if (around == null || around.isEmpty()) {
+            return false;
+        }
+        RelationState book = colony.service(RelationState.ID, RelationState.class).orElse(null);
+        return book != null && around.stream().anyMatch(other -> book.mutualFriends(who, other));
+    }
+
+    /** Who was beside whom in one sample, both directions. */
+    static Map<UUID, Set<UUID>> beside(List<Spot> spots) {
+        Map<UUID, Set<UUID>> out = new HashMap<>();
+        double reach = NEARBY * NEARBY;
+        for (int i = 0; i < spots.size(); i++) {
+            Spot one = spots.get(i);
+            if (!one.working()) {
+                continue;
+            }
+            for (int j = i + 1; j < spots.size(); j++) {
+                Spot other = spots.get(j);
+                if (!other.working() || one.who().equals(other.who())) {
+                    continue;
+                }
+                double dx = one.x() - other.x();
+                double dy = one.y() - other.y();
+                double dz = one.z() - other.z();
+                if (dx * dx + dy * dy + dz * dz > reach) {
+                    continue;
+                }
+                out.computeIfAbsent(one.who(), id -> new HashSet<>()).add(other.who());
+                out.computeIfAbsent(other.who(), id -> new HashSet<>()).add(one.who());
+            }
+        }
+        return out;
+    }
+
     public static void enroll(Registering registering) {
         registering.enrollment(RelationState.ID, new Enrollment(List.of()));
     }
@@ -112,10 +167,13 @@ public final class RelationContent {
             Colony colony = scope.colony();
             RelationState book = RelationState.load(Reader.of(colony.kept(RelationState.ID)));
             scope.share(book);
+            scope.closed(closing -> BESIDE.remove(colony.id()));
             scope.tick(server -> {
                 long now = server.getTickCount();
                 if (now % SAMPLE_TICKS == 0) {
-                    sample(spotsOf(colony, server), book, now);
+                    List<Spot> spots = spotsOf(colony, server);
+                    sample(spots, book, now);
+                    BESIDE.put(colony.id(), beside(spots));
                 }
                 if (now % PRUNE_TICKS == 0) {
                     Set<UUID> present = new HashSet<>();

@@ -46,7 +46,8 @@ public final class PresenceViews {
             return java.util.Optional.empty();
         }
         return colony.service(LivingContent.ID, LivingPresence.class)
-            .map(presence -> presence.needsOf(resident))
+            .map(presence -> presence.needsOf(resident,
+                io.github.izakyl.folkways.plugins.relate.RelationContent.amongFriends(colony, resident)))
             .map(PresenceViews::moodOf);
     }
 
