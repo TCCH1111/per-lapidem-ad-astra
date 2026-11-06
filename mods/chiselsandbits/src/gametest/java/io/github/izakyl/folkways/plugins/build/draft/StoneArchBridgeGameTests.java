@@ -36,7 +36,7 @@ public final class StoneArchBridgeGameTests {
 
     @GameTest(template = "empty", timeoutTicks = 200)
     public static void stoneArchBridgeDrawsInBothFrames(GameTestHelper helper) throws Exception {
-        var id = ResourceLocation.parse("folkways_chiselsandbits:stone_arch_bridge");
+        var id = ResourceLocation.parse("plaa_chiselsandbits:stone_arch_bridge");
         Pattern pattern = Patterns.find(id).orElseThrow();
         helper.assertValueEqual(pattern.detail(), "bits", "integration pattern uses bits");
         for (String language : List.of("en_us", "zh_cn", "zh_hk", "zh_tw")) {

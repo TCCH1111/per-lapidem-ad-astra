@@ -31,7 +31,7 @@ public final class CreateCandBPlacementGameTests {
     public static void createPrintingKeepsEveryCloisterDraftVoxel(GameTestHelper helper) {
         helper.assertValueEqual(SchematicPlacement.adapter().getClass().getName(),
             "io.github.izakyl.folkways.create.build.CreateSchematicPlacement", "the real Create adapter is installed");
-        var pattern = Patterns.find(ResourceLocation.parse("folkways_chiselsandbits:gothic_cloister")).orElseThrow();
+        var pattern = Patterns.find(ResourceLocation.parse("plaa_chiselsandbits:gothic_cloister")).orElseThrow();
         CompoundTag settings = new CompoundTag();
         for (var setting : pattern.knobs().settings()) {
             if (setting instanceof Schema.Setting.Items items) {

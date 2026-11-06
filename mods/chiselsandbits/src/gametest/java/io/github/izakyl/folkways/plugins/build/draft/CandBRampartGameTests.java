@@ -37,7 +37,7 @@ public final class CandBRampartGameTests {
 
     @GameTest(template = "empty", timeoutTicks = 200)
     public static void rampartDrawsInBothFrames(GameTestHelper helper) throws Exception {
-        var id = ResourceLocation.parse("folkways_chiselsandbits:rampart");
+        var id = ResourceLocation.parse("plaa_chiselsandbits:rampart");
         Pattern pattern = Patterns.find(id).orElseThrow();
         helper.assertValueEqual(pattern.detail(), "bits", "integration pattern uses bits");
         for (String language : List.of("en_us", "zh_cn", "zh_hk", "zh_tw")) {

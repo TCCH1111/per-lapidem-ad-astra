@@ -36,7 +36,7 @@ public final class CandBGalleryGameTests {
 
     @GameTest(template = "empty", timeoutTicks = 200)
     public static void curvedGalleryDrawsPathAndRotatedDefaults(GameTestHelper helper) throws Exception {
-        var pattern = Patterns.find(ResourceLocation.parse("folkways_chiselsandbits:curved_gallery")).orElseThrow();
+        var pattern = Patterns.find(ResourceLocation.parse("plaa_chiselsandbits:curved_gallery")).orElseThrow();
         helper.assertValueEqual(pattern.detail(), "bits", "integration detail");
         for (String language : List.of("en_us", "zh_cn", "zh_hk", "zh_tw")) {
             var words = pattern.face().words().get(language);

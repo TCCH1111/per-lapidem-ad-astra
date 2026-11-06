@@ -72,7 +72,7 @@ public final class CandBTemplateGameTests {
 
     @GameTest(template = "empty", timeoutTicks = 200)
     public static void pavilionDrawsContinuousRoofInBothFrames(GameTestHelper helper) throws Exception {
-        var id = ResourceLocation.parse("folkways_chiselsandbits:pavilion");
+        var id = ResourceLocation.parse("plaa_chiselsandbits:pavilion");
         Pattern pattern = Patterns.find(id).orElseThrow();
         helper.assertValueEqual(pattern.detail(), "bits", "integration pattern uses bits");
         for (String language : List.of("en_us", "zh_cn", "zh_hk", "zh_tw")) {
@@ -532,7 +532,7 @@ public final class CandBTemplateGameTests {
         var tip = arcFrame.at(0.5, 6.3, 2);
         helper.assertTrue(grown.holds(tip.x, tip.y, tip.z)
             && grown.bounds().maxY() + 1 > tip.y, "grown pointed tip remains inside its bounds");
-        var id = ResourceLocation.parse("folkways_chiselsandbits:gothic_cloister");
+        var id = ResourceLocation.parse("plaa_chiselsandbits:gothic_cloister");
         Pattern pattern = Patterns.find(id).orElseThrow();
         helper.assertValueEqual(pattern.detail(), "bits", "integration pattern has bit detail");
         for (String language : List.of("en_us", "zh_cn", "zh_hk", "zh_tw")) {
@@ -712,7 +712,7 @@ public final class CandBTemplateGameTests {
     private static void galleryBitsDrawingTimings(GameTestHelper helper) throws Exception {
         for (String name : List.of("torii", "rotunda", "gothic_cloister", "pavilion",
                 "stone_arch_bridge", "rampart", "curved_gallery")) {
-            Pattern pattern = Patterns.find(ResourceLocation.parse("folkways_chiselsandbits:" + name))
+            Pattern pattern = Patterns.find(ResourceLocation.parse("plaa_chiselsandbits:" + name))
                 .orElseThrow();
             Hint hint = switch (name) {
                 case "stone_arch_bridge" -> new Hint.Zone(BlockPos.ZERO, new BlockPos(2, 8, 21));

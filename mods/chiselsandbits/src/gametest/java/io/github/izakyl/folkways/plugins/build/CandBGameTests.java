@@ -109,7 +109,7 @@ public final class CandBGameTests {
     public static void creativePrintingKeepsEveryDraftVoxel(GameTestHelper helper) {
         var level = helper.getLevel();
         var pattern = io.github.izakyl.folkways.plugins.build.draft.Patterns
-            .find(ResourceLocation.parse("folkways_chiselsandbits:pavilion")).orElseThrow();
+            .find(ResourceLocation.parse("plaa_chiselsandbits:pavilion")).orElseThrow();
         CompoundTag settings = new CompoundTag();
         for (var setting : pattern.knobs().settings()) {
             if (setting instanceof io.github.izakyl.folkways.front.api.Schema.Setting.Items items) {
