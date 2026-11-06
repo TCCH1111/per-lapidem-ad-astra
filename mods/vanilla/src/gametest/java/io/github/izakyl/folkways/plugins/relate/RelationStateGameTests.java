@@ -129,4 +129,49 @@ public final class RelationStateGameTests {
         helper.assertTrue(book.mutualFriends(one, other), "and both sides make it mutual");
         helper.succeed();
     }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void frictionIsItsOwnAxis(GameTestHelper helper) {
+        RelationState book = new RelationState();
+        UUID one = UUID.randomUUID();
+        UUID other = UUID.randomUUID();
+
+        // A friendship and a grudge can live in the same head: the PRD insists on it.
+        book.touch(one, other, 0L);
+        helper.assertTrue(book.friction(one, other, RelationState.TOUCH_TICKS), "a bad moment counts");
+        helper.assertTrue(!book.friction(one, other, RelationState.TOUCH_TICKS + 1),
+            "but not twice in one half hour");
+        helper.assertTrue(book.bond(one, other) == 1,
+            "the friendship is untouched, got " + book.bond(one, other));
+        helper.assertTrue(book.grudge(one, other) == 1,
+            "and the grudge is its own number, got " + book.grudge(one, other));
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void resentmentNeedsForty(GameTestHelper helper) {
+        RelationState book = new RelationState();
+        UUID one = UUID.randomUUID();
+        UUID other = UUID.randomUUID();
+        for (int i = 0; i < RelationState.RESENTMENT; i++) {
+            book.friction(one, other, i * RelationState.TOUCH_TICKS);
+        }
+        helper.assertTrue(book.resents(one, other), "forty bad moments make a resentment");
+        helper.assertTrue(!book.mutualResentment(one, other), "one side is not both sides");
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void aGrudgeSurvivesASave(GameTestHelper helper) {
+        RelationState book = new RelationState();
+        UUID one = UUID.randomUUID();
+        UUID other = UUID.randomUUID();
+        book.friction(one, other, 0L);
+        book.friction(one, other, RelationState.TOUCH_TICKS);
+        RelationState back = RelationState.load(Reader.of(book.save()));
+        helper.assertTrue(back.grudge(one, other) == 2,
+            "the grudge came back, got " + back.grudge(one, other));
+        helper.assertTrue(back.bond(one, other) == 0, "and it did not turn into a friendship");
+        helper.succeed();
+    }
 }
