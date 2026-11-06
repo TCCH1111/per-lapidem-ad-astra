@@ -140,7 +140,8 @@ final class LivingPresence implements Facing {
      * work was refused or is waiting is not known here yet, so those stay false and true; that keeps
      * the mood from being inflated by information this layer does not have.
      */
-    io.github.izakyl.folkways.plugins.mood.Mood.Needs needsOf(UUID resident, boolean amongFriends) {
+    io.github.izakyl.folkways.plugins.mood.Mood.Needs needsOf(UUID resident, boolean amongFriends,
+            boolean amongRivals) {
         Hunger belly = bellies.get(resident);
         if (belly == null) {
             return null;
@@ -149,7 +150,7 @@ final class LivingPresence implements Facing {
         int alertness = tired == null ? Rest.SPENT : tired.alertness();
         return new io.github.izakyl.folkways.plugins.mood.Mood.Needs(
             belly.foodLevel(), Hunger.MAX_FOOD_LEVEL, hunger.urgent(belly.foodLevel()),
-            alertness, Rest.SPENT, tiredness.urgent(alertness), false, true, amongFriends);
+            alertness, Rest.SPENT, tiredness.urgent(alertness), false, true, amongFriends, amongRivals);
     }
 
     Beds bedClaims() {

@@ -47,7 +47,8 @@ public final class PresenceViews {
         }
         return colony.service(LivingContent.ID, LivingPresence.class)
             .map(presence -> presence.needsOf(resident,
-                io.github.izakyl.folkways.plugins.relate.RelationContent.amongFriends(colony, resident)))
+                io.github.izakyl.folkways.plugins.relate.RelationContent.amongFriends(colony, resident),
+                io.github.izakyl.folkways.plugins.relate.RelationContent.amongRivals(colony, resident)))
             .map(PresenceViews::moodOf);
     }
 

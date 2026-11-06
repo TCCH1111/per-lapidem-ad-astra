@@ -1476,5 +1476,7 @@
   "folkways.zone.kind.allow_only": "僅限指定",
   "folkways.zone.kind.limit": "限人數",
   "folkways.relate.companion": "有個朋友在旁邊一起幹活",
-  "folkways.relate.companion_advice": "把他們排在一起，就不會因為暫時沒活而發愁"
+  "folkways.relate.companion_advice": "把他們排在一起，就不會因為暫時沒活而發愁",
+  "folkways.relate.rival": "和唔啱嘴形嘅人一齊做嘢，心裏唔舒服",
+  "folkways.relate.rival_advice": "將佢哋分開放"
 }

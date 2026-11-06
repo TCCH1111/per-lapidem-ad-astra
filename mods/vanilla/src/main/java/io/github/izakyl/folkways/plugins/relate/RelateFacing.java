@@ -23,7 +23,8 @@ public final class RelateFacing implements Facing {
 
     @Override
     public List<Line> lookLines(UUID resident, ColonyView view) {
-        return linesFor(RelationContent.amongFriends(colony, resident));
+        return linesFor(RelationContent.amongFriends(colony, resident),
+            RelationContent.amongRivals(colony, resident));
     }
 
     /**
@@ -32,7 +33,10 @@ public final class RelateFacing implements Facing {
      * <p>Two lines when it applies: what is happening, and what the player may do about it. Silence when
      * it does not, because a card that always says something teaches the player to stop reading it.
      */
-    static List<Line> linesFor(boolean amongFriends) {
+    static List<Line> linesFor(boolean amongFriends, boolean amongRivals) {
+        if (amongRivals) {
+            return List.of(Line.of(Relate.RIVAL), Line.of(Relate.RIVAL_ADVICE));
+        }
         return amongFriends
             ? List.of(Line.of(Relate.COMPANION), Line.of(Relate.COMPANION_ADVICE))
             : List.of();

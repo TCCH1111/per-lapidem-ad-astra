@@ -38,10 +38,12 @@ public enum Mood implements NoticeKind {
      * @param workRefused  work was refused for this resident since the last look
      * @param workWaiting  there is work on the colony's plan waiting to be taken
      * @param amongFriends a mutual friend is working beside them right now
+     * @param amongRivals  somebody they resent is working beside them right now
      */
     public record Needs(int foodLevel, int foodFull, boolean foodUrgent,
                         int alertness, int restSpent, boolean restUrgent,
-                        boolean workRefused, boolean workWaiting, boolean amongFriends) {
+                        boolean workRefused, boolean workWaiting, boolean amongFriends,
+                        boolean amongRivals) {
     }
 
     /** How the mood reads to a player: one line, and what to do about it. */
@@ -82,6 +84,11 @@ public enum Mood implements NoticeKind {
         }
         // PLA: M2 R1-3 — company is worth something: a resident with a friend at their side does not
         // grow uneasy merely because no work is queued.
+        // PLA: M2 R2-3 — company and company are not the same: a friend at their side lifts the quiet
+        // spell, somebody they resent puts it back.
+        if (needs.amongRivals()) {
+            return WORRIED;
+        }
         if (!needs.workWaiting() && !needs.amongFriends()) {
             return WORRIED;
         }

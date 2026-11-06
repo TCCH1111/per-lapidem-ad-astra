@@ -153,6 +153,28 @@ public final class RelationContent {
         return book != null && around.stream().anyMatch(other -> book.mutualFriends(who, other));
     }
 
+    /**
+     * True when somebody this resident resents was working beside them at the last sample.
+     *
+     * <p>One-sided on purpose: the resident's own mood is about how they feel towards the person next
+     * to them, not about whether that feeling is returned.
+     */
+    public static boolean amongRivals(Colony colony, UUID who) {
+        if (colony == null || who == null) {
+            return false;
+        }
+        Map<UUID, Set<UUID>> near = BESIDE.get(colony.id());
+        if (near == null) {
+            return false;
+        }
+        Set<UUID> around = near.get(who);
+        if (around == null || around.isEmpty()) {
+            return false;
+        }
+        RelationState book = colony.service(RelationState.ID, RelationState.class).orElse(null);
+        return book != null && around.stream().anyMatch(other -> book.resents(who, other));
+    }
+
     /** Who was beside whom in one sample, both directions. */
     static Map<UUID, Set<UUID>> beside(List<Spot> spots) {
         Map<UUID, Set<UUID>> out = new HashMap<>();

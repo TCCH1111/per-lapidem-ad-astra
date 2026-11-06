@@ -1476,5 +1476,7 @@
   "folkways.zone.kind.allow_only": "kept for some",
   "folkways.zone.kind.limit": "limited",
   "folkways.relate.companion": "A friend is working beside them",
-  "folkways.relate.companion_advice": "Posted together, they stop fretting over quiet spells"
+  "folkways.relate.companion_advice": "Posted together, they stop fretting over quiet spells",
+  "folkways.relate.rival": "They are working beside someone they resent",
+  "folkways.relate.rival_advice": "Post the two apart when you can"
 }

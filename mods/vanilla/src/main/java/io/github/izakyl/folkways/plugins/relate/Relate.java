@@ -17,7 +17,13 @@ public enum Relate implements NoticeKind {
     COMPANION,
 
     /** What to do with that: keep them posted together. */
-    COMPANION_ADVICE;
+    COMPANION_ADVICE,
+
+    /** Somebody they resent is working beside them right now. */
+    RIVAL,
+
+    /** What to do with that: post them apart. */
+    RIVAL_ADVICE;
 
     @Override
     public String translationKey() {

@@ -34,10 +34,15 @@ public final class RelationFacingGameTests {
 
     @GameTest(template = TEMPLATE, timeoutTicks = 100)
     public static void theLineOnlyAppearsWithCompany(GameTestHelper helper) {
-        helper.assertTrue(RelateFacing.linesFor(false).isEmpty(),
+        helper.assertTrue(RelateFacing.linesFor(false, false).isEmpty(),
             "a resident working alone is not interesting");
-        List<Line> together = RelateFacing.linesFor(true);
+        List<Line> together = RelateFacing.linesFor(true, false);
         helper.assertTrue(together.size() == 2, "with a friend beside them the card says what and why");
+
+        Line first = RelateFacing.linesFor(false, true).get(0);
+        String rivalKey = Relate.RIVAL.translationKey();
+        helper.assertTrue(first instanceof Line.Said said && said.notice().key().equals(rivalKey),
+            "a rival beside them is reported as such, got " + first);
         helper.succeed();
     }
 
