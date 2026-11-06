@@ -34,7 +34,7 @@ public final class RelateFacing implements Facing {
      */
     static List<Line> linesFor(boolean amongFriends) {
         return amongFriends
-            ? List.of(Line.of(Companion.TOGETHER), Line.of(Companion.TOGETHER_ADVICE))
+            ? List.of(Line.of(Relate.COMPANION), Line.of(Relate.COMPANION_ADVICE))
             : List.of();
     }
 }

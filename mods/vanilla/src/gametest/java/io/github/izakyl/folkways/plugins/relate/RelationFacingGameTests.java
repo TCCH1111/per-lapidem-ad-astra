@@ -43,7 +43,7 @@ public final class RelationFacingGameTests {
 
     @GameTest(template = TEMPLATE, timeoutTicks = 100)
     public static void theLineHasWordsInTheLanguageTable(GameTestHelper helper) {
-        for (Companion one : Companion.values()) {
+        for (Relate one : Relate.values()) {
             String key = one.translationKey();
             String shown = Component.translatable(key).getString();
             helper.assertTrue(!shown.isBlank() && !shown.equals(key),
