@@ -28,6 +28,9 @@ public final class HealthContent {
     /** How often the book is written down, in ticks. */
     public static final int PERSIST_TICKS = 200;
 
+    /** One game day, the rhythm infection keeps. */
+    public static final int DAY_TICKS = 24_000;
+
     private HealthContent() {
     }
 
@@ -59,6 +62,17 @@ public final class HealthContent {
                 if (now % BLEED_TICKS == 0) {
                     for (UUID who : state.who()) {
                         state.bleed(who, BLEED_TICKS);
+                    }
+                }
+                if (now % DAY_TICKS == 0) {
+                    // PLA: M2 R1-1 — a day goes by: open wounds may turn, and what has turned deepens.
+                    for (UUID who : state.who()) {
+                        for (HealthState.Wound one : state.wounds(who)) {
+                            if (one.bleeds() && state.infection(who, one.part()) == 0) {
+                                state.maybeInfect(who, one.part(), server.overworld().random.nextDouble());
+                            }
+                        }
+                        state.progressInfection(who, 1);
                     }
                 }
                 if (now % PERSIST_TICKS == 0) {

@@ -124,4 +124,65 @@ public final class HealthStateGameTests {
         }
         helper.succeed();
     }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void infectionIsAPureFunctionOfTheRoll(GameTestHelper helper) {
+        // PLA: M2 R1-1 — a bad day turns a wound, a good one does not, and the same roll always agrees.
+        HealthState book = new HealthState();
+        UUID who = UUID.randomUUID();
+        book.wound(who, new HealthState.Wound("arm", "cut", 2, "wolf", 0L, false));
+
+        helper.assertTrue(book.maybeInfect(who, "arm", 0.01), "a low roll infects");
+        helper.assertTrue(book.infection(who, "arm") > 0, "and the part remembers it");
+        helper.assertTrue(!book.maybeInfect(who, "arm", 0.01), "but it does not turn twice");
+
+        HealthState other = new HealthState();
+        UUID clean = UUID.randomUUID();
+        other.wound(clean, new HealthState.Wound("leg", "cut", 2, "wolf", 0L, false));
+        helper.assertTrue(!other.maybeInfect(clean, "leg", 0.99), "a high roll leaves it alone");
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void infectionDeepensByTheDay(GameTestHelper helper) {
+        HealthState book = new HealthState();
+        UUID who = UUID.randomUUID();
+        book.wound(who, new HealthState.Wound("arm", "cut", 2, "wolf", 0L, false));
+        book.maybeInfect(who, "arm", 0.0);
+
+        int after = book.infection(who, "arm");
+        book.progressInfection(who, 3);
+        helper.assertTrue(book.infection(who, "arm") > after, "three days deepen it");
+        book.progressInfection(who, 1000);
+        helper.assertTrue(book.infection(who, "arm") == 100, "and it never passes a hundred");
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void deepInfectionCountsAsSevere(GameTestHelper helper) {
+        HealthState book = new HealthState();
+        UUID who = UUID.randomUUID();
+        book.wound(who, new HealthState.Wound("arm", "cut", 1, "wolf", 0L, false));
+        book.maybeInfect(who, "arm", 0.0);
+        helper.assertTrue(!book.severe(who), "a fresh infection is not yet severe");
+
+        book.progressInfection(who, HealthState.NECROTIC_AT / HealthState.INFECTION_GAIN_PER_DAY);
+        helper.assertTrue(book.necrotic(who), "past the threshold the flesh is dying");
+        helper.assertTrue(book.severe(who), "and the resident stops being given work");
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void infectionSurvivesASave(GameTestHelper helper) {
+        HealthState book = new HealthState();
+        UUID who = UUID.randomUUID();
+        book.wound(who, new HealthState.Wound("arm", "cut", 2, "wolf", 0L, false));
+        book.maybeInfect(who, "arm", 0.0);
+        book.progressInfection(who, 2);
+
+        HealthState back = HealthState.load(Reader.of(book.save()));
+        helper.assertTrue(back.infection(who, "arm") == book.infection(who, "arm"),
+            "the infection came back, got " + back.infection(who, "arm"));
+        helper.succeed();
+    }
 }

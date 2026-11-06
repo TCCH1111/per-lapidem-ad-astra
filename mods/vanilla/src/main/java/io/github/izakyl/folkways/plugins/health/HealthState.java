@@ -26,6 +26,15 @@ public final class HealthState {
     /** Full blood, in the same arbitrary unit the rest of the plugin uses. */
     public static final double MAX_BLOOD = 100.0;
 
+    /** Chance per day that an untreated open wound becomes infected. */
+    public static final double INFECTION_CHANCE_PER_DAY = 0.10;
+
+    /** How much infection an untreated infected wound gains per day. */
+    public static final int INFECTION_GAIN_PER_DAY = 6;
+
+    /** At this much infection the part is heading for necrosis (PRD-013's 60). */
+    public static final int NECROTIC_AT = 60;
+
     /** At or above this severity a wound is severe: the resident is not given planned work. */
     public static final int SEVERE_SEVERITY = 4;
 
@@ -56,6 +65,7 @@ public final class HealthState {
 
     private final Map<UUID, Double> blood = new HashMap<>();
     private final Map<UUID, List<Wound>> wounds = new HashMap<>();
+    private final Map<UUID, Map<String, Integer>> infections = new HashMap<>();
 
     public double blood(UUID who) {
         return blood.getOrDefault(who, MAX_BLOOD);
@@ -133,13 +143,71 @@ public final class HealthState {
                 return true;
             }
         }
-        return false;
+        return necrotic(who);
+    }
+
+    /**
+     * PLA: M2 R1-1 — an untreated wound may turn. The roll is taken as an argument rather than drawn
+     * here, so the rule is a pure function of its inputs and a test can say what happens on a bad day.
+     *
+     * @return true when the roll infected the part
+     */
+    public boolean maybeInfect(UUID who, String part, double roll) {
+        if (who == null || part == null || part.isBlank()) {
+            return false;
+        }
+        if (!woundAt(who, part).isPresent() || infection(who, part) > 0) {
+            return false;
+        }
+        if (roll >= INFECTION_CHANCE_PER_DAY) {
+            return false;
+        }
+        infections.computeIfAbsent(who, id -> new HashMap<>()).merge(part, 1, Integer::sum);
+        return true;
+    }
+
+    /** How infected one part is, from zero to a hundred. */
+    public int infection(UUID who, String part) {
+        Map<String, Integer> parts = infections.get(who);
+        if (parts == null) {
+            return 0;
+        }
+        return Math.max(0, Math.min(100, parts.getOrDefault(part, 0)));
+    }
+
+    public boolean infected(UUID who) {
+        Map<String, Integer> parts = infections.get(who);
+        return parts != null && parts.values().stream().anyMatch(value -> value > 0);
+    }
+
+    /** Lets infection deepen for a number of days, capped at a hundred. */
+    public void progressInfection(UUID who, int days) {
+        Map<String, Integer> parts = infections.get(who);
+        if (parts == null || days <= 0) {
+            return;
+        }
+        parts.replaceAll((part, value) -> Math.min(100, value + INFECTION_GAIN_PER_DAY * days));
+    }
+
+    /** Whether any part has reached the point where the flesh is dying. */
+    public boolean necrotic(UUID who) {
+        Map<String, Integer> parts = infections.get(who);
+        return parts != null && parts.values().stream().anyMatch(value -> value >= NECROTIC_AT);
+    }
+
+    private Optional<Wound> woundAt(UUID who, String part) {
+        List<Wound> list = wounds.get(who);
+        if (list == null) {
+            return Optional.empty();
+        }
+        return list.stream().filter(one -> one.part().equals(part)).findFirst();
     }
 
     /** Removes everything belonging to somebody who is no longer here. */
     public void forget(UUID who) {
         blood.remove(who);
         wounds.remove(who);
+        infections.remove(who);
     }
 
     public int size() {
@@ -152,6 +220,12 @@ public final class HealthState {
             int index = 0;
             for (Wound one : subject.getValue()) {
                 rows.add(new Entry(subject.getKey(), index++, one));
+            }
+        }
+        List<Infection> infectionRows = new ArrayList<>();
+        for (Map.Entry<UUID, Map<String, Integer>> subject : infections.entrySet()) {
+            for (Map.Entry<String, Integer> one : subject.getValue().entrySet()) {
+                infectionRows.add(new Infection(subject.getKey(), one.getKey(), one.getValue()));
             }
         }
         List<Vital> vitals = new ArrayList<>();
@@ -168,6 +242,11 @@ public final class HealthState {
                 .string(TAG_SOURCE, row.wound().source())
                 .longValue(TAG_SINCE, row.wound().since())
                 .flag(TAG_TREATED, row.wound().treated())
+                .tag())
+            .children(TAG_INFECTIONS, infectionRows, row -> Writer.of()
+                .uuid(TAG_WHO, row.who())
+                .string(TAG_PART, row.part())
+                .integer(TAG_INFECTION, row.amount())
                 .tag())
             .children(TAG_BLOOD, vitals, row -> Writer.of()
                 .uuid(TAG_WHO, row.who())
@@ -191,6 +270,12 @@ public final class HealthState {
                 row.longValue(TAG_SINCE).orElse(0L),
                 row.flag(TAG_TREATED).orElse(false)));
         }
+        for (Reader row : reader.children(TAG_INFECTIONS)) {
+            Optional<String> part = row.string(TAG_PART);
+            row.uuid(TAG_WHO).filter(who -> part.isPresent()).ifPresent(who ->
+                state.infections.computeIfAbsent(who, id -> new HashMap<>())
+                    .merge(part.get(), row.integer(TAG_INFECTION).orElse(0), Integer::sum));
+        }
         for (Reader row : reader.children(TAG_BLOOD)) {
             row.uuid(TAG_WHO).ifPresent(who -> state.blood.put(who,
                 Math.min(MAX_BLOOD, row.integer(TAG_BLOOD_VALUE).orElse((int) (MAX_BLOOD * 10)) / 10.0)));
@@ -199,6 +284,10 @@ public final class HealthState {
     }
 
     private record Entry(UUID who, int index, Wound wound) {
+    }
+
+    /** One part's infection, as a row. */
+    private record Infection(UUID who, String part, int amount) {
     }
 
     /** Blood as tenths, because the persistor stores integers and blood needs one decimal. */
@@ -216,4 +305,6 @@ public final class HealthState {
     private static final String TAG_SINCE = "t";
     private static final String TAG_TREATED = "x";
     private static final String TAG_BLOOD_VALUE = "v";
+    private static final String TAG_INFECTIONS = "n";
+    private static final String TAG_INFECTION = "inf";
 }
