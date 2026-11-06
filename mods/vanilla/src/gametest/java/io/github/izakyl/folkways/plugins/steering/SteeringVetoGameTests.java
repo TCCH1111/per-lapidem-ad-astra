@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -76,6 +77,37 @@ public final class SteeringVetoGameTests {
         Veto none = Vetoes.of(UUID.randomUUID());
         helper.assertTrue(none.permits(RESIDENT, INSIDE) && none.permits(RESIDENT, OUTSIDE),
             "with no plugin installed every cell may be stood on");
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void anAllowOnlyZoneNowRefusesTheOthersToo(GameTestHelper helper) {
+        // PLA: M2 D20 — before this, subject-scoped zones were diagnosis-only.
+        SteeringState state = new SteeringState();
+        ResourceLocation farmer = ResourceLocation.fromNamespaceAndPath("folkways", "farmer");
+        ResourceLocation miner = ResourceLocation.fromNamespaceAndPath("folkways", "miner");
+        state.put(ZoneRule.of("farmers only", ZoneRule.Kind.ALLOW_ONLY, List.of(farmer), 0, Set.of(INSIDE)));
+
+        Veto named = SteeringContent.standingOf(state, id -> id.equals(RESIDENT) ? farmer : miner);
+        helper.assertTrue(named.permits(RESIDENT, INSIDE), "the farmer may enter");
+
+        UUID minerId = UUID.randomUUID();
+        Veto other = SteeringContent.standingOf(state, id -> id.equals(minerId) ? miner : farmer);
+        helper.assertTrue(!other.permits(minerId, INSIDE), "the miner may not");
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void aConfinementNowKeepsItsPrisonerIn(GameTestHelper helper) {
+        SteeringState state = new SteeringState();
+        ResourceLocation prisoner = ResourceLocation.fromNamespaceAndPath("folkways", "prisoner");
+        ResourceLocation farmer = ResourceLocation.fromNamespaceAndPath("folkways", "farmer");
+        state.put(ZoneRule.of("cell", ZoneRule.Kind.CONFINE, List.of(prisoner), 0, Set.of(INSIDE)));
+
+        Veto named = SteeringContent.standingOf(state, id -> id.equals(RESIDENT) ? prisoner : farmer);
+        helper.assertTrue(named.permits(RESIDENT, INSIDE), "the prisoner may stay in the cell");
+        helper.assertTrue(!named.permits(RESIDENT, OUTSIDE), "but not leave it");
+        helper.assertTrue(named.permits(UUID.randomUUID(), OUTSIDE), "and a farmer outside is unaffected");
         helper.succeed();
     }
 }

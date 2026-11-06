@@ -35,14 +35,47 @@ public final class SteeringContent {
 
     private static final Map<UUID, SteeringState> STATES = new ConcurrentHashMap<>();
 
+    /** colony → resident → kind, refreshed once a second so the veto can name who is asking. */
+    private static final Map<UUID, Map<UUID, ResourceLocation>> KINDS = new ConcurrentHashMap<>();
+
     private SteeringContent() {
     }
 
-    /** The engine's view of this state: a cell some forbid zone covers is not for standing on. */
+    /**
+     * The engine's view of this state, for callers that cannot name the resident.
+     *
+     * <p>Only forbid zones with an empty subject list can answer without knowing who is asking.
+     */
     public static Veto standingOf(SteeringState state) {
-        return (resident, cell) -> state != null && state.forbids(cell)
-            ? java.util.Optional.of(SteeringRefusal.FORBIDDEN)
-            : java.util.Optional.empty();
+        return standingOf(state, null);
+    }
+
+    /**
+     * PLA: M2 D20 — the engine's view of this state, now able to say who is asking.
+     *
+     * <p>The veto is handed a resident id and a cell and nothing else, so the colony keeps a
+     * resident-to-kind map and this closure reads it. When the subject is unknown the old rule stands
+     * (only an open forbid zone refuses), because refusing everybody on a guess would ground a whole
+     * colony the first time the map was stale.
+     *
+     * <p>The inside count for limit zones is passed as zero: counting who stands inside on every cell
+     * question would scan the colony per query. Limits therefore still act through the diagnosis layer
+     * until there is a cheap counter.
+     */
+    public static Veto standingOf(SteeringState state,
+            java.util.function.Function<UUID, ResourceLocation> kinds) {
+        return (resident, cell) -> {
+            if (state == null) {
+                return java.util.Optional.empty();
+            }
+            ResourceLocation subject = kinds == null ? null : kinds.apply(resident);
+            if (subject == null) {
+                return state.forbids(cell)
+                    ? java.util.Optional.of(SteeringRefusal.FORBIDDEN)
+                    : java.util.Optional.empty();
+            }
+            return state.refusal(cell, subject, 0).map(SteeringRefusal::of);
+        };
     }
 
     /**
@@ -72,12 +105,26 @@ public final class SteeringContent {
             scope.share(state);
             // PLA: WP-4 T4b — hand this colony's zones to the engine's schedule.
             STATES.put(colony.id(), state);
-            Vetoes.provide(ID, id -> standingOf(STATES.get(id)), SteeringRefusal.FORBIDDEN,
+            Map<UUID, ResourceLocation> kinds = KINDS.computeIfAbsent(colony.id(),
+                id -> new ConcurrentHashMap<>());
+            Vetoes.provide(ID, id -> {
+                Map<UUID, ResourceLocation> who = KINDS.get(id);
+                return standingOf(STATES.get(id), who == null ? null : who::get);
+            }, SteeringRefusal.FORBIDDEN,
                 io.github.izakyl.folkways.core.engine.plan.Unassigned.Reason.ZONE_FORBIDDEN);
-            scope.closed(closing -> STATES.remove(colony.id()));
+            scope.closed(closing -> {
+                STATES.remove(colony.id());
+                KINDS.remove(colony.id());
+            });
             scope.tick(server -> {
                 if (state.dirty()) {
                     colony.keep(ID, state.save());
+                }
+                if (server.getTickCount() % 100 == 0) {
+                    kinds.clear();
+                    for (io.github.izakyl.folkways.core.api.resident.Resident one : colony.residents()) {
+                        kinds.put(one.id(), one.kind());
+                    }
                 }
             });
         });
