@@ -37,6 +37,8 @@ public final class BuiltinPlugins {
         SteeringPlugin.install(modBus);
         // PLA: WP-5 T1 — the colony's timetable (PLAN-004)
         HoursPlugin.install(modBus);
+        // PLA: M2 R1-2 — the book of who works beside whom.
+        io.github.izakyl.folkways.plugins.relate.RelatePlugin.install(modBus);
 
     }
 }
