@@ -26,8 +26,15 @@ public final class RelateFacing implements Facing {
         return linesFor(RelationContent.amongFriends(colony, resident));
     }
 
-    /** The rule, kept apart from the colony so it can be tested without one. */
+    /**
+     * The rule, kept apart from the colony so it can be tested without one.
+     *
+     * <p>Two lines when it applies: what is happening, and what the player may do about it. Silence when
+     * it does not, because a card that always says something teaches the player to stop reading it.
+     */
     static List<Line> linesFor(boolean amongFriends) {
-        return amongFriends ? List.of(Line.of(Companion.TOGETHER)) : List.of();
+        return amongFriends
+            ? List.of(Line.of(Companion.TOGETHER), Line.of(Companion.TOGETHER_ADVICE))
+            : List.of();
     }
 }

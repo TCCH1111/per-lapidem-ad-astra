@@ -37,16 +37,18 @@ public final class RelationFacingGameTests {
         helper.assertTrue(RelateFacing.linesFor(false).isEmpty(),
             "a resident working alone is not interesting");
         List<Line> together = RelateFacing.linesFor(true);
-        helper.assertTrue(together.size() == 1, "with a friend beside them, the card says one thing");
+        helper.assertTrue(together.size() == 2, "with a friend beside them the card says what and why");
         helper.succeed();
     }
 
     @GameTest(template = TEMPLATE, timeoutTicks = 100)
     public static void theLineHasWordsInTheLanguageTable(GameTestHelper helper) {
-        String key = Companion.TOGETHER.translationKey();
-        String shown = Component.translatable(key).getString();
-        helper.assertTrue(!shown.isBlank() && !shown.equals(key),
-            "the language table has no words for " + key + ", got: " + shown);
+        for (Companion one : Companion.values()) {
+            String key = one.translationKey();
+            String shown = Component.translatable(key).getString();
+            helper.assertTrue(!shown.isBlank() && !shown.equals(key),
+                "the language table has no words for " + key + ", got: " + shown);
+        }
         helper.succeed();
     }
 }
