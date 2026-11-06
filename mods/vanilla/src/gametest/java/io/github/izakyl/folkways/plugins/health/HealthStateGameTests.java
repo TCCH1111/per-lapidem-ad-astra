@@ -75,4 +75,39 @@ public final class HealthStateGameTests {
         helper.assertTrue(!state.hurt(quiet), "and is not hurt");
         helper.succeed();
     }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void severityDecidesWhoStopsWork(GameTestHelper helper) {
+        // Owner's rule C: light injuries work on, severe ones are not given planned labour.
+        HealthState book = new HealthState();
+        UUID light = UUID.randomUUID();
+        UUID heavy = UUID.randomUUID();
+        book.wound(light, new HealthState.Wound("finger", "cut", 1, "knife", 0L, false));
+        book.wound(heavy, new HealthState.Wound("torso", "gash", 4, "axe", 0L, false));
+
+        helper.assertTrue(!book.severe(light), "a cut finger is not severe");
+        helper.assertTrue(book.severe(heavy), "a deep gash is");
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void bloodAloneCanMakeSomebodySevere(GameTestHelper helper) {
+        HealthState book = new HealthState();
+        UUID drained = UUID.randomUUID();
+        book.wound(drained, new HealthState.Wound("arm", "cut", 2, "fall", 0L, false));
+        book.bleed(drained, 100_000L); // 流血到接近零
+
+        helper.assertTrue(book.blood(drained) < HealthState.MAX_BLOOD * HealthState.SEVERE_BLOOD_FRACTION,
+            "the blood is low enough to count");
+        helper.assertTrue(book.severe(drained), "so the resident is severe even with a small wound");
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void anUnwoundedResidentIsNeverSevere(GameTestHelper helper) {
+        HealthState book = new HealthState();
+        UUID quiet = UUID.randomUUID();
+        helper.assertTrue(!book.severe(quiet), "no wound, full blood, no restriction");
+        helper.succeed();
+    }
 }

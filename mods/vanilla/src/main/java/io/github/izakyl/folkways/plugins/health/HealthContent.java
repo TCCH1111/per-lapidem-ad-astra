@@ -31,6 +31,19 @@ public final class HealthContent {
     private HealthContent() {
     }
 
+    /** The one refusal-shaped idea this plugin has: a body too hurt to be given work. */
+    public static final ResourceLocation RESTING = ResourceLocation.fromNamespaceAndPath("folkways", "resting");
+
+    /** Whether this colony's book says the resident is too hurt for planned labour. */
+    public static boolean resting(io.github.izakyl.folkways.core.api.colony.Colony colony, UUID who) {
+        if (colony == null || who == null) {
+            return false;
+        }
+        return colony.service(ID, HealthState.class)
+            .map(state -> state.severe(who))
+            .orElse(false);
+    }
+
     public static void enroll(Registering registering) {
         registering.enrollment(ID, new Enrollment(List.of()));
     }

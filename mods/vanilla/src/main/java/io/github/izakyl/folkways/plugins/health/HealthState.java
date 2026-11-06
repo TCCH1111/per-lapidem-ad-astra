@@ -26,6 +26,12 @@ public final class HealthState {
     /** Full blood, in the same arbitrary unit the rest of the plugin uses. */
     public static final double MAX_BLOOD = 100.0;
 
+    /** At or above this severity a wound is severe: the resident is not given planned work. */
+    public static final int SEVERE_SEVERITY = 4;
+
+    /** Below this fraction of full blood a resident is severe regardless of the wounds themselves. */
+    public static final double SEVERE_BLOOD_FRACTION = 0.4;
+
     /** Blood lost per tick per point of severity, while a wound is open. */
     public static final double BLEED_PER_SEVERITY = 0.02;
 
@@ -109,6 +115,25 @@ public final class HealthState {
     /** Everyone the book knows about, so the clock can let their blood run. */
     public java.util.Set<UUID> who() {
         return java.util.Set.copyOf(wounds.keySet());
+    }
+
+    /**
+     * Whether this resident is badly enough hurt to be kept from planned labour (owner's choice C:
+     * light injuries work on, severe ones stop).
+     *
+     * <p>The line is a judgement, not a measurement: a wound of four or worse, or less than forty per
+     * cent of their blood left. Both numbers live here so they can be tuned in one place later.
+     */
+    public boolean severe(UUID who) {
+        if (blood(who) < MAX_BLOOD * SEVERE_BLOOD_FRACTION) {
+            return true;
+        }
+        for (Wound one : wounds(who)) {
+            if (one.severity() >= SEVERE_SEVERITY) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /** Removes everything belonging to somebody who is no longer here. */

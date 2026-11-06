@@ -410,6 +410,13 @@ final class LivingPresence implements Facing {
         List<Urge> felt = new ArrayList<>();
         eating(who, colony).ifPresent(felt::add);
         sleeping(who, colony).ifPresent(felt::add);
+        // PLA: M2 R0-3 — the owner's rule: lightly hurt residents work on, badly hurt ones are not
+        // given planned labour. A reservation excludes planned work while leaving eating and sleeping
+        // to the runner, which is what "stops working" has to mean if the body is to survive at all.
+        if (io.github.izakyl.folkways.plugins.health.HealthContent.resting(this.colony, who.resident().id())) {
+            felt.add(io.github.izakyl.folkways.core.api.work.Urge.reserve(
+                io.github.izakyl.folkways.plugins.health.HealthContent.RESTING));
+        }
         if (felt.isEmpty() && this.colony.residents().contains(who.resident())) {
             dining.drinking(who, colony).ifPresent(felt::add);
             if (felt.isEmpty()) { leisure.urge(who, colony).ifPresent(felt::add); }
