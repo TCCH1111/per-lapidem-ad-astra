@@ -39,6 +39,8 @@ public final class BuiltinPlugins {
         HoursPlugin.install(modBus);
         // PLA: M2 R1-2 — the book of who works beside whom.
         io.github.izakyl.folkways.plugins.relate.RelatePlugin.install(modBus);
+        // PLA: M2 R0-2 — wounds and blood. No behaviour change yet.
+        io.github.izakyl.folkways.plugins.health.HealthPlugin.install(modBus);
 
     }
 }
