@@ -159,6 +159,8 @@ public final class RelationContent {
     }
 
     public static void enroll(Registering registering) {
+        registering.facing(RelationState.ID,
+            colony -> java.util.Optional.of(new RelateFacing(colony)));
         registering.enrollment(RelationState.ID, new Enrollment(List.of()));
     }
 

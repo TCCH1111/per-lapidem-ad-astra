@@ -1474,5 +1474,6 @@
   "folkways.page.steering.empty": "尚未画区",
   "folkways.zone.kind.forbid": "禁止进入",
   "folkways.zone.kind.allow_only": "仅限指定",
-  "folkways.zone.kind.limit": "限人数"
+  "folkways.zone.kind.limit": "限人数",
+  "folkways.relate.companion": "有个朋友在旁边一起干活"
 }

@@ -1474,5 +1474,6 @@
   "folkways.page.steering.empty": "No zones drawn",
   "folkways.zone.kind.forbid": "forbidden",
   "folkways.zone.kind.allow_only": "kept for some",
-  "folkways.zone.kind.limit": "limited"
+  "folkways.zone.kind.limit": "limited",
+  "folkways.relate.companion": "A friend is working beside them"
 }
