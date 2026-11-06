@@ -40,3 +40,36 @@ reason = "Folkways RTS uses Vanilla's resident, defense and weapon APIs."
 versionRange = "[${version}]"
 ordering = "AFTER"
 side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "folkways_core"
+type = "incompatible"
+reason = "Per Lapidem ad Astra is a fork of Folkways; the two cannot share a world (one colony system). 本 mod 是 Folkways 的 fork，同一世界只能装一套殖民地系统。"
+versionRange = "[0,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "folkways_vanilla"
+type = "incompatible"
+reason = "Per Lapidem ad Astra is a fork of Folkways; the two cannot share a world (one colony system). 本 mod 是 Folkways 的 fork，同一世界只能装一套殖民地系统。"
+versionRange = "[0,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "folkways_create"
+type = "incompatible"
+reason = "Per Lapidem ad Astra is a fork of Folkways; the two cannot share a world (one colony system). 本 mod 是 Folkways 的 fork，同一世界只能装一套殖民地系统。"
+versionRange = "[0,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "folkways_modulargolems"
+type = "incompatible"
+reason = "Per Lapidem ad Astra is a fork of Folkways; the two cannot share a world (one colony system). 本 mod 是 Folkways 的 fork，同一世界只能装一套殖民地系统。"
+versionRange = "[0,)"
+ordering = "NONE"
+side = "BOTH"
+

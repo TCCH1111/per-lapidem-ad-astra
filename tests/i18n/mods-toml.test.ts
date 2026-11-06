@@ -8,6 +8,11 @@ const MODS = ["core", "vanilla", "create", "modulargolems"];
 const OURS = new Set(["plaa_core", "plaa_vanilla", "plaa_create", "plaa_modulargolems"]);
 const UPSTREAM = ["folkways_core", "folkways_vanilla", "folkways_create", "folkways_modulargolems"];
 const UPSTREAM_ID = /folkways_(core|vanilla|create|modulargolems)\b/g;
+// PLA: ADR-026 — the port has ten modules, so the literal scan must know all ten ids. The list above
+// stays at four on purpose: it is what the toml files must declare incompatible with.
+const ALL_MODULES = ["core", "vanilla", "create", "modulargolems", "cookery", "rts", "warfare", "tacz",
+  "firefighting", "chiselsandbits"];
+const ALL_UPSTREAM_ID = new RegExp(`folkways_(${ALL_MODULES.join("|")})\\b`, "g");
 const SKIP = /(^|\/)(build|node_modules|\.gradle|\.blockwright|\.blockwright-store|run)(\/|$)/;
 
 function read(path: string): string {
@@ -67,7 +72,7 @@ test("no upstream modid literal survives outside mods.toml, NOTICE and the contr
   const offenders: string[] = [];
   for (const file of files) {
     const text = read(file);
-    for (const hit of text.matchAll(UPSTREAM_ID)) {
+    for (const hit of text.matchAll(ALL_UPSTREAM_ID)) {
       const line = text.slice(0, hit.index).split("\n").length;
       offenders.push(`${file}:${line} ${hit[0]}`);
     }
