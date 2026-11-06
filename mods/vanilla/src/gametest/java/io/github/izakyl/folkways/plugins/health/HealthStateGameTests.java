@@ -110,4 +110,18 @@ public final class HealthStateGameTests {
         helper.assertTrue(!book.severe(quiet), "no wound, full blood, no restriction");
         helper.succeed();
     }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void theCardSpeaksOnlyForTheBadlyHurt(GameTestHelper helper) {
+        // PLA: M2 R0-4 — the card line exists to prove the state is read, and to stop at what is true.
+        helper.assertTrue(HealthFacing.linesFor(false).isEmpty(), "a lightly hurt resident says nothing");
+        helper.assertTrue(HealthFacing.linesFor(true).size() == 2, "a badly hurt one says what and what to do");
+        for (Injury one : Injury.values()) {
+            String key = one.translationKey();
+            String shown = net.minecraft.network.chat.Component.translatable(key).getString();
+            helper.assertTrue(!shown.isBlank() && !shown.equals(key),
+                "the language table has no words for " + key + ", got: " + shown);
+        }
+        helper.succeed();
+    }
 }

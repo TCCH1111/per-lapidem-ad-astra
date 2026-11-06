@@ -1478,5 +1478,7 @@
   "folkways.relate.companion": "有個朋友在旁邊一起幹活",
   "folkways.relate.companion_advice": "把他們排在一起，就不會因為暫時沒活而發愁",
   "folkways.relate.rival": "和合不來的人一起工作，心裡不痛快",
-  "folkways.relate.rival_advice": "把他們分開放"
+  "folkways.relate.rival_advice": "把他們分開放",
+  "folkways.injury.resting": "傷得太重，暫時不接活",
+  "folkways.injury.resting_advice": "把急活交給別人"
 }

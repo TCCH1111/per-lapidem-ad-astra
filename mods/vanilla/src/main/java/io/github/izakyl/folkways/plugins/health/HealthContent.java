@@ -45,6 +45,7 @@ public final class HealthContent {
     }
 
     public static void enroll(Registering registering) {
+        registering.facing(ID, colony -> java.util.Optional.of(new HealthFacing(colony)));
         registering.enrollment(ID, new Enrollment(List.of()));
     }
 

@@ -1478,5 +1478,7 @@
   "folkways.relate.companion": "A friend is working beside them",
   "folkways.relate.companion_advice": "Posted together, they stop fretting over quiet spells",
   "folkways.relate.rival": "They are working beside someone they resent",
-  "folkways.relate.rival_advice": "Post the two apart when you can"
+  "folkways.relate.rival_advice": "Post the two apart when you can",
+  "folkways.injury.resting": "Too hurt to be given work",
+  "folkways.injury.resting_advice": "Hand the urgent work to somebody else"
 }
