@@ -413,15 +413,27 @@ final class LivingPresence implements Facing {
         // PLA: M2 R0-3 — the owner's rule: lightly hurt residents work on, badly hurt ones are not
         // given planned labour. A reservation excludes planned work while leaving eating and sleeping
         // to the runner, which is what "stops working" has to mean if the body is to survive at all.
-        if (io.github.izakyl.folkways.plugins.health.HealthContent.resting(this.colony, who.resident().id())) {
-            felt.add(io.github.izakyl.folkways.core.api.work.Urge.reserve(
-                io.github.izakyl.folkways.plugins.health.HealthContent.RESTING));
-        }
+        felt.addAll(restriction(
+            io.github.izakyl.folkways.plugins.health.HealthContent.resting(this.colony, who.resident().id())));
         if (felt.isEmpty() && this.colony.residents().contains(who.resident())) {
             dining.drinking(who, colony).ifPresent(felt::add);
             if (felt.isEmpty()) { leisure.urge(who, colony).ifPresent(felt::add); }
         }
         return List.copyOf(felt);
+    }
+
+    /**
+     * PLA: M2 R0-3/R0-5 — what being too hurt adds to the list of things a body wants.
+     *
+     * <p>A reservation rather than an ordinary urge: the engine's own contract says a reservation
+     * excludes planned labour while personal needs still use the runner, which is exactly the owner's
+     * rule C, light injuries carry on and severe ones stop. Kept as a function of a boolean so the
+     * decision can be tested without a colony in the world.
+     */
+    static List<Urge> restriction(boolean resting) {
+        return resting
+            ? List.of(Urge.reserve(io.github.izakyl.folkways.plugins.health.HealthContent.RESTING))
+            : List.of();
     }
 
     private Optional<Urge> eating(Worker who, ColonyView colony) {
