@@ -1486,5 +1486,7 @@
   "folkways.health.cause.infection": "an infection",
   "folkways.health.cause.unknown": "a cause nobody knows",
   "folkways.health.unburied": "%s bodies await burial",
-  "item.folkways.bandage": "Bandage"
+  "item.folkways.bandage": "Bandage",
+  "folkways.threat.at_the_gates": "Raiders are at the gates",
+  "folkways.threat.kind.raiders": "raiders"
 }

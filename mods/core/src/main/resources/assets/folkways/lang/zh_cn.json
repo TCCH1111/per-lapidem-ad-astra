@@ -1486,5 +1486,7 @@
   "folkways.health.cause.infection": "伤口感染",
   "folkways.health.cause.unknown": "不明原因",
   "folkways.health.unburied": "%s 具尸体等待安葬",
-  "item.folkways.bandage": "绷带"
+  "item.folkways.bandage": "绷带",
+  "folkways.threat.at_the_gates": "劫掠者已到城下",
+  "folkways.threat.kind.raiders": "劫掠者"
 }

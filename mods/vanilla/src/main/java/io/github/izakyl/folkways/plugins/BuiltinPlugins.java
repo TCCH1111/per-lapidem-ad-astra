@@ -45,6 +45,8 @@ public final class BuiltinPlugins {
         io.github.izakyl.folkways.plugins.health.Corpses.install(modBus);
         // PLA: M2 R1 — the dressing.
         io.github.izakyl.folkways.plugins.health.Aid.install(modBus);
+        // PLA: M2 T0 — dangers announced before they arrive.
+        io.github.izakyl.folkways.plugins.threat.ThreatPlugin.install(modBus);
 
     }
 }
