@@ -32,6 +32,12 @@ public final class HealthState {
     /** How much infection an untreated infected wound gains per day. */
     public static final int INFECTION_GAIN_PER_DAY = 6;
 
+    /** At this much infection a resident runs a fever; the design calls it the warning before the fall. */
+    public static final int FEVER_AT = 20;
+
+    /** At this much infection the fever is high: the design's danger mark. */
+    public static final int HIGH_FEVER_AT = 60;
+
     /** At this much infection the part is heading for necrosis (PRD-013's 60). */
     public static final int NECROTIC_AT = 60;
 
@@ -190,6 +196,21 @@ public final class HealthState {
         parts.replaceAll((part, value) -> Math.min(100, value + INFECTION_GAIN_PER_DAY * days));
     }
 
+    /** How hot the worst infection makes this resident: 0 none, 1 feverish, 2 high. */
+    public int fever(UUID who) {
+        int worst = 0;
+        Map<String, Integer> parts = infections.get(who);
+        if (parts != null) {
+            for (int value : parts.values()) {
+                worst = Math.max(worst, value);
+            }
+        }
+        if (worst >= HIGH_FEVER_AT) {
+            return 2;
+        }
+        return worst >= FEVER_AT ? 1 : 0;
+    }
+
     /** Whether any part has reached the point where the flesh is dying. */
     public boolean necrotic(UUID who) {
         Map<String, Integer> parts = infections.get(who);
@@ -249,6 +270,7 @@ public final class HealthState {
                 .string(TAG_DEATH_NAME, one.name())
                 .string(TAG_DEATH_CAUSE, one.cause())
                 .longValue(TAG_SINCE, one.at())
+                .flag(TAG_BURIED, one.buried())
                 .tag())
             .children(TAG_INFECTIONS, infectionRows, row -> Writer.of()
                 .uuid(TAG_WHO, row.who())
@@ -281,7 +303,8 @@ public final class HealthState {
             row.uuid(TAG_WHO).ifPresent(who -> state.deaths.add(new Death(who,
                 row.string(TAG_DEATH_NAME).orElse("someone"),
                 row.string(TAG_DEATH_CAUSE).orElse("unknown"),
-                row.longValue(TAG_SINCE).orElse(0L))));
+                row.longValue(TAG_SINCE).orElse(0L),
+                row.flag(TAG_BURIED).orElse(false))));
         }
         for (Reader row : reader.children(TAG_INFECTIONS)) {
             Optional<String> part = row.string(TAG_PART);
@@ -300,11 +323,16 @@ public final class HealthState {
     }
 
     /** One death, kept so the colony can say what happened and to whom (PRD-009 G2). */
-    public record Death(UUID who, String name, String cause, long at) {
+    public record Death(UUID who, String name, String cause, long at, boolean buried) {
 
         public Death {
             name = name == null || name.isBlank() ? "someone" : name;
             cause = cause == null || cause.isBlank() ? "unknown" : cause;
+        }
+
+        /** A death that has not been dealt with yet: PRD-009 asks the colony to say so explicitly. */
+        public Death unburied() {
+            return new Death(who, name, cause, at, false);
         }
     }
 
@@ -317,6 +345,29 @@ public final class HealthState {
      */
     public void record(Death one) {
         deaths.add(one);
+    }
+
+    /** Marks the newest death of this resident as dealt with, which is what burial will call. */
+    public boolean bury(UUID who) {
+        for (int i = deaths.size() - 1; i >= 0; i--) {
+            Death one = deaths.get(i);
+            if (one.who().equals(who) && !one.buried()) {
+                deaths.set(i, new Death(one.who(), one.name(), one.cause(), one.at(), true));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** How many deaths the colony still has not dealt with (PRD-009 G2's explicit state). */
+    public int unburiedCount() {
+        int count = 0;
+        for (Death one : deaths) {
+            if (!one.buried()) {
+                count++;
+            }
+        }
+        return count;
     }
 
     /** The most recent deaths first, at most {@code limit}. */
@@ -355,5 +406,6 @@ public final class HealthState {
     private static final String TAG_DEATHS = "d";
     private static final String TAG_DEATH_NAME = "dn";
     private static final String TAG_DEATH_CAUSE = "dc";
+    private static final String TAG_BURIED = "db";
     private static final String TAG_INFECTION = "inf";
 }

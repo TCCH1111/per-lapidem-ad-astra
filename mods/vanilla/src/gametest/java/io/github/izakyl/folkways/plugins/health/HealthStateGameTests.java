@@ -192,8 +192,8 @@ public final class HealthStateGameTests {
         HealthState book = new HealthState();
         UUID who = UUID.randomUUID();
         UUID other = UUID.randomUUID();
-        book.record(new HealthState.Death(who, "Tori", "infected wound", 1200L));
-        book.record(new HealthState.Death(other, "Rotunda", "bleeding", 2400L));
+        book.record(new HealthState.Death(who, "Tori", "infected wound", 1200L, false));
+        book.record(new HealthState.Death(other, "Rotunda", "bleeding", 2400L, false));
 
         helper.assertTrue(book.deathCount() == 2, "both deaths are kept");
         HealthState.Death latest = book.recentDeaths(1).get(0);
@@ -207,7 +207,7 @@ public final class HealthStateGameTests {
     public static void aDeathSurvivesASave(GameTestHelper helper) {
         HealthState book = new HealthState();
         UUID who = UUID.randomUUID();
-        book.record(new HealthState.Death(who, "Tori", "infected wound", 1200L));
+        book.record(new HealthState.Death(who, "Tori", "infected wound", 1200L, false));
 
         HealthState back = HealthState.load(Reader.of(book.save()));
         helper.assertTrue(back.deathCount() == 1, "the death came back");
@@ -220,10 +220,58 @@ public final class HealthStateGameTests {
     @GameTest(template = TEMPLATE, timeoutTicks = 100)
     public static void aNamelessDeathStillSaysSomething(GameTestHelper helper) {
         HealthState book = new HealthState();
-        book.record(new HealthState.Death(UUID.randomUUID(), "  ", "", 0L));
+        book.record(new HealthState.Death(UUID.randomUUID(), "  ", "", 0L, false));
         HealthState.Death one = book.recentDeaths(1).get(0);
         helper.assertTrue(one.name().equals("someone") && one.cause().equals("unknown"),
             "an unnamed death reads as somebody unknown, got " + one);
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void feverRisesWithTheInfection(GameTestHelper helper) {
+        // PLA: M2 R1-2 groundwork — fever is derived from infection, not a second number to keep.
+        HealthState book = new HealthState();
+        UUID who = UUID.randomUUID();
+        book.wound(who, new HealthState.Wound("arm", "cut", 2, "wolf", 0L, false));
+        helper.assertTrue(book.fever(who) == 0, "no infection, no fever");
+
+        book.maybeInfect(who, "arm", 0.0);
+        while (book.infection(who, "arm") < HealthState.FEVER_AT) {
+            book.progressInfection(who, 1);
+        }
+        helper.assertTrue(book.fever(who) == 1, "past the warning mark it is a fever");
+
+        while (book.infection(who, "arm") < HealthState.HIGH_FEVER_AT) {
+            book.progressInfection(who, 1);
+        }
+        helper.assertTrue(book.fever(who) == 2, "past the danger mark it is a high fever");
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void anUnburiedDeathIsAVisibleState(GameTestHelper helper) {
+        // PLA: PRD-009 G2 — the colony must be able to say a death has not been dealt with.
+        HealthState book = new HealthState();
+        UUID who = UUID.randomUUID();
+        book.record(new HealthState.Death(who, "Tori", "infected wound", 1200L, false));
+        helper.assertTrue(book.unburiedCount() == 1, "one body waiting");
+
+        helper.assertTrue(book.bury(who), "burying the newest death of that resident works");
+        helper.assertTrue(book.unburiedCount() == 0, "and nothing waits any more");
+        helper.assertTrue(!book.bury(who), "burying twice does nothing the second time");
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void burialSurvivesASave(GameTestHelper helper) {
+        HealthState book = new HealthState();
+        UUID who = UUID.randomUUID();
+        book.record(new HealthState.Death(who, "Tori", "bleeding", 100L, false));
+        book.bury(who);
+
+        HealthState back = HealthState.load(Reader.of(book.save()));
+        helper.assertTrue(back.unburiedCount() == 0, "the burial came back");
+        helper.assertTrue(back.recentDeaths(1).get(0).buried(), "marked as dealt with");
         helper.succeed();
     }
 }
