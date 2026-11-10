@@ -7,6 +7,7 @@ import io.github.izakyl.folkways.core.api.colony.Colony;
 import io.github.izakyl.folkways.core.api.resident.body.Body;
 import io.github.izakyl.folkways.plugins.person.PersonBody;
 import io.github.izakyl.folkways.plugins.FolkwaysVanillaMod;
+import java.util.List;
 import java.util.UUID;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -333,6 +334,28 @@ public final class HealthStateGameTests {
         } finally {
             colony.raze();
         }
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void theDeathNoticeHasWords(GameTestHelper helper) {
+        // PLA: M2 R1-3 — a death the player never sees is a resident who simply vanished.
+        String bled = HealthContent.causeKey("bled out");
+        String infected = HealthContent.causeKey("infection");
+        String unknown = HealthContent.causeKey("something else");
+        helper.assertTrue(bled.equals("folkways.health.cause.bled_out"), "bled out maps to its key");
+        helper.assertTrue(infected.equals("folkways.health.cause.infection"), "infection too");
+        helper.assertTrue(unknown.equals("folkways.health.cause.unknown"), "and anything else is unknown");
+
+        for (String key : List.of(bled, infected, unknown)) {
+            String shown = net.minecraft.network.chat.Component.translatable(key).getString();
+            helper.assertTrue(!shown.isBlank() && !shown.equals(key),
+                "the language table has no words for " + key + ", got: " + shown);
+        }
+        String notice = net.minecraft.network.chat.Component.translatable("folkways.health.died", "Tori",
+            net.minecraft.network.chat.Component.translatable(bled)).getString();
+        helper.assertTrue(notice.contains("Tori"), "the notice names the resident, got " + notice);
+        helper.assertTrue(!notice.contains("folkways.health.died"), "and is not the raw key, got " + notice);
         helper.succeed();
     }
 }

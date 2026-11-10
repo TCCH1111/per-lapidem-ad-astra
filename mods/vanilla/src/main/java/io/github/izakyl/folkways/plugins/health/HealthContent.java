@@ -77,12 +77,27 @@ public final class HealthContent {
             state.record(new HealthState.Death(who, name, cause.get(), now, false));
             state.forget(who);
             died++;
+            // PLA: M2 R1-3 — a death the player never sees is a resident who simply vanished.
+            server.getPlayerList().broadcastSystemMessage(net.minecraft.network.chat.Component.translatable(
+                "folkways.health.died", name,
+                net.minecraft.network.chat.Component.translatable(causeKey(cause.get()))), false);
             if (!killed && name.equals("someone")) {
                 // The body was already gone; the record still stands, because a death must leave a trace.
                 continue;
             }
         }
         return died;
+    }
+
+    /** The language key a cause of death is shown under. */
+    public static String causeKey(String cause) {
+        if ("bled out".equals(cause)) {
+            return "folkways.health.cause.bled_out";
+        }
+        if ("infection".equals(cause)) {
+            return "folkways.health.cause.infection";
+        }
+        return "folkways.health.cause.unknown";
     }
 
     /** Whether this colony's book says the resident is too hurt for planned labour. */

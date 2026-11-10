@@ -1480,5 +1480,9 @@
   "folkways.relate.rival": "They are working beside someone they resent",
   "folkways.relate.rival_advice": "Post the two apart when you can",
   "folkways.injury.resting": "Too hurt to be given work",
-  "folkways.injury.resting_advice": "Hand the urgent work to somebody else"
+  "folkways.injury.resting_advice": "Hand the urgent work to somebody else",
+  "folkways.health.died": "%s has died: %s",
+  "folkways.health.cause.bled_out": "bled out",
+  "folkways.health.cause.infection": "an infection",
+  "folkways.health.cause.unknown": "a cause nobody knows"
 }
