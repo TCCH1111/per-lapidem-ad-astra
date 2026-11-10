@@ -2,6 +2,10 @@ package io.github.izakyl.folkways.plugins.health;
 
 import io.github.izakyl.folkways.FolkwaysMod;
 import io.github.izakyl.folkways.base.persist.Reader;
+import io.github.izakyl.folkways.core.api.colony.Colonies;
+import io.github.izakyl.folkways.core.api.colony.Colony;
+import io.github.izakyl.folkways.core.api.resident.body.Body;
+import io.github.izakyl.folkways.plugins.person.PersonBody;
 import io.github.izakyl.folkways.plugins.FolkwaysVanillaMod;
 import java.util.UUID;
 import net.minecraft.gametest.framework.GameTest;
@@ -272,6 +276,57 @@ public final class HealthStateGameTests {
         HealthState back = HealthState.load(Reader.of(book.save()));
         helper.assertTrue(back.unburiedCount() == 0, "the burial came back");
         helper.assertTrue(back.recentDeaths(1).get(0).buried(), "marked as dealt with");
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void eitherEndKills(GameTestHelper helper) {
+        // PLA: M2 R1-2 — the owner's rule: no blood left, or an infection run to its end.
+        HealthState book = new HealthState();
+        UUID healthy = UUID.randomUUID();
+        UUID bled = UUID.randomUUID();
+        UUID infected = UUID.randomUUID();
+        book.wound(healthy, new HealthState.Wound("arm", "cut", 1, "wolf", 0L, false));
+        book.wound(bled, new HealthState.Wound("arm", "cut", 3, "wolf", 0L, false));
+        book.wound(infected, new HealthState.Wound("leg", "gash", 2, "axe", 0L, false));
+
+        helper.assertTrue(book.causeOfDeath(healthy).isEmpty(), "a light wound kills nobody");
+        book.bleed(bled, 1_000_000L);
+        helper.assertTrue(book.causeOfDeath(bled).orElse("").equals("bled out"), "no blood, one cause");
+
+        book.maybeInfect(infected, "leg", 0.0);
+        book.progressInfection(infected, 1000);
+        helper.assertTrue(book.infection(infected, "leg") == 100, "the infection ran to its end");
+        helper.assertTrue(book.causeOfDeath(infected).orElse("").equals("infection"),
+            "the other end, the other cause");
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 200)
+    public static void aDrainedResidentDiesAndIsWrittenDown(GameTestHelper helper) {
+        var level = helper.getLevel();
+        Colony colony = Colonies.mint(level.getServer());
+        try {
+            HealthState book = colony.service(HealthContent.ID, HealthState.class)
+                .orElseThrow(() -> new AssertionError("no health book"));
+            Body body = PersonBody.RESIDENT.get().create(level);
+            body.mob().moveTo(helper.absolutePos(new net.minecraft.core.BlockPos(2, 1, 2)), 0.0F, 0.0F);
+            UUID who = body.resident().id();
+            book.wound(who, new HealthState.Wound("torso", "gash", 3, "axe", 0L, false));
+            book.bleed(who, 1_000_000L);
+
+            int died = HealthContent.sweep(colony, level.getServer(), 100L);
+            helper.assertTrue(died == 1, "the sweep found the dead, got " + died);
+            helper.assertTrue(book.deathCount() == 1, "and wrote them down");
+            HealthState.Death one = book.recentDeaths(1).get(0);
+            helper.assertTrue(one.cause().equals("bled out"), "with the cause, got " + one);
+            helper.assertTrue(one.who().equals(who), "and the right resident");
+            helper.assertTrue(level.getEntity(who) == null, "the body is gone from the world");
+            helper.assertTrue(HealthContent.sweep(colony, level.getServer(), 120L) == 0,
+                "a second sweep finds nothing more");
+        } finally {
+            colony.raze();
+        }
         helper.succeed();
     }
 }

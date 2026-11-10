@@ -196,6 +196,25 @@ public final class HealthState {
         parts.replaceAll((part, value) -> Math.min(100, value + INFECTION_GAIN_PER_DAY * days));
     }
 
+    /**
+     * PLA: M2 R1-2 — why this resident has died, if they have.
+     *
+     * <p>The owner's rule is "either one": no blood left, or an infection run to its end. The cause is
+     * the wording the obituary will carry, so it is decided here rather than at the call site.
+     *
+     * @return the cause, or empty while they are still alive
+     */
+    public Optional<String> causeOfDeath(UUID who) {
+        if (blood(who) <= 0.0) {
+            return Optional.of("bled out");
+        }
+        Map<String, Integer> parts = infections.get(who);
+        if (parts != null && parts.values().stream().anyMatch(value -> value >= 100)) {
+            return Optional.of("infection");
+        }
+        return Optional.empty();
+    }
+
     /** How hot the worst infection makes this resident: 0 none, 1 feverish, 2 high. */
     public int fever(UUID who) {
         int worst = 0;
