@@ -1484,5 +1484,6 @@
   "folkways.health.died": "%s has died: %s",
   "folkways.health.cause.bled_out": "bled out",
   "folkways.health.cause.infection": "an infection",
-  "folkways.health.cause.unknown": "a cause nobody knows"
+  "folkways.health.cause.unknown": "a cause nobody knows",
+  "folkways.health.unburied": "%s bodies await burial"
 }

@@ -358,4 +358,21 @@ public final class HealthStateGameTests {
         helper.assertTrue(!notice.contains("folkways.health.died"), "and is not the raw key, got " + notice);
         helper.succeed();
     }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void theUnburiedCountIsSaidOutLoud(GameTestHelper helper) {
+        // PLA: M2 R1 presentation — a body nobody is reminded about is a body that stays on the ground.
+        helper.assertTrue(HealthContent.unburiedNotice(0).getString().isEmpty(),
+            "nothing waiting says nothing");
+        helper.assertTrue(HealthContent.unburiedNotice(-1).getString().isEmpty(),
+            "and neither does nonsense");
+
+        String one = HealthContent.unburiedNotice(1).getString();
+        helper.assertTrue(one.contains("1"), "one body is counted, got " + one);
+        helper.assertTrue(!one.contains("folkways.health.unburied"), "in words, not a raw key, got " + one);
+
+        String three = HealthContent.unburiedNotice(3).getString();
+        helper.assertTrue(three.contains("3"), "and so is three, got " + three);
+        helper.succeed();
+    }
 }

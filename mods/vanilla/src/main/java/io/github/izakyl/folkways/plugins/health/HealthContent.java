@@ -77,16 +77,26 @@ public final class HealthContent {
             state.record(new HealthState.Death(who, name, cause.get(), now, false));
             state.forget(who);
             died++;
-            // PLA: M2 R1-3 — a death the player never sees is a resident who simply vanished.
+            // PLA: M2 R1-3 — a death the player never sees is a resident who simply vanished, and a
+            // body nobody is reminded about is a body that stays on the ground.
             server.getPlayerList().broadcastSystemMessage(net.minecraft.network.chat.Component.translatable(
-                "folkways.health.died", name,
-                net.minecraft.network.chat.Component.translatable(causeKey(cause.get()))), false);
+                    "folkways.health.died", name,
+                    net.minecraft.network.chat.Component.translatable(causeKey(cause.get())))
+                .append(" ")
+                .append(unburiedNotice(state.unburiedCount())), false);
             if (!killed && name.equals("someone")) {
                 // The body was already gone; the record still stands, because a death must leave a trace.
                 continue;
             }
         }
         return died;
+    }
+
+    /** "N bodies await burial", or nothing at all when every body has been dealt with. */
+    public static net.minecraft.network.chat.Component unburiedNotice(int waiting) {
+        return waiting <= 0
+            ? net.minecraft.network.chat.Component.empty()
+            : net.minecraft.network.chat.Component.translatable("folkways.health.unburied", waiting);
     }
 
     /** The language key a cause of death is shown under. */
