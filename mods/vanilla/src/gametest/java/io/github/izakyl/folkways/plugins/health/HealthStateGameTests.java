@@ -185,4 +185,45 @@ public final class HealthStateGameTests {
             "the infection came back, got " + back.infection(who, "arm"));
         helper.succeed();
     }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void aDeathLeavesATrace(GameTestHelper helper) {
+        // PLA: M2 R1-3 groundwork — PRD-009 asks that a death have weight; it starts with a record.
+        HealthState book = new HealthState();
+        UUID who = UUID.randomUUID();
+        UUID other = UUID.randomUUID();
+        book.record(new HealthState.Death(who, "Tori", "infected wound", 1200L));
+        book.record(new HealthState.Death(other, "Rotunda", "bleeding", 2400L));
+
+        helper.assertTrue(book.deathCount() == 2, "both deaths are kept");
+        HealthState.Death latest = book.recentDeaths(1).get(0);
+        helper.assertTrue(latest.name().equals("Rotunda"), "recent deaths come newest first");
+        helper.assertTrue(latest.cause().equals("bleeding") && latest.at() == 2400L,
+            "with cause and time, got " + latest);
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void aDeathSurvivesASave(GameTestHelper helper) {
+        HealthState book = new HealthState();
+        UUID who = UUID.randomUUID();
+        book.record(new HealthState.Death(who, "Tori", "infected wound", 1200L));
+
+        HealthState back = HealthState.load(Reader.of(book.save()));
+        helper.assertTrue(back.deathCount() == 1, "the death came back");
+        HealthState.Death one = back.recentDeaths(1).get(0);
+        helper.assertTrue(one.name().equals("Tori") && one.cause().equals("infected wound")
+            && one.at() == 1200L && one.who().equals(who), "with everything it carried, got " + one);
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void aNamelessDeathStillSaysSomething(GameTestHelper helper) {
+        HealthState book = new HealthState();
+        book.record(new HealthState.Death(UUID.randomUUID(), "  ", "", 0L));
+        HealthState.Death one = book.recentDeaths(1).get(0);
+        helper.assertTrue(one.name().equals("someone") && one.cause().equals("unknown"),
+            "an unnamed death reads as somebody unknown, got " + one);
+        helper.succeed();
+    }
 }

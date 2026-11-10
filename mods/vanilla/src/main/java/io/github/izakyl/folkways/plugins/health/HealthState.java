@@ -66,6 +66,7 @@ public final class HealthState {
     private final Map<UUID, Double> blood = new HashMap<>();
     private final Map<UUID, List<Wound>> wounds = new HashMap<>();
     private final Map<UUID, Map<String, Integer>> infections = new HashMap<>();
+    private final List<Death> deaths = new ArrayList<>();
 
     public double blood(UUID who) {
         return blood.getOrDefault(who, MAX_BLOOD);
@@ -243,6 +244,12 @@ public final class HealthState {
                 .longValue(TAG_SINCE, row.wound().since())
                 .flag(TAG_TREATED, row.wound().treated())
                 .tag())
+            .children(TAG_DEATHS, deaths, one -> Writer.of()
+                .uuid(TAG_WHO, one.who())
+                .string(TAG_DEATH_NAME, one.name())
+                .string(TAG_DEATH_CAUSE, one.cause())
+                .longValue(TAG_SINCE, one.at())
+                .tag())
             .children(TAG_INFECTIONS, infectionRows, row -> Writer.of()
                 .uuid(TAG_WHO, row.who())
                 .string(TAG_PART, row.part())
@@ -270,6 +277,12 @@ public final class HealthState {
                 row.longValue(TAG_SINCE).orElse(0L),
                 row.flag(TAG_TREATED).orElse(false)));
         }
+        for (Reader row : reader.children(TAG_DEATHS)) {
+            row.uuid(TAG_WHO).ifPresent(who -> state.deaths.add(new Death(who,
+                row.string(TAG_DEATH_NAME).orElse("someone"),
+                row.string(TAG_DEATH_CAUSE).orElse("unknown"),
+                row.longValue(TAG_SINCE).orElse(0L))));
+        }
         for (Reader row : reader.children(TAG_INFECTIONS)) {
             Optional<String> part = row.string(TAG_PART);
             row.uuid(TAG_WHO).filter(who -> part.isPresent()).ifPresent(who ->
@@ -284,6 +297,39 @@ public final class HealthState {
     }
 
     private record Entry(UUID who, int index, Wound wound) {
+    }
+
+    /** One death, kept so the colony can say what happened and to whom (PRD-009 G2). */
+    public record Death(UUID who, String name, String cause, long at) {
+
+        public Death {
+            name = name == null || name.isBlank() ? "someone" : name;
+            cause = cause == null || cause.isBlank() ? "unknown" : cause;
+        }
+    }
+
+    /**
+     * PLA: M2 R1-3 groundwork — every death leaves a trace.
+     *
+     * <p>The design asks that a death have weight, which starts with the colony being able to say who
+     * died, of what and when. Where the body goes and how the burial works is a later slice, but the
+     * record is needed whichever of those answers is chosen.
+     */
+    public void record(Death one) {
+        deaths.add(one);
+    }
+
+    /** The most recent deaths first, at most {@code limit}. */
+    public List<Death> recentDeaths(int limit) {
+        List<Death> out = new ArrayList<>();
+        for (int i = deaths.size() - 1; i >= 0 && out.size() < Math.max(0, limit); i--) {
+            out.add(deaths.get(i));
+        }
+        return List.copyOf(out);
+    }
+
+    public int deathCount() {
+        return deaths.size();
     }
 
     /** One part's infection, as a row. */
@@ -306,5 +352,8 @@ public final class HealthState {
     private static final String TAG_TREATED = "x";
     private static final String TAG_BLOOD_VALUE = "v";
     private static final String TAG_INFECTIONS = "n";
+    private static final String TAG_DEATHS = "d";
+    private static final String TAG_DEATH_NAME = "dn";
+    private static final String TAG_DEATH_CAUSE = "dc";
     private static final String TAG_INFECTION = "inf";
 }
