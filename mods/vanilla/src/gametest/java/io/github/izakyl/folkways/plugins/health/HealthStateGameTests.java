@@ -375,4 +375,17 @@ public final class HealthStateGameTests {
         helper.assertTrue(three.contains("3"), "and so is three, got " + three);
         helper.succeed();
     }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void theBandageExistsInEveryLanguage(GameTestHelper helper) {
+        // PLA: M2 R1 treatment groundwork — both candidate rules need something to treat a wound with.
+        helper.assertTrue(Aid.BANDAGE.get() != null, "the bandage is registered");
+        String key = "item." + Aid.id().getNamespace() + "." + Aid.id().getPath();
+        String shown = net.minecraft.network.chat.Component.translatable(key).getString();
+        helper.assertTrue(!shown.isBlank() && !shown.equals(key),
+            "the language table has no words for " + key + ", got: " + shown);
+        helper.assertTrue(Aid.BANDAGE.get().getDefaultInstance().getMaxStackSize() == 16,
+            "bandages stack by the dozen-odd");
+        helper.succeed();
+    }
 }

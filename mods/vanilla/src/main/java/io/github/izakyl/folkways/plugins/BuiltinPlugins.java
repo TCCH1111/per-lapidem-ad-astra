@@ -43,6 +43,8 @@ public final class BuiltinPlugins {
         io.github.izakyl.folkways.plugins.health.HealthPlugin.install(modBus);
         // PLA: M2 R1-3 — bodies and graves.
         io.github.izakyl.folkways.plugins.health.Corpses.install(modBus);
+        // PLA: M2 R1 — the dressing.
+        io.github.izakyl.folkways.plugins.health.Aid.install(modBus);
 
     }
 }

@@ -1485,5 +1485,6 @@
   "folkways.health.cause.bled_out": "血流乾",
   "folkways.health.cause.infection": "傷口感染",
   "folkways.health.cause.unknown": "不明原因",
-  "folkways.health.unburied": "%s 具屍體等待安葬"
+  "folkways.health.unburied": "%s 具屍體等待安葬",
+  "item.folkways.bandage": "繃帶"
 }
