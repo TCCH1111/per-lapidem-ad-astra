@@ -92,6 +92,41 @@ public final class HealthContent {
         return died;
     }
 
+    /**
+     * PLA: M2 R1 treatment — uses one bandage on one open wound.
+     *
+     * <p>The action both candidate rules share: whichever resident ends up doing it, whether by their
+     * own hand or a medic's, the same thing happens and the same things are true afterwards. Kept as a
+     * function of the book and a container so it can be tested without a colony or a world.
+     *
+     * @param pack where a bandage would be taken from
+     * @return true when a bandage was spent and a wound was dressed
+     */
+    public static boolean dress(HealthState state, UUID who, net.minecraft.world.Container pack) {
+        if (state == null || who == null || pack == null) {
+            return false;
+        }
+        String part = null;
+        for (HealthState.Wound one : state.wounds(who)) {
+            if (one.bleeds()) {
+                part = one.part();
+                break;
+            }
+        }
+        if (part == null) {
+            return false;
+        }
+        for (int slot = 0; slot < pack.getContainerSize(); slot++) {
+            net.minecraft.world.item.ItemStack stack = pack.getItem(slot);
+            if (!stack.isEmpty() && stack.is(Aid.BANDAGE.get())) {
+                stack.shrink(1);
+                pack.setItem(slot, stack);
+                return state.treat(who, part);
+            }
+        }
+        return false;
+    }
+
     /** "N bodies await burial", or nothing at all when every body has been dealt with. */
     public static net.minecraft.network.chat.Component unburiedNotice(int waiting) {
         return waiting <= 0

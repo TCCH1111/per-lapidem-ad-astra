@@ -388,4 +388,43 @@ public final class HealthStateGameTests {
             "bandages stack by the dozen-odd");
         helper.succeed();
     }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void dressingSpendsOneBandageAndStopsTheBlood(GameTestHelper helper) {
+        // PLA: M2 R1 treatment — the action both candidate rules share.
+        HealthState book = new HealthState();
+        UUID who = UUID.randomUUID();
+        book.wound(who, new HealthState.Wound("arm", "cut", 3, "wolf", 0L, false));
+
+        net.minecraft.world.SimpleContainer pack = new net.minecraft.world.SimpleContainer(3);
+        pack.setItem(0, new net.minecraft.world.item.ItemStack(Aid.BANDAGE.get(), 2));
+
+        double before = book.blood(who);
+        helper.assertTrue(HealthContent.dress(book, who, pack), "a wound can be dressed");
+        helper.assertTrue(book.wounds(who).get(0).treated(), "and the wound is marked dealt with");
+        helper.assertTrue(pack.getItem(0).getCount() == 1, "exactly one bandage was spent, got "
+            + pack.getItem(0).getCount());
+        helper.assertTrue(book.bleed(who, 1000L) == before, "so no more blood is lost");
+
+        helper.assertTrue(!HealthContent.dress(book, who, pack), "a dressed wound is not dressed again");
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void noBandageMeansNoDressing(GameTestHelper helper) {
+        HealthState book = new HealthState();
+        UUID who = UUID.randomUUID();
+        book.wound(who, new HealthState.Wound("leg", "gash", 2, "fall", 0L, false));
+
+        net.minecraft.world.SimpleContainer empty = new net.minecraft.world.SimpleContainer(2);
+        helper.assertTrue(!HealthContent.dress(book, who, empty), "without a bandage nothing happens");
+        helper.assertTrue(!book.wounds(who).get(0).treated(), "and the wound is still open");
+
+        UUID clean = UUID.randomUUID();
+        net.minecraft.world.SimpleContainer stocked = new net.minecraft.world.SimpleContainer(1);
+        stocked.setItem(0, new net.minecraft.world.item.ItemStack(Aid.BANDAGE.get(), 1));
+        helper.assertTrue(!HealthContent.dress(book, clean, stocked), "no wound, no dressing");
+        helper.assertTrue(stocked.getItem(0).getCount() == 1, "and the bandage is not wasted");
+        helper.succeed();
+    }
 }
