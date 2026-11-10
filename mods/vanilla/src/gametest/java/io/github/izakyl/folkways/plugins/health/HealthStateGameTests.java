@@ -311,6 +311,9 @@ public final class HealthStateGameTests {
                 .orElseThrow(() -> new AssertionError("no health book"));
             Body body = PersonBody.RESIDENT.get().create(level);
             body.mob().moveTo(helper.absolutePos(new net.minecraft.core.BlockPos(2, 1, 2)), 0.0F, 0.0F);
+            level.addFreshEntity(body.mob());
+            helper.assertTrue(level.getEntity(body.resident().id()) != null,
+                "the body is really in the world before it dies");
             UUID who = body.resident().id();
             book.wound(who, new HealthState.Wound("torso", "gash", 3, "axe", 0L, false));
             book.bleed(who, 1_000_000L);
@@ -321,7 +324,10 @@ public final class HealthStateGameTests {
             HealthState.Death one = book.recentDeaths(1).get(0);
             helper.assertTrue(one.cause().equals("bled out"), "with the cause, got " + one);
             helper.assertTrue(one.who().equals(who), "and the right resident");
-            helper.assertTrue(level.getEntity(who) == null, "the body is gone from the world");
+            // kill() marks the body dead at once; the level removes it on a later tick, so the honest
+            // assertion here is that it is no longer alive rather than that it has vanished.
+            net.minecraft.world.entity.Entity left = level.getEntity(who);
+            helper.assertTrue(left == null || !left.isAlive(), "the body is no longer alive");
             helper.assertTrue(HealthContent.sweep(colony, level.getServer(), 120L) == 0,
                 "a second sweep finds nothing more");
         } finally {

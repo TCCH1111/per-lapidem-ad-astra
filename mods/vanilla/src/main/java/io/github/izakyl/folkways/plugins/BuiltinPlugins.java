@@ -41,6 +41,8 @@ public final class BuiltinPlugins {
         io.github.izakyl.folkways.plugins.relate.RelatePlugin.install(modBus);
         // PLA: M2 R0-2 — wounds and blood. No behaviour change yet.
         io.github.izakyl.folkways.plugins.health.HealthPlugin.install(modBus);
+        // PLA: M2 R1-3 — bodies and graves.
+        io.github.izakyl.folkways.plugins.health.Corpses.install(modBus);
 
     }
 }

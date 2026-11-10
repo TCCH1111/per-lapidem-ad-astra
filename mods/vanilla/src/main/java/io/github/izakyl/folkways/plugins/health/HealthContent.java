@@ -64,6 +64,11 @@ public final class HealthContent {
                 net.minecraft.world.entity.Entity entity = level.getEntity(who);
                 if (entity instanceof net.minecraft.world.entity.Mob mob) {
                     name = mob.getName().getString();
+                    // The body is left where it fell before the mob goes, so the world keeps a trace of
+                    // it that survives a reload.
+                    io.github.izakyl.folkways.plugins.health.Corpses.place(level,
+                        mob.blockPosition(), new HealthState.Death(who, name, cause.get(), now, false),
+                        colony.id());
                     mob.kill();
                     killed = true;
                     break;
