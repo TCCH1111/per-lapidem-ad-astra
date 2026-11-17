@@ -408,6 +408,10 @@ final class LivingPresence implements Facing {
 
     public List<Urge> urges(Worker who, ColonyView colony) {
         List<Urge> felt = new ArrayList<>();
+        // PLA: M2 R1 treatment A — a bleeding resident who carries a bandage stops and dresses the
+        // wound themselves. Offered first and at DIRE weight so it preempts ordinary labour; the
+        // shared act is HealthContent.dress, this only supplies the moment the owner decided on.
+        dressing(who, colony).ifPresent(felt::add);
         eating(who, colony).ifPresent(felt::add);
         sleeping(who, colony).ifPresent(felt::add);
         // PLA: M2 R0-3 — the owner's rule: lightly hurt residents work on, badly hurt ones are not
@@ -434,6 +438,42 @@ final class LivingPresence implements Facing {
         return resting
             ? List.of(Urge.reserve(io.github.izakyl.folkways.plugins.health.HealthContent.RESTING))
             : List.of();
+    }
+
+    /**
+     * PLA: M2 R1 treatment A — the moment self-care becomes something a resident wants to do.
+     *
+     * <p>The decision reads the colony's health book and a thread-safe inventory snapshot, never the
+     * live pack (that is read at commit). Requesting an observation the first time we see a bleeding
+     * resident keeps the snapshot honest without ever guessing that a bandage is present.
+     */
+    private Optional<Urge> dressing(Worker who, ColonyView colony) {
+        UUID id = who.resident().id();
+        var health = this.colony.service(
+            io.github.izakyl.folkways.plugins.health.HealthContent.ID,
+            io.github.izakyl.folkways.plugins.health.HealthState.class).orElse(null);
+        if (health == null || health.wounds(id).stream().noneMatch(
+                io.github.izakyl.folkways.plugins.health.HealthState.Wound::bleeds)) {
+            return Optional.empty();
+        }
+        var observed = this.colony.inventory().snapshot().residents().get(id);
+        if (observed == null || observed.state() != InventorySnapshot.State.OBSERVED) {
+            this.colony.inventory().ensureObservedResident(id);
+            return Optional.empty();
+        }
+        List<ItemStack> carried = new ArrayList<>();
+        for (SlotSnapshot slot : observed.pack()) {
+            carried.add(slot.stackCopy());
+        }
+        if (!io.github.izakyl.folkways.plugins.health.HealthContent.needsDressing(health, id, carried)) {
+            return Optional.empty();
+        }
+        io.github.izakyl.folkways.plugins.health.HealthState book = health;
+        return Optional.of(new Urge(
+            io.github.izakyl.folkways.plugins.health.HealthContent.DRESS,
+            Urge.DIRE, true,
+            () -> new io.github.izakyl.folkways.plugins.health.DressAction(
+                colony.level(), book, id, who.body().blockPosition())));
     }
 
     private Optional<Urge> eating(Worker who, ColonyView colony) {

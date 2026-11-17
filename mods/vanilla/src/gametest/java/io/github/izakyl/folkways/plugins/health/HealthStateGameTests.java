@@ -427,4 +427,35 @@ public final class HealthStateGameTests {
         helper.assertTrue(stocked.getItem(0).getCount() == 1, "and the bandage is not wasted");
         helper.succeed();
     }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void selfCareIsWantedOnlyWhenBleedingAndCarryingABandage(GameTestHelper helper) {
+        HealthState book = new HealthState();
+        UUID who = UUID.randomUUID();
+        book.wound(who, new HealthState.Wound("arm", "cut", 2, "wolf", 0L, false));
+        java.util.List<net.minecraft.world.item.ItemStack> bandage = java.util.List.of(
+            new net.minecraft.world.item.ItemStack(Aid.BANDAGE.get(), 1));
+        java.util.List<net.minecraft.world.item.ItemStack> empty = java.util.List.of();
+
+        helper.assertTrue(HealthContent.needsDressing(book, who, bandage),
+            "a bleeding resident who carries a bandage wants to dress the wound");
+        helper.assertTrue(!HealthContent.needsDressing(book, who, empty),
+            "the same wound without a bandage asks for nothing");
+        helper.succeed();
+    }
+
+    @GameTest(template = TEMPLATE, timeoutTicks = 100)
+    public static void aTreatedWoundNoLongerAsksForSelfCare(GameTestHelper helper) {
+        HealthState book = new HealthState();
+        UUID who = UUID.randomUUID();
+        book.wound(who, new HealthState.Wound("arm", "cut", 2, "wolf", 0L, false));
+        java.util.List<net.minecraft.world.item.ItemStack> bandage = java.util.List.of(
+            new net.minecraft.world.item.ItemStack(Aid.BANDAGE.get(), 1));
+        helper.assertTrue(HealthContent.needsDressing(book, who, bandage), "bleeding asks for care");
+
+        book.treat(who, "arm");
+        helper.assertTrue(!HealthContent.needsDressing(book, who, bandage),
+            "once treated it stops asking, even with the bandage still in the pack");
+        helper.succeed();
+    }
 }

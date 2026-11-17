@@ -5,6 +5,7 @@ import io.github.izakyl.folkways.core.api.Declaring;
 import io.github.izakyl.folkways.core.api.colony.Colony;
 import io.github.izakyl.folkways.front.api.Enrollment;
 import io.github.izakyl.folkways.front.api.Registering;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import net.minecraft.resources.ResourceLocation;
@@ -30,6 +31,9 @@ public final class HealthContent {
 
     /** One game day, the rhythm infection keeps. */
     public static final int DAY_TICKS = 24_000;
+
+    /** PLA: M2 R1 treatment A — the id of the self-care urge that dresses a resident's own wound. */
+    public static final ResourceLocation DRESS = ResourceLocation.fromNamespaceAndPath("folkways", "dress");
 
     private HealthContent() {
     }
@@ -122,6 +126,51 @@ public final class HealthContent {
                 stack.shrink(1);
                 pack.setItem(slot, stack);
                 return state.treat(who, part);
+            }
+        }
+        return false;
+    }
+
+    /**
+     * PLA: M2 R1 treatment A — whether a resident should stop and dress their own wound.
+     *
+     * <p>True only when the book says the resident is still bleeding from an untreated wound and their
+     * pack actually holds a bandage. Pure in the book, the id and the pack so a colony is not needed to
+     * test the decision: no wound, no bandage, or an already-treated wound all answer false.
+     */
+    public static boolean needsDressing(HealthState state, UUID who, net.minecraft.world.Container pack) {
+        if (pack == null) {
+            return false;
+        }
+        List<net.minecraft.world.item.ItemStack> carried = new ArrayList<>();
+        for (int slot = 0; slot < pack.getContainerSize(); slot++) {
+            carried.add(pack.getItem(slot));
+        }
+        return needsDressing(state, who, carried);
+    }
+
+    /**
+     * The same decision over a plain list of what the resident carries, so the planner can use a
+     * thread-safe inventory snapshot while the node itself uses the live pack at commit time.
+     */
+    public static boolean needsDressing(HealthState state, UUID who,
+            List<net.minecraft.world.item.ItemStack> carried) {
+        if (state == null || who == null || carried == null) {
+            return false;
+        }
+        boolean bleeding = false;
+        for (HealthState.Wound one : state.wounds(who)) {
+            if (one.bleeds()) {
+                bleeding = true;
+                break;
+            }
+        }
+        if (!bleeding) {
+            return false;
+        }
+        for (net.minecraft.world.item.ItemStack stack : carried) {
+            if (!stack.isEmpty() && stack.is(Aid.BANDAGE.get())) {
+                return true;
             }
         }
         return false;
