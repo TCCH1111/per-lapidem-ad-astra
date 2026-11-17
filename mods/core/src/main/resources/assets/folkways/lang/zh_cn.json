@@ -1488,5 +1488,7 @@
   "folkways.health.unburied": "%s 具尸体等待安葬",
   "item.folkways.bandage": "绷带",
   "folkways.threat.at_the_gates": "劫掠者已到城下",
-  "folkways.threat.kind.raiders": "劫掠者"
+  "folkways.threat.kind.raiders": "劫掠者",
+  "folkways.threat.held": "%s被击退了",
+  "folkways.threat.hurt": "%s攻破了防线——%s人受伤"
 }

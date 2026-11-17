@@ -176,6 +176,20 @@ public final class HealthContent {
         return false;
     }
 
+    /**
+     * PLA: M2 T3 — records the consequence of an abstract threat on one resident, using the same
+     * health book every other injury goes through. The severity is supplied by the caller's resolution
+     * rule and is already capped below "severe", so this cannot kill. Kept here so consequences never
+     * invent a second wound model.
+     */
+    public static boolean wound(HealthState state, UUID who, int severity, String kind, long now) {
+        if (state == null || who == null || severity <= 0) {
+            return false;
+        }
+        state.wound(who, new HealthState.Wound("torso", kind, severity, "raid", now, false));
+        return true;
+    }
+
     /** "N bodies await burial", or nothing at all when every body has been dealt with. */
     public static net.minecraft.network.chat.Component unburiedNotice(int waiting) {
         return waiting <= 0

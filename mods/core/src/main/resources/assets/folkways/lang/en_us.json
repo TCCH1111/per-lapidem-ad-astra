@@ -1488,5 +1488,7 @@
   "folkways.health.unburied": "%s bodies await burial",
   "item.folkways.bandage": "Bandage",
   "folkways.threat.at_the_gates": "Raiders are at the gates",
-  "folkways.threat.kind.raiders": "raiders"
+  "folkways.threat.kind.raiders": "raiders",
+  "folkways.threat.held": "%s were driven off",
+  "folkways.threat.hurt": "%s broke through — %s wounded"
 }

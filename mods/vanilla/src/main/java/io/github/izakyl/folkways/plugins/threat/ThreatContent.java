@@ -29,6 +29,33 @@ public final class ThreatContent {
         return "folkways.threat.kind." + (kind == null || kind.isBlank() ? "raiders" : kind);
     }
 
+    /**
+     * PLA: M2 T3 — writes the resolution's consequences into the colony's health book. One wound per
+     * point of loss, spread over the residents and each capped by the resolution, so a defeated colony
+     * is hurt and has to recover but nobody dies from a single raid. Reuses the medical book rather than
+     * inventing a second injury model.
+     */
+    static void apply(Colony colony, ThreatState.Resolution result, long now) {
+        if (result == null || result.loss() <= 0 || result.severity() <= 0) {
+            return;
+        }
+        io.github.izakyl.folkways.plugins.health.HealthState health = colony.service(
+                io.github.izakyl.folkways.plugins.health.HealthContent.ID,
+                io.github.izakyl.folkways.plugins.health.HealthState.class).orElse(null);
+        if (health == null) {
+            return;
+        }
+        java.util.List<io.github.izakyl.folkways.core.api.resident.Resident> people =
+            new java.util.ArrayList<>(colony.residents());
+        if (people.isEmpty()) {
+            return;
+        }
+        for (int i = 0; i < result.loss(); i++) {
+            io.github.izakyl.folkways.plugins.health.HealthContent.wound(health,
+                people.get(i % people.size()).id(), result.severity(), "raid wounds", now);
+        }
+    }
+
     public static void enroll(Registering registering) {
         registering.enrollment(ID, new Enrollment(List.of()));
     }
@@ -42,11 +69,22 @@ public final class ThreatContent {
                 long now = server.getTickCount();
                 if (now % TICK_TICKS == 0) {
                     for (ThreatState.Threat arrived : state.advance(now)) {
-                        // It is here. What happens next belongs to the resolution rule, which is not
-                        // agreed yet, so the colony says the true thing and stops there.
+                        // It is here. The owner's A/B/A rule decides the outcome deterministically:
+                        // readiness is a count of what the colony can point to, loss is the shortfall,
+                        // and every wound it causes is capped below "severe" by the resolution itself.
                         server.getPlayerList().broadcastSystemMessage(Component.translatable(
                             "folkways.threat.at_the_gates", Component.translatable(kindKey(arrived.kind()))),
                             false);
+                        int militia = colony.residents().size();
+                        int readiness = ThreatState.readiness(militia, 0, 0, 0);
+                        ThreatState.Resolution result = ThreatState.resolve(arrived.strength(), readiness);
+                        apply(colony, result, now);
+                        server.getPlayerList().broadcastSystemMessage(Component.translatable(
+                            result.held() ? "folkways.threat.held" : "folkways.threat.hurt",
+                            Component.translatable(kindKey(arrived.kind())), result.loss()), false);
+                    }
+                    if (state.all().stream().anyMatch(t -> t.stage() == ThreatState.Stage.AT_THE_GATES)) {
+                        state.settle();
                     }
                 }
                 if (now % PERSIST_TICKS == 0) {
