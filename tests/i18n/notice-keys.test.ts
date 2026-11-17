@@ -43,7 +43,21 @@ function declared(): Declared[] {
       if (!impls.some(one => one === "NoticeKind" || one === "RefusalKind.Named" || one === "Named")) {
         continue;
       }
-      const body = text.slice(match.index! + match[0].length, match.index! + match[0].length + 1200);
+      // Read the whole enum body, not a fixed window: a method that sits far below the constants
+      // (as Mood.translationKey does, past its Needs record) is still the enum's key rule. Stopping
+      // at 1200 chars made the gate see "no rule" and fail the build while every key was in fact
+      // translated — a false red that also skipped every game test behind this job.
+      const brace = match.index! + match[0].lastIndexOf("{");
+      let depth = 0;
+      let end = brace;
+      for (; end < text.length; end++) {
+        if (text[end] === "{") depth++;
+        else if (text[end] === "}") {
+          depth--;
+          if (depth === 0) { end++; break; }
+        }
+      }
+      const body = text.slice(match.index! + match[0].length, end);
       let prefix: string | null = null;
       if (impls.includes("NoticeKind")) {
         const rule = body.match(/return\s+"([\w.]+)"\s*\+\s*name\(\)\.toLowerCase\(Locale\.ROOT\)/);
